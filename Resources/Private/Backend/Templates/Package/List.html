@@ -1,0 +1,48 @@
+<f:layout name="Default" />
+
+This Template is responsible for creating a table of domain objects.
+
+If you modify this template, do not forget to change the overwrite settings
+in /Configuration/ExtensionBuilder/settings.yaml:
+  Resources:
+    Private:
+      Templates:
+        List.html: keep
+
+Otherwise your changes will be overwritten the next time you save the extension in the extension builder
+
+<f:section name="content">
+<h1>Listing for Package</h1>
+
+<f:flashMessages />
+
+<table  class="tx_cunddcomposer" >
+	<tr>
+		<th><f:translate key="tx_cunddcomposer_domain_model_package.name" /></th>
+		<th><f:translate key="tx_cunddcomposer_domain_model_package.description" /></th>
+		<th><f:translate key="tx_cunddcomposer_domain_model_package.version" /></th>
+		<th><f:translate key="tx_cunddcomposer_domain_model_package.type" /></th>
+		<th><f:translate key="tx_cunddcomposer_domain_model_package.homepage" /></th>
+		<th><f:translate key="tx_cunddcomposer_domain_model_package.time" /></th>
+		<th><f:translate key="tx_cunddcomposer_domain_model_package.license" /></th>
+		<th> </th>
+		<th> </th>
+	</tr>
+
+	<f:for each="{packages}" as="package">
+		<tr>
+			<td><f:link.action action="show" arguments="{package : package}"> {package.name}</f:link.action></td>
+			<td><f:link.action action="show" arguments="{package : package}"> {package.description}</f:link.action></td>
+			<td><f:link.action action="show" arguments="{package : package}"> {package.version}</f:link.action></td>
+			<td><f:link.action action="show" arguments="{package : package}"> {package.type}</f:link.action></td>
+			<td><f:link.action action="show" arguments="{package : package}"> {package.homepage}</f:link.action></td>
+			<td><f:link.action action="show" arguments="{package : package}"> {package.time -> f:format.date()}</f:link.action></td>
+			<td><f:link.action action="show" arguments="{package : package}"> {package.license}</f:link.action></td>
+			<td><f:link.action action="edit" arguments="{package : package}">Edit</f:link.action></td>
+			<td><f:link.action action="delete" arguments="{package : package}">Delete</f:link.action></td>
+		</tr>
+	</f:for>
+</table>
+
+<f:link.action action="new">New Package</f:link.action>
+</f:section>

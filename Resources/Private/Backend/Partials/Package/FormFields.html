@@ -1,0 +1,28 @@
+<label for="name">
+	<f:translate key="tx_cunddcomposer_domain_model_package.name" /> <span class="required">(required)</span>
+</label><br />
+	<f:form.textfield property="name" /><br />
+<label for="description">
+	<f:translate key="tx_cunddcomposer_domain_model_package.description" /> <span class="required">(required)</span>
+</label><br />
+	<f:form.textarea property="description" cols="40" rows="15" /><br />
+<label for="version">
+	<f:translate key="tx_cunddcomposer_domain_model_package.version" /> <span class="required">(required)</span>
+</label><br />
+	<f:form.textfield property="version" /><br />
+<label for="type">
+	<f:translate key="tx_cunddcomposer_domain_model_package.type" /> <span class="required">(required)</span>
+</label><br />
+	<f:form.textfield property="type" /><br />
+<label for="homepage">
+	<f:translate key="tx_cunddcomposer_domain_model_package.homepage" />
+</label><br />
+	<f:form.textfield property="homepage" /><br />
+<label for="time">
+	<f:translate key="tx_cunddcomposer_domain_model_package.time" />
+</label><br />
+	<f:form.textfield property="time"  value="{package.time->f:format.date()}" /><br />
+<label for="license">
+	<f:translate key="tx_cunddcomposer_domain_model_package.license" />
+</label><br />
+	<f:form.textfield property="license" /><br />

@@ -1,0 +1,17 @@
+{
+    "name": "cundd/composer_template",
+    "description": "composer.json template for TYPO3 CMS",
+    "keywords": ["typo3cms"],
+    "type": "library",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Daniel Corn",
+            "email": "info@cundd.net",
+            "homepage": "http://cundd.net/"
+        }
+    ],
+    "autoload": {
+        "psr-0": { "Cundd": "Classes/" }
+    }
+}

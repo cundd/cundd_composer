@@ -1,0 +1,11 @@
+# Module configuration
+module.tx_cunddcomposer {
+	persistence {
+		storagePid = {$module.tx_cunddcomposer.persistence.storagePid}
+	}
+	view {
+		templateRootPath = {$module.tx_cunddcomposer.view.templateRootPath}
+		partialRootPath = {$module.tx_cunddcomposer.view.partialRootPath}
+		layoutRootPath = {$module.tx_cunddcomposer.view.layoutRootPath}
+	}
+}

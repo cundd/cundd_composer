@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<T3locallang>
+	<meta type="array">
+		<type>database</type>
+		<description>Language labels for database tables/fields belonging to extension 'cundd_composer'</description>
+	</meta>
+	<data type="array">
+		<languageKey index="default" type="array">
+            
+			<label index="tx_cunddcomposer_domain_model_package">Package</label>
+			<label index="tx_cunddcomposer_domain_model_package.name">Name</label>
+			<label index="tx_cunddcomposer_domain_model_package.description">Description</label>
+			<label index="tx_cunddcomposer_domain_model_package.version">Version</label>
+			<label index="tx_cunddcomposer_domain_model_package.type">Type</label>
+			<label index="tx_cunddcomposer_domain_model_package.homepage">Homepage</label>
+			<label index="tx_cunddcomposer_domain_model_package.time">Time</label>
+			<label index="tx_cunddcomposer_domain_model_package.license">License</label>
+
+		</languageKey>
+	</data>
+</T3locallang>
