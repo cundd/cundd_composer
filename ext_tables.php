@@ -3,6 +3,12 @@ if (!defined('TYPO3_MODE')) {
 	die ('Access denied.');
 }
 
+// Register the composer autoloader
+$autoloaderPath = __DIR__ . '/ext/' . $_EXTKEY . '/vendor/autoload.php';
+if (file_exists($autoloaderPath)) {
+	require_once($autoloaderPath);
+}
+
 if (TYPO3_MODE === 'BE') {
 
 	/**

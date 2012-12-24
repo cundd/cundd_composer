@@ -36,6 +36,11 @@ ini_set('display_errors', TRUE);
  *
  */
 class Tx_CunddComposer_Controller_PackageController extends Tx_Extbase_MVC_Controller_ActionController {
+	/**
+	 * The path to the PHP executable
+	 * @var string
+	 */
+	protected $phpExecutable = '';
 
 	/**
 	 * packageRepository
@@ -43,6 +48,19 @@ class Tx_CunddComposer_Controller_PackageController extends Tx_Extbase_MVC_Contr
 	 * @var Tx_CunddComposer_Domain_Repository_PackageRepository
 	 */
 	protected $packageRepository;
+
+	/**
+	 * The property mapper
+	 * @var Tx_Extbase_Property_PropertyMapper
+	 * @inject
+	 */
+	protected $propertyMapper;
+
+	/**
+	 * The merged composer requirements
+	 * @var array
+	 */
+	protected $mergedComposerRequirements;
 
 	/**
 	 * injectPackageRepository
@@ -60,18 +78,41 @@ class Tx_CunddComposer_Controller_PackageController extends Tx_Extbase_MVC_Contr
 	 * @return void
 	 */
 	public function listAction() {
+		if (isset($this->settings['phpExecutable'])) {
+			$this->phpExecutable = $this->settings['phpExecutable'];
+		}
 		$composerJson = $this->getMergedComposerJson();
 
-		Ir::pd($composerJson);
+		#Tx_Extbase_Property_PropertyMapper
+
 		#$packages = $this->packageRepository->findAll();
 		#$this->view->assign('packages', $packages);
 	}
 
+	/**
+	 * Write the composer.json file
+	 * @return boolean Returns TRUE on success, otherwise FALSE
+	 */
+	public function writeMergedComposerJson() {
+		$composerJson = $this->getMergedComposerJson();
+		$composerJson = json_encode($composerJson);
+		if ($composerJson) {
+			return file_put_contents($this->getTempPath() . 'composer.json', $composerJson);
+		}
+		return FALSE;
+	}
+
+	/**
+	 * Returns the composer.json array merged with the template
+	 * @return array
+	 */
 	public function getMergedComposerJson() {
-		$composerJson = file_get_contents(t3lib_div::getFileAbsFileName('EXT:cundd_composer/Resources/Private/Templates/composer.json'));
+		$composerJson = file_get_contents($this->getPathToResource() . 'Private/Templates/composer.json');
 		if (!$composerJson) {
 			throw new \UnexpectedValueException('Could not load the composer.json template file', 1355952845);
 		}
+		$composerJson = str_replace('%EXT_PATH%', $this->getExtensionPath(), $composerJson);
+		$composerJson = str_replace('%RESOURCE_PATH%', $this->getPathToResource(), $composerJson);
 		Ir::pd($composerJson);
 		$composerJson = json_decode($composerJson, TRUE);
 		Ir::pd($composerJson);
@@ -104,6 +145,10 @@ class Tx_CunddComposer_Controller_PackageController extends Tx_Extbase_MVC_Contr
 	 * @return array<string>
 	 */
 	protected function getMergedComposerRequirements() {
+		if ($this->mergedComposerRequirements) {
+			return $this->mergedComposerRequirements;
+		}
+
 		$composerFiles = $this->getComposerFiles();
 		$jsonData = array();
 		foreach ($composerFiles as $composerFilePath) {
@@ -119,9 +164,91 @@ class Tx_CunddComposer_Controller_PackageController extends Tx_Extbase_MVC_Contr
 				$jsonData = $currentJsonData;
 			}
 		}
+		$this->mergedComposerRequirements = $jsonData;
 		return $jsonData;
 	}
 
+	/**
+	 * Call composer on the command line to install the dependencies.
+	 * @return string Returns the composer output
+	 */
+	protected function install() {
+		$output = '';
+		$pathToComposer = $this->getPathToResource() . '/Private/PHP/composer.phar';
+
+		$command = $this->getPHPExecutable() . ' '
+			. '-c ' . php_ini_loaded_file() . ' '
+			. '"' . $pathToComposer . '" install --working-dir "'
+			. $this->getTempPath() . '" 2>&1';
+
+		$output = shell_exec($command);
+
+		Ir::pd($output);
+		return $output;
+	}
+
+	/**
+	 * Returns the path to the PHP executable
+	 * @var string
+	 */
+	public function getPHPExecutable() {
+		if (!$this->phpExecutable) {
+			$this->phpExecutable = $this->getPHPExecutableFromPath();
+		}
+		return $this->phpExecutable;
+	}
+
+	/**
+	 * Sets the path to the PHP executable
+	 * @var string
+	 */
+	public function setPHPExecutable($phpExecutable) {
+		$this->phpExecutable = $phpExecutable;
+	}
+
+	/**
+	 * Tries to find the PHP executable.
+	 * @return string Returns the path to the PHP executable, or FALSE on error
+	 */
+	public function getPHPExecutableFromPath() {
+		$paths = explode(PATH_SEPARATOR, getenv('PATH'));
+		foreach ($paths as $path) {
+			// we need this for XAMPP (Windows)
+			if (strstr($path, 'php.exe') && isset($_SERVER['WINDIR']) && file_exists($path) && is_file($path)) {
+				return $path;
+			} else {
+				$php_executable = $path . DIRECTORY_SEPARATOR . 'php' . (isset($_SERVER['WINDIR']) ? '.exe' : '');
+				if (file_exists($php_executable) && is_file($php_executable)) {
+					return $php_executable;
+				}
+			}
+		}
+		return FALSE; // not found
+	}
+
+	/**
+	 * Returns the path to the extensions base
+	 * @return string
+	 */
+	public function getExtensionPath() {
+		return __DIR__ . '/../../';
+	}
+
+	/**
+	 * Returns the path to the resources folder
+	 * @return string
+	 */
+	public function getPathToResource() {
+		return $this->getExtensionPath() . 'Resources/';
+	}
+
+	/**
+	 * Returns the path to the temporary directory
+	 * @return string
+	 */
+	public function getTempPath() {
+		return $this->getPathToResource() . 'Private/Temp/';
+	}
 
 
 	/**
@@ -197,7 +324,12 @@ class Tx_CunddComposer_Controller_PackageController extends Tx_Extbase_MVC_Contr
 	 * @return void
 	 */
 	public function installAction() {
-
+		if (isset($this->settings['phpExecutable'])) {
+			$this->phpExecutable = $this->settings['phpExecutable'];
+		}
+		$didWriteComposerJson = $this->writeMergedComposerJson();
+		$composerOutput = $this->install();
+		$this->view->assign('composerOutput', $composerOutput);
 	}
 
 }
