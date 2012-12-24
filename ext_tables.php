@@ -3,12 +3,6 @@ if (!defined('TYPO3_MODE')) {
 	die ('Access denied.');
 }
 
-// Register the composer autoloader
-$autoloaderPath = __DIR__ . '/ext/' . $_EXTKEY . '/vendor/autoload.php';
-if (file_exists($autoloaderPath)) {
-	require_once($autoloaderPath);
-}
-
 if (TYPO3_MODE === 'BE') {
 
 	/**
@@ -56,7 +50,7 @@ $TCA['tx_cunddcomposer_domain_model_package'] = array(
 			'starttime' => 'starttime',
 			'endtime' => 'endtime',
 		),
-		'searchFields' => 'name,description,version,type,homepage,time,license,',
+		'searchFields' => 'name,description,version,type,homepage,time,license,tx_cunddcomposer_require,',
 		'dynamicConfigFile' => t3lib_extMgm::extPath($_EXTKEY) . 'Configuration/TCA/Package.php',
 		'iconfile' => t3lib_extMgm::extRelPath($_EXTKEY) . 'Resources/Public/Icons/tx_cunddcomposer_domain_model_package.gif'
 	),

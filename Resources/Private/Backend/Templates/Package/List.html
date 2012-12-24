@@ -25,21 +25,19 @@ Otherwise your changes will be overwritten the next time you save the extension 
 		<th><f:translate key="tx_cunddcomposer_domain_model_package.homepage" /></th>
 		<th><f:translate key="tx_cunddcomposer_domain_model_package.time" /></th>
 		<th><f:translate key="tx_cunddcomposer_domain_model_package.license" /></th>
-		<th> </th>
-		<th> </th>
+		<th><f:translate key="tx_cunddcomposer_domain_model_package.tx_cunddcomposer_require" /></th>
 	</tr>
 
 	<f:for each="{packages}" as="package">
 		<tr>
-			<td><f:link.action action="show" arguments="{package : package}"> {package.name}</f:link.action></td>
-			<td><f:link.action action="show" arguments="{package : package}"> {package.description}</f:link.action></td>
-			<td><f:link.action action="show" arguments="{package : package}"> {package.version}</f:link.action></td>
-			<td><f:link.action action="show" arguments="{package : package}"> {package.type}</f:link.action></td>
-			<td><f:link.action action="show" arguments="{package : package}"> {package.homepage}</f:link.action></td>
-			<td><f:link.action action="show" arguments="{package : package}"> {package.time -> f:format.date()}</f:link.action></td>
-			<td><f:link.action action="show" arguments="{package : package}"> {package.license}</f:link.action></td>
-			<td><f:link.action action="edit" arguments="{package : package}">Edit</f:link.action></td>
-			<td><f:link.action action="delete" arguments="{package : package}">Delete</f:link.action></td>
+			<td>{package.name}</td>
+			<td>{package.description}</td>
+			<td>{package.version}</td>
+			<td>{package.type}</td>
+			<td>{package.homepage}</td>
+			<td>{package.time -> f:format.date()}</td>
+			<td>{package.license}</td>
+			<td>{package.require}</td>
 		</tr>
 	</f:for>
 </table>

@@ -13,6 +13,7 @@ CREATE TABLE tx_cunddcomposer_domain_model_package (
 	homepage varchar(255) DEFAULT '' NOT NULL,
 	time int(11) DEFAULT '0' NOT NULL,
 	license int(11) DEFAULT '0' NOT NULL,
+	tx_cunddcomposer_require text NOT NULL,
 
 	tstamp int(11) unsigned DEFAULT '0' NOT NULL,
 	crdate int(11) unsigned DEFAULT '0' NOT NULL,

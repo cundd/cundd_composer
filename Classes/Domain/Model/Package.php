@@ -87,6 +87,13 @@ class Tx_CunddComposer_Domain_Model_Package extends Tx_Extbase_DomainObject_Abst
 	protected $license;
 
 	/**
+	 * Requirements
+	 *
+	 * @var string
+	 */
+	protected $require;
+
+	/**
 	 * Returns the name
 	 *
 	 * @return string $name
@@ -217,6 +224,25 @@ class Tx_CunddComposer_Domain_Model_Package extends Tx_Extbase_DomainObject_Abst
 	 */
 	public function setLicense($license) {
 		$this->license = $license;
+	}
+
+	/**
+	 * Returns the require
+	 *
+	 * @return string $require
+	 */
+	public function getRequire() {
+		return $this->require;
+	}
+
+	/**
+	 * Sets the require
+	 *
+	 * @param string $require
+	 * @return void
+	 */
+	public function setRequire($require) {
+		$this->require = $require;
 	}
 
 }

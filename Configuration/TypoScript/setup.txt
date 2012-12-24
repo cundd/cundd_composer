@@ -8,8 +8,4 @@ module.tx_cunddcomposer {
 		partialRootPath = {$module.tx_cunddcomposer.view.partialRootPath}
 		layoutRootPath = {$module.tx_cunddcomposer.view.layoutRootPath}
 	}
-	settings {
-		### You can overwrite the path to the PHP binary to use with composer
-		# phpExecutable = /Applications/MAMP/bin/php/php5.4.4/bin/php
-	}
 }

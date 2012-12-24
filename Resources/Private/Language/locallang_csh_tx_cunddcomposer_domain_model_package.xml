@@ -15,6 +15,7 @@
 			<label index="homepage.description">Homepage</label>
 			<label index="time.description">Time</label>
 			<label index="license.description">License</label>
+			<label index="tx_cunddcomposer_require.description">Requirements</label>
 		</languageKey>
 	</data>
 </T3locallang>

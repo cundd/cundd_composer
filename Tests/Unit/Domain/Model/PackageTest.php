@@ -167,5 +167,22 @@ class Tx_CunddComposer_Domain_Model_PackageTest extends Tx_Extbase_Tests_Unit_Ba
 		);
 	}
 	
+	/**
+	 * @test
+	 */
+	public function getRequireReturnsInitialValueForString() { }
+
+	/**
+	 * @test
+	 */
+	public function setRequireForStringSetsRequire() { 
+		$this->fixture->setRequire('Conceived at T3CON10');
+
+		$this->assertSame(
+			'Conceived at T3CON10',
+			$this->fixture->getRequire()
+		);
+	}
+	
 }
 ?>

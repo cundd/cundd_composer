@@ -23,8 +23,6 @@
  *
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
-
-
 Ir::forceDebug();
 ini_set('display_errors', TRUE);
 
@@ -36,8 +34,10 @@ ini_set('display_errors', TRUE);
  *
  */
 class Tx_CunddComposer_Controller_PackageController extends Tx_Extbase_MVC_Controller_ActionController {
+
 	/**
 	 * The path to the PHP executable
+	 *
 	 * @var string
 	 */
 	protected $phpExecutable = '';
@@ -48,19 +48,6 @@ class Tx_CunddComposer_Controller_PackageController extends Tx_Extbase_MVC_Contr
 	 * @var Tx_CunddComposer_Domain_Repository_PackageRepository
 	 */
 	protected $packageRepository;
-
-	/**
-	 * The property mapper
-	 * @var Tx_Extbase_Property_PropertyMapper
-	 * @inject
-	 */
-	protected $propertyMapper;
-
-	/**
-	 * The merged composer requirements
-	 * @var array
-	 */
-	protected $mergedComposerRequirements;
 
 	/**
 	 * injectPackageRepository
@@ -78,19 +65,19 @@ class Tx_CunddComposer_Controller_PackageController extends Tx_Extbase_MVC_Contr
 	 * @return void
 	 */
 	public function listAction() {
-		if (isset($this->settings['phpExecutable'])) {
-			$this->phpExecutable = $this->settings['phpExecutable'];
-		}
 		$composerJson = $this->getMergedComposerJson();
+
+
 
 		#Tx_Extbase_Property_PropertyMapper
 
-		#$packages = $this->packageRepository->findAll();
-		#$this->view->assign('packages', $packages);
+		$packages = $this->packageRepository->findAll();
+		$this->view->assign('packages', $packages);
 	}
 
 	/**
 	 * Write the composer.json file
+	 *
 	 * @return boolean Returns TRUE on success, otherwise FALSE
 	 */
 	public function writeMergedComposerJson() {
@@ -104,6 +91,7 @@ class Tx_CunddComposer_Controller_PackageController extends Tx_Extbase_MVC_Contr
 
 	/**
 	 * Returns the composer.json array merged with the template
+	 *
 	 * @return array
 	 */
 	public function getMergedComposerJson() {
@@ -120,56 +108,25 @@ class Tx_CunddComposer_Controller_PackageController extends Tx_Extbase_MVC_Contr
 		return $composerJson;
 	}
 
-	/**
-	 * Returns the list of composer.json files
-	 * @return array<string>
-	 */
-	protected function getComposerFiles() {
-		$composerFiles = array();
-		$extensions = explode(',', t3lib_extMgm::getEnabledExtensionList());
 
-		foreach ($extensions as $extension) {
-			$composerFilePath = t3lib_extMgm::extPath($extension) . '/composer.json';
-			if (file_exists($composerFilePath)) {
-				$composerFiles[] = $composerFilePath;
-			}
-		}
-
-		Ir::pd($composerFiles);
-
-		return $composerFiles;
-	}
 
 	/**
 	 * Retrieve the merged composer.json requirements
+	 *
 	 * @return array<string>
 	 */
-	protected function getMergedComposerRequirements() {
-		if ($this->mergedComposerRequirements) {
-			return $this->mergedComposerRequirements;
-		}
-
-		$composerFiles = $this->getComposerFiles();
+	public function getMergedComposerRequirements() {
 		$jsonData = array();
-		foreach ($composerFiles as $composerFilePath) {
-			$currentJsonData = NULL;
-			$jsonString = file_get_contents($composerFilePath);
-			if ($jsonString) {
-				$currentJsonData = json_decode($jsonString, TRUE);
-
-				$currentJsonData = array_merge($jsonData, $currentJsonData['require']);
-			}
-
-			if ($currentJsonData) {
-				$jsonData = $currentJsonData;
-			}
+		$composerJson = $this->packageRepository->getComposerJson();
+		foreach ($composerJson as $currentJsonData) {
+			$jsonData = array_merge($jsonData, $currentJsonData['require']);
 		}
-		$this->mergedComposerRequirements = $jsonData;
 		return $jsonData;
 	}
 
 	/**
 	 * Call composer on the command line to install the dependencies.
+	 *
 	 * @return string Returns the composer output
 	 */
 	protected function install() {
@@ -189,18 +146,27 @@ class Tx_CunddComposer_Controller_PackageController extends Tx_Extbase_MVC_Contr
 
 	/**
 	 * Returns the path to the PHP executable
+	 *
 	 * @var string
+	 * @return
 	 */
 	public function getPHPExecutable() {
 		if (!$this->phpExecutable) {
-			$this->phpExecutable = $this->getPHPExecutableFromPath();
+			if (isset($this->settings['phpExecutable'])) {
+				$this->phpExecutable = $this->settings['phpExecutable'];
+			} else {
+				$this->phpExecutable = $this->getPHPExecutableFromPath();
+			}
 		}
 		return $this->phpExecutable;
 	}
 
 	/**
 	 * Sets the path to the PHP executable
+	 *
+	 * @param  $phpExecutable
 	 * @var string
+	 * @return
 	 */
 	public function setPHPExecutable($phpExecutable) {
 		$this->phpExecutable = $phpExecutable;
@@ -208,6 +174,7 @@ class Tx_CunddComposer_Controller_PackageController extends Tx_Extbase_MVC_Contr
 
 	/**
 	 * Tries to find the PHP executable.
+	 *
 	 * @return string Returns the path to the PHP executable, or FALSE on error
 	 */
 	public function getPHPExecutableFromPath() {
@@ -228,6 +195,7 @@ class Tx_CunddComposer_Controller_PackageController extends Tx_Extbase_MVC_Contr
 
 	/**
 	 * Returns the path to the extensions base
+	 *
 	 * @return string
 	 */
 	public function getExtensionPath() {
@@ -236,6 +204,7 @@ class Tx_CunddComposer_Controller_PackageController extends Tx_Extbase_MVC_Contr
 
 	/**
 	 * Returns the path to the resources folder
+	 *
 	 * @return string
 	 */
 	public function getPathToResource() {
@@ -244,12 +213,12 @@ class Tx_CunddComposer_Controller_PackageController extends Tx_Extbase_MVC_Contr
 
 	/**
 	 * Returns the path to the temporary directory
+	 *
 	 * @return string
 	 */
 	public function getTempPath() {
 		return $this->getPathToResource() . 'Private/Temp/';
 	}
-
 
 	/**
 	 * action show
@@ -324,13 +293,9 @@ class Tx_CunddComposer_Controller_PackageController extends Tx_Extbase_MVC_Contr
 	 * @return void
 	 */
 	public function installAction() {
-		if (isset($this->settings['phpExecutable'])) {
-			$this->phpExecutable = $this->settings['phpExecutable'];
-		}
 		$didWriteComposerJson = $this->writeMergedComposerJson();
 		$composerOutput = $this->install();
 		$this->view->assign('composerOutput', $composerOutput);
 	}
-
 }
 ?>
