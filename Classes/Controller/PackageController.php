@@ -50,6 +50,13 @@ class Tx_CunddComposer_Controller_PackageController extends Tx_Extbase_MVC_Contr
 	protected $packageRepository;
 
 	/**
+	 * Enable or disable installation of development dependencies
+	 *
+	 * @var boolean
+	 */
+	protected $developmentDependencies = FALSE;
+
+	/**
 	 * injectPackageRepository
 	 *
 	 * @param Tx_CunddComposer_Domain_Repository_PackageRepository $packageRepository
@@ -60,14 +67,23 @@ class Tx_CunddComposer_Controller_PackageController extends Tx_Extbase_MVC_Contr
 	}
 
 	/**
+	 * initializeAction
+	 *
+	 * @return
+	 */
+	public function initializeAction() {
+		if (isset($this->settings['developmentDependencies'])) {
+			$this->developmentDependencies = $this->settings['developmentDependencies'];
+		}
+	}
+
+	/**
 	 * action list
 	 *
 	 * @return void
 	 */
 	public function listAction() {
 		$composerJson = $this->getMergedComposerJson();
-
-
 
 		#Tx_Extbase_Property_PropertyMapper
 
@@ -108,8 +124,6 @@ class Tx_CunddComposer_Controller_PackageController extends Tx_Extbase_MVC_Contr
 		return $composerJson;
 	}
 
-
-
 	/**
 	 * Retrieve the merged composer.json requirements
 	 *
@@ -130,15 +144,35 @@ class Tx_CunddComposer_Controller_PackageController extends Tx_Extbase_MVC_Contr
 	 * @return string Returns the composer output
 	 */
 	protected function install() {
+		return $this->executeComposerCommand('update');
+	}
+
+	/**
+	 * Execute the given composer command
+	 *
+	 * @param string 	$command 	The composer command to execute
+	 * @param boolean	$dev 		Call it with the --dev flag
+	 * @return string 				Returns the composer output
+	 */
+	protected function executeComposerCommand($command, $dev = -1) {
 		$output = '';
 		$pathToComposer = $this->getPathToResource() . '/Private/PHP/composer.phar';
 
-		$command = $this->getPHPExecutable() . ' '
+		if ($dev === -1) {
+			$dev = $this->developmentDependencies;
+		}
+		$fullCommand = $this->getPHPExecutable() . ' '
 			. '-c ' . php_ini_loaded_file() . ' '
-			. '"' . $pathToComposer . '" install --working-dir "'
-			. $this->getTempPath() . '" 2>&1';
+			. '"' . $pathToComposer . '" ' . $command . ' --working-dir "'
+			. $this->getTempPath() . '" '
+			. '--no-interaction '
+			. '--no-ansi '
+			# . '--ansi '
+			. '--profile '
+			. ($dev ? '--dev ' : '')
+			. '2>&1';
 
-		$output = shell_exec($command);
+		$output = shell_exec($fullCommand);
 
 		Ir::pd($output);
 		return $output;
@@ -164,7 +198,7 @@ class Tx_CunddComposer_Controller_PackageController extends Tx_Extbase_MVC_Contr
 	/**
 	 * Sets the path to the PHP executable
 	 *
-	 * @param  $phpExecutable
+	 * @param $phpExecutable
 	 * @var string
 	 * @return
 	 */
@@ -297,5 +331,6 @@ class Tx_CunddComposer_Controller_PackageController extends Tx_Extbase_MVC_Contr
 		$composerOutput = $this->install();
 		$this->view->assign('composerOutput', $composerOutput);
 	}
+
 }
 ?>

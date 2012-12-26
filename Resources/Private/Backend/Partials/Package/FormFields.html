@@ -3,15 +3,19 @@
 </label><br />
 	<f:form.textfield property="name" /><br />
 <label for="description">
-	<f:translate key="tx_cunddcomposer_domain_model_package.description" /> <span class="required">(required)</span>
+	<f:translate key="tx_cunddcomposer_domain_model_package.description" />
 </label><br />
 	<f:form.textarea property="description" cols="40" rows="15" /><br />
+<label for="authors">
+	<f:translate key="tx_cunddcomposer_domain_model_package.authors" />
+</label><br />
+	<f:form.textarea property="authors" cols="40" rows="15" /><br />
 <label for="version">
-	<f:translate key="tx_cunddcomposer_domain_model_package.version" /> <span class="required">(required)</span>
+	<f:translate key="tx_cunddcomposer_domain_model_package.version" />
 </label><br />
 	<f:form.textfield property="version" /><br />
 <label for="type">
-	<f:translate key="tx_cunddcomposer_domain_model_package.type" /> <span class="required">(required)</span>
+	<f:translate key="tx_cunddcomposer_domain_model_package.type" />
 </label><br />
 	<f:form.textfield property="type" /><br />
 <label for="homepage">
@@ -30,3 +34,7 @@
 	<f:translate key="tx_cunddcomposer_domain_model_package.tx_cunddcomposer_require" />
 </label><br />
 	<f:form.textarea property="require" cols="40" rows="15" /><br />
+<label for="requireDev">
+	<f:translate key="tx_cunddcomposer_domain_model_package.require_dev" />
+</label><br />
+	<f:form.textarea property="requireDev" cols="40" rows="15" /><br />

@@ -26,6 +26,7 @@ Otherwise your changes will be overwritten the next time you save the extension 
 		<th><f:translate key="tx_cunddcomposer_domain_model_package.time" /></th>
 		<th><f:translate key="tx_cunddcomposer_domain_model_package.license" /></th>
 		<th><f:translate key="tx_cunddcomposer_domain_model_package.tx_cunddcomposer_require" /></th>
+		<th><f:translate key="tx_cunddcomposer_domain_model_package.require_dev" /></th>
 	</tr>
 
 	<f:for each="{packages}" as="package">
@@ -37,10 +38,11 @@ Otherwise your changes will be overwritten the next time you save the extension 
 			<td>{package.homepage}</td>
 			<td>{package.time -> f:format.date()}</td>
 			<td>{package.license}</td>
-			<td>{package.require}</td>
+			<td><f:format.nl2br>{package.require}</f:format.nl2br></td>
+			<td><f:format.nl2br>{package.requireDev}</f:format.nl2br></td>
 		</tr>
 	</f:for>
 </table>
 
-<f:link.action action="new">New Package</f:link.action>
+<f:link.action action="install">Merge and install</f:link.action>
 </f:section>

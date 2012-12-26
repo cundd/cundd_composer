@@ -7,8 +7,9 @@ module.tx_cunddcomposer {
 		# cat=module.tx_cunddcomposer/file; type=string; label=Path to template layouts (BE)
 		layoutRootPath = EXT:cundd_composer/Resources/Private/Backend/Layouts/
 	}
-	persistence {
-		# cat=module.tx_cunddcomposer//a; type=string; label=Default storage PID
-		storagePid =
+
+	settings {
+		# cat=module.tx_cunddcomposer/enable/a; type=boolean; label=Development flag: By default composer will only install required packages. By passing this option you can also make it install packages referenced by require-dev.
+		developmentDependencies = 0
 	}
 }

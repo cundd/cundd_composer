@@ -7,14 +7,16 @@
 	<data type="array">
 		<languageKey index="default" type="array">
 			<label index="tx_cunddcomposer_domain_model_package">Package</label>
-			<label index="tx_cunddcomposer_domain_model_package.name">name</label>
+			<label index="tx_cunddcomposer_domain_model_package.name">Name</label>
 			<label index="tx_cunddcomposer_domain_model_package.description">Description</label>
+			<label index="tx_cunddcomposer_domain_model_package.authors">Authors</label>
 			<label index="tx_cunddcomposer_domain_model_package.version">Version</label>
 			<label index="tx_cunddcomposer_domain_model_package.type">Type</label>
 			<label index="tx_cunddcomposer_domain_model_package.homepage">Homepage</label>
 			<label index="tx_cunddcomposer_domain_model_package.time">Time</label>
 			<label index="tx_cunddcomposer_domain_model_package.license">License</label>
 			<label index="tx_cunddcomposer_domain_model_package.tx_cunddcomposer_require">Requirements</label>
+			<label index="tx_cunddcomposer_domain_model_package.require_dev">Development requirements</label>
 		</languageKey>
 	</data>
 </T3locallang>

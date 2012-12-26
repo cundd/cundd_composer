@@ -34,7 +34,7 @@
 class Tx_CunddComposer_Domain_Model_Package extends Tx_Extbase_DomainObject_AbstractEntity {
 
 	/**
-	 * name
+	 * Name
 	 *
 	 * @var string
 	 * @validate NotEmpty
@@ -48,6 +48,13 @@ class Tx_CunddComposer_Domain_Model_Package extends Tx_Extbase_DomainObject_Abst
 	 * @validate NotEmpty
 	 */
 	protected $description;
+
+	/**
+	 * Authors
+	 *
+	 * @var string
+	 */
+	protected $authors;
 
 	/**
 	 * Version
@@ -82,7 +89,7 @@ class Tx_CunddComposer_Domain_Model_Package extends Tx_Extbase_DomainObject_Abst
 	/**
 	 * License
 	 *
-	 * @var integer
+	 * @var string
 	 */
 	protected $license;
 
@@ -92,6 +99,13 @@ class Tx_CunddComposer_Domain_Model_Package extends Tx_Extbase_DomainObject_Abst
 	 * @var string
 	 */
 	protected $require;
+
+	/**
+	 * Development requirements
+	 *
+	 * @var string
+	 */
+	protected $requireDev;
 
 	/**
 	 * Returns the name
@@ -208,25 +222,6 @@ class Tx_CunddComposer_Domain_Model_Package extends Tx_Extbase_DomainObject_Abst
 	}
 
 	/**
-	 * Returns the license
-	 *
-	 * @return integer $license
-	 */
-	public function getLicense() {
-		return $this->license;
-	}
-
-	/**
-	 * Sets the license
-	 *
-	 * @param integer $license
-	 * @return void
-	 */
-	public function setLicense($license) {
-		$this->license = $license;
-	}
-
-	/**
 	 * Returns the require
 	 *
 	 * @return string $require
@@ -243,6 +238,63 @@ class Tx_CunddComposer_Domain_Model_Package extends Tx_Extbase_DomainObject_Abst
 	 */
 	public function setRequire($require) {
 		$this->require = $require;
+	}
+
+	/**
+	 * Returns the license
+	 *
+	 * @return string license
+	 */
+	public function getLicense() {
+		return $this->license;
+	}
+
+	/**
+	 * Sets the license
+	 *
+	 * @param string $license
+	 * @return string license
+	 */
+	public function setLicense($license) {
+		$this->license = $license;
+	}
+
+	/**
+	 * Returns the requireDev
+	 *
+	 * @return string $requireDev
+	 */
+	public function getRequireDev() {
+		return $this->requireDev;
+	}
+
+	/**
+	 * Sets the requireDev
+	 *
+	 * @param string $requireDev
+	 * @return void
+	 */
+	public function setRequireDev($requireDev) {
+		$this->requireDev = $requireDev;
+	}
+
+	/**
+	 * Returns the authors
+	 *
+	 * @return string $authors
+	 */
+	public function getAuthors() {
+		return $this->authors;
+	}
+
+	/**
+	 * Sets the authors
+	 *
+	 * @param string $authors
+	 * @return void
+	 */
+	public function setAuthors($authors) {
+		$this->authors = $authors;
 	}
 
 }

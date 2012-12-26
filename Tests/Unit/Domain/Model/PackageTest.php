@@ -87,6 +87,23 @@ class Tx_CunddComposer_Domain_Model_PackageTest extends Tx_Extbase_Tests_Unit_Ba
 	/**
 	 * @test
 	 */
+	public function getAuthorsReturnsInitialValueForString() { }
+
+	/**
+	 * @test
+	 */
+	public function setAuthorsForStringSetsAuthors() { 
+		$this->fixture->setAuthors('Conceived at T3CON10');
+
+		$this->assertSame(
+			'Conceived at T3CON10',
+			$this->fixture->getAuthors()
+		);
+	}
+	
+	/**
+	 * @test
+	 */
 	public function getVersionReturnsInitialValueForString() { }
 
 	/**
@@ -148,21 +165,16 @@ class Tx_CunddComposer_Domain_Model_PackageTest extends Tx_Extbase_Tests_Unit_Ba
 	/**
 	 * @test
 	 */
-	public function getLicenseReturnsInitialValueForInteger() { 
-		$this->assertSame(
-			0,
-			$this->fixture->getLicense()
-		);
-	}
+	public function getLicenseReturnsInitialValueForString() { }
 
 	/**
 	 * @test
 	 */
-	public function setLicenseForIntegerSetsLicense() { 
-		$this->fixture->setLicense(12);
+	public function setLicenseForStringSetsLicense() { 
+		$this->fixture->setLicense('Conceived at T3CON10');
 
 		$this->assertSame(
-			12,
+			'Conceived at T3CON10',
 			$this->fixture->getLicense()
 		);
 	}
@@ -181,6 +193,23 @@ class Tx_CunddComposer_Domain_Model_PackageTest extends Tx_Extbase_Tests_Unit_Ba
 		$this->assertSame(
 			'Conceived at T3CON10',
 			$this->fixture->getRequire()
+		);
+	}
+	
+	/**
+	 * @test
+	 */
+	public function getRequireDevReturnsInitialValueForString() { }
+
+	/**
+	 * @test
+	 */
+	public function setRequireDevForStringSetsRequireDev() { 
+		$this->fixture->setRequireDev('Conceived at T3CON10');
+
+		$this->assertSame(
+			'Conceived at T3CON10',
+			$this->fixture->getRequireDev()
 		);
 	}
 	

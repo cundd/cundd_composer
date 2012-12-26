@@ -6,10 +6,10 @@ if (!defined ('TYPO3_MODE')) {
 $TCA['tx_cunddcomposer_domain_model_package'] = array(
 	'ctrl' => $TCA['tx_cunddcomposer_domain_model_package']['ctrl'],
 	'interface' => array(
-		'showRecordFieldList' => 'sys_language_uid, l10n_parent, l10n_diffsource, hidden, name, description, version, type, homepage, time, license, tx_cunddcomposer_require',
+		'showRecordFieldList' => 'sys_language_uid, l10n_parent, l10n_diffsource, hidden, name, description, authors, version, type, homepage, time, license, tx_cunddcomposer_require, require_dev',
 	),
 	'types' => array(
-		'1' => array('showitem' => 'sys_language_uid;;;;1-1-1, l10n_parent, l10n_diffsource, hidden;;1, name, description, version, type, homepage, time, license, tx_cunddcomposer_require,--div--;LLL:EXT:cms/locallang_ttc.xml:tabs.access,starttime, endtime'),
+		'1' => array('showitem' => 'sys_language_uid;;;;1-1-1, l10n_parent, l10n_diffsource, hidden;;1, name, description, authors, version, type, homepage, time, license, tx_cunddcomposer_require, require_dev,--div--;LLL:EXT:cms/locallang_ttc.xml:tabs.access,starttime, endtime'),
 	),
 	'palettes' => array(
 		'1' => array('showitem' => ''),
@@ -109,7 +109,17 @@ $TCA['tx_cunddcomposer_domain_model_package'] = array(
 				'type' => 'text',
 				'cols' => 40,
 				'rows' => 15,
-				'eval' => 'trim,required'
+				'eval' => 'trim'
+			),
+		),
+		'authors' => array(
+			'exclude' => 0,
+			'label' => 'LLL:EXT:cundd_composer/Resources/Private/Language/locallang_db.xml:tx_cunddcomposer_domain_model_package.authors',
+			'config' => array(
+				'type' => 'text',
+				'cols' => 40,
+				'rows' => 15,
+				'eval' => 'trim'
 			),
 		),
 		'version' => array(
@@ -118,7 +128,7 @@ $TCA['tx_cunddcomposer_domain_model_package'] = array(
 			'config' => array(
 				'type' => 'input',
 				'size' => 30,
-				'eval' => 'trim,required'
+				'eval' => 'trim'
 			),
 		),
 		'type' => array(
@@ -127,7 +137,7 @@ $TCA['tx_cunddcomposer_domain_model_package'] = array(
 			'config' => array(
 				'type' => 'input',
 				'size' => 30,
-				'eval' => 'trim,required'
+				'eval' => 'trim'
 			),
 		),
 		'homepage' => array(
@@ -154,18 +164,24 @@ $TCA['tx_cunddcomposer_domain_model_package'] = array(
 			'exclude' => 0,
 			'label' => 'LLL:EXT:cundd_composer/Resources/Private/Language/locallang_db.xml:tx_cunddcomposer_domain_model_package.license',
 			'config' => array(
-				'type' => 'select',
-				'items' => array(
-					array('-- Label --', 0),
-				),
-				'size' => 1,
-				'maxitems' => 1,
-				'eval' => ''
+				'type' => 'input',
+				'size' => 30,
+				'eval' => 'trim'
 			),
 		),
 		'tx_cunddcomposer_require' => array(
 			'exclude' => 0,
 			'label' => 'LLL:EXT:cundd_composer/Resources/Private/Language/locallang_db.xml:tx_cunddcomposer_domain_model_package.tx_cunddcomposer_require',
+			'config' => array(
+				'type' => 'text',
+				'cols' => 40,
+				'rows' => 15,
+				'eval' => 'trim'
+			),
+		),
+		'require_dev' => array(
+			'exclude' => 0,
+			'label' => 'LLL:EXT:cundd_composer/Resources/Private/Language/locallang_db.xml:tx_cunddcomposer_domain_model_package.require_dev',
 			'config' => array(
 				'type' => 'text',
 				'cols' => 40,

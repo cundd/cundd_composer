@@ -10,12 +10,14 @@
 			<label index="tx_cunddcomposer_domain_model_package">Package</label>
 			<label index="tx_cunddcomposer_domain_model_package.name">Name</label>
 			<label index="tx_cunddcomposer_domain_model_package.description">Description</label>
+			<label index="tx_cunddcomposer_domain_model_package.authors">Authors</label>
 			<label index="tx_cunddcomposer_domain_model_package.version">Version</label>
 			<label index="tx_cunddcomposer_domain_model_package.type">Type</label>
 			<label index="tx_cunddcomposer_domain_model_package.homepage">Homepage</label>
 			<label index="tx_cunddcomposer_domain_model_package.time">Time</label>
 			<label index="tx_cunddcomposer_domain_model_package.license">License</label>
 			<label index="tx_cunddcomposer_domain_model_package.tx_cunddcomposer_require">Require</label>
+			<label index="tx_cunddcomposer_domain_model_package.require_dev">Require Dev</label>
 
 		</languageKey>
 	</data>

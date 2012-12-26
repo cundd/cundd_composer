@@ -32,6 +32,7 @@
  *
  */
 class Tx_CunddComposer_Domain_Repository_PackageRepository extends Tx_Extbase_Persistence_Repository {
+
 	/**
 	 * The composer.json contents
 	 *
@@ -48,7 +49,16 @@ class Tx_CunddComposer_Domain_Repository_PackageRepository extends Tx_Extbase_Pe
 	protected $propertyMapper;
 
 	/**
+	 * The property mapping configuration builder
+	 *
+	 * @var Tx_Extbase_Property_PropertyMappingConfigurationBuilder
+	 * @inject
+	 */
+	protected $propertyMappingConfigurationBuilder;
+
+	/**
 	 * Array of package objects
+	 *
 	 * @var SplObjectStorage
 	 */
 	protected $packages = NULL;
@@ -61,24 +71,25 @@ class Tx_CunddComposer_Domain_Repository_PackageRepository extends Tx_Extbase_Pe
 	 */
 	public function findAll() {
 		if (!$this->packages) {
+			// Get the package domain object properties
 			$properties = new Tx_CunddComposer_Domain_Model_Package();
 			$properties = array_keys($properties->_getProperties());
 
 			$this->packages = new \SplObjectStorage();
 			$composerJson = $this->getComposerJson();
 			foreach ($composerJson as $currentJsonData) {
+				// Flatten the fields "require" and "authors"
+				$this->convertPropertyForKey($currentJsonData, 'authors');
+				$this->convertPropertyForKey($currentJsonData, 'require');
+				$this->convertPropertyForKey($currentJsonData, 'require-dev', 'requireDev');
+
+				// Prepare the property mapping configuration
+				$propertyMappingConfiguration = $this->propertyMappingConfigurationBuilder->build();
+				Ir::pd($propertyMappingConfiguration);
+
 				// Filter the properties
 				$currentJsonData = array_intersect_key($currentJsonData, array_flip($properties));
-
-				// Flatten the field "require"
-				if (isset($currentJsonData['require'])) {
-					$require = $currentJsonData['require'];
-
-					array_walk($require, function(&$value, $key) {
-						$value = $key . $value;
-					});
-					$currentJsonData['require'] = implode(PHP_EOL, $require);
-				}
+				// Doesn't work in extbase: $propertyMappingConfiguration->allowProperties($properties);
 
 				Ir::pd($currentJsonData);
 				$package = $this->propertyMapper->convert($currentJsonData, 'Tx_CunddComposer_Domain_Model_Package');
@@ -88,6 +99,28 @@ class Tx_CunddComposer_Domain_Repository_PackageRepository extends Tx_Extbase_Pe
 			}
 		}
 		return $this->packages;
+	}
+
+	/**
+	 * Converts an array property to a string
+	 *
+	 * @param array 	$source Reference to the input array
+	 * @param string 	$key    The key which to convert
+	 * @param string 	$newKey The new key under which to store the converted data
+	 * @return void
+	 */
+	protected function convertPropertyForKey(&$source, $key, $newKey = '') {
+		if (isset($source[$key])) {
+			if (!$newKey) {
+				$newKey = $key;
+			}
+			$originalData = $source[$key];
+
+			array_walk($originalData, function(&$value, $key) {
+				$value = $key . ' ' . $value;
+			});
+			$source[$newKey] = implode(PHP_EOL, $originalData);
+		}
 	}
 
 	/**
@@ -113,6 +146,7 @@ class Tx_CunddComposer_Domain_Repository_PackageRepository extends Tx_Extbase_Pe
 
 	/**
 	 * Returns the composer.json contents as array
+	 *
 	 * @return array
 	 */
 	public function getComposerJson() {
@@ -122,17 +156,54 @@ class Tx_CunddComposer_Domain_Repository_PackageRepository extends Tx_Extbase_Pe
 			foreach ($composerFiles as $composerFilePath) {
 				$currentJsonData = NULL;
 				$jsonString = file_get_contents($composerFilePath);
+
+				Ir::pd($jsonString, json_decode($jsonString, TRUE));
+
 				if ($jsonString) {
 					$currentJsonData = json_decode($jsonString, TRUE);
 				}
-
-				if ($currentJsonData) {
-					$jsonData[] = $currentJsonData;
+				if (!$currentJsonData) {
+					throw new \DomainException('Exception while parsing composer file ' . $composerFilePath . ': ' . $this->getJsonErrorDescription(), 1356356009);
 				}
+				$jsonData[] = $currentJsonData;
 			}
 			$this->composerJson = $jsonData;
 		}
 		return $this->composerJson;
 	}
+
+	/**
+	 * Returns an error description for the last JSON error
+	 *
+	 * @return string
+	 */
+	protected function getJsonErrorDescription() {
+		$error = '';
+		switch (json_last_error()) {
+			case JSON_ERROR_NONE:
+				$error = 'No errors';
+			break;
+			case JSON_ERROR_DEPTH:
+				$error = 'Maximum stack depth exceeded';
+			break;
+			case JSON_ERROR_STATE_MISMATCH:
+				$error = 'Underflow or the modes mismatch';
+			break;
+			case JSON_ERROR_CTRL_CHAR:
+				$error = 'Unexpected control character found';
+			break;
+			case JSON_ERROR_SYNTAX:
+				$error = 'Syntax error, malformed JSON';
+			break;
+			case JSON_ERROR_UTF8:
+				$error = 'Malformed UTF-8 characters, possibly incorrectly encoded';
+			break;
+			default:
+				$error = 'Unknown error';
+			break;
+		}
+		return $error;
+	}
+
 }
 ?>

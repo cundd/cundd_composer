@@ -46,14 +46,14 @@ overwriteSettings:
 
   Configuration:
     #TCA: merge
-    #TypoScript: keep
+    TypoScript: merge
 
   Resources:
     Private:
       Language:
-        #locallang.xml: merge
-        #locallang.xlf: merge
-      #Templates: keep
+        locallang.xml: merge
+        locallang.xlf: merge
+      Templates: keep
 
   ext_icon.gif: keep
 
@@ -61,7 +61,7 @@ overwriteSettings:
 
 #  ext_tables.php: merge
 
-#  ext_tables.sql: merge
+ext_tables.sql: merge
 
 ## ext_autoload.php is only needed in special cases ##
 createAutoloadRegistry: false

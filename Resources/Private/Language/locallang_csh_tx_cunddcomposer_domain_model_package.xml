@@ -8,14 +8,16 @@
 	<data type="array">
 	<languageKey index="default" type="array">
 	   
-			<label index="name.description">name</label>
+			<label index="name.description">Name</label>
 			<label index="description.description">Description</label>
+			<label index="authors.description">Authors</label>
 			<label index="version.description">Version</label>
 			<label index="type.description">Type</label>
 			<label index="homepage.description">Homepage</label>
 			<label index="time.description">Time</label>
 			<label index="license.description">License</label>
 			<label index="tx_cunddcomposer_require.description">Requirements</label>
+			<label index="require_dev.description">Development requirements</label>
 		</languageKey>
 	</data>
 </T3locallang>
