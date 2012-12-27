@@ -4,6 +4,7 @@
     "keywords": ["typo3cms"],
     "type": "library",
     "license": "MIT",
+    "minimum-stability": "%MINIMUM_STABILITY%",
     "authors": [
         {
             "name": "Daniel Corn",

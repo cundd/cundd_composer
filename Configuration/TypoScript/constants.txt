@@ -11,5 +11,8 @@ module.tx_cunddcomposer {
 	settings {
 		# cat=module.tx_cunddcomposer/enable/a; type=boolean; label=Development flag: By default composer will only install required packages. By passing this option you can also make it install packages referenced by require-dev.
 		developmentDependencies = 0
+
+		# cat=module.tx_cunddcomposer/advanced/a; type=options[dev,alpha,beta,RC,stable]; label=Minimum-stability: This defines the default behavior for filtering packages by stability. This defaults to stable, so if you rely on a dev package, you should specify it in your file to avoid surprises. (Default: stable)
+		minimum-stability =
 	}
 }

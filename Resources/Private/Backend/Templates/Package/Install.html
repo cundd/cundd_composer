@@ -12,11 +12,18 @@ in /Configuration/ExtensionBuilder/settings.yaml:
 Otherwise your changes will be overwritten the next time you save the extension in the extension builder
 
 <f:section name="content">
-<h1>Composer result</h1>
+<h1>Composer install result</h1>
+<p>
+	Install development dependencies:
+	<f:if condition="{developmentDependencies}">
+		<f:then>Yes</f:then>
+		<f:else>No</f:else>
+	</f:if>
+</p>
 
 <pre>
 {composerOutput}
 </pre>
 
-<f:link.action action="list">Back to list</f:link.action>
+<f:link.action action="list" class="btn">Back to list</f:link.action>
 </f:section>

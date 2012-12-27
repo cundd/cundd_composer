@@ -85,13 +85,11 @@ class Tx_CunddComposer_Domain_Repository_PackageRepository extends Tx_Extbase_Pe
 
 				// Prepare the property mapping configuration
 				$propertyMappingConfiguration = $this->propertyMappingConfigurationBuilder->build();
-				Ir::pd($propertyMappingConfiguration);
 
 				// Filter the properties
 				$currentJsonData = array_intersect_key($currentJsonData, array_flip($properties));
 				// Doesn't work in extbase: $propertyMappingConfiguration->allowProperties($properties);
 
-				Ir::pd($currentJsonData);
 				$package = $this->propertyMapper->convert($currentJsonData, 'Tx_CunddComposer_Domain_Model_Package');
 				if ($package) {
 					$this->packages->attach($package);
@@ -138,9 +136,6 @@ class Tx_CunddComposer_Domain_Repository_PackageRepository extends Tx_Extbase_Pe
 				$composerFiles[] = $composerFilePath;
 			}
 		}
-
-		Ir::pd($composerFiles);
-
 		return $composerFiles;
 	}
 
@@ -156,8 +151,6 @@ class Tx_CunddComposer_Domain_Repository_PackageRepository extends Tx_Extbase_Pe
 			foreach ($composerFiles as $composerFilePath) {
 				$currentJsonData = NULL;
 				$jsonString = file_get_contents($composerFilePath);
-
-				Ir::pd($jsonString, json_decode($jsonString, TRUE));
 
 				if ($jsonString) {
 					$currentJsonData = json_decode($jsonString, TRUE);

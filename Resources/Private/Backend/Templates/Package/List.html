@@ -44,5 +44,10 @@ Otherwise your changes will be overwritten the next time you save the extension 
 	</f:for>
 </table>
 
-<f:link.action action="install">Merge and install</f:link.action>
+
+<h2>Preview of the merged composer.json</h2>
+<pre>{mergedComposerJsonString}</pre>
+
+<f:link.action action="install" class="btn">Merge and install</f:link.action>
+<f:link.action action="install" arguments="{development: 1}" class="btn">Merge and install development mode</f:link.action>
 </f:section>

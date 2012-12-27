@@ -23,7 +23,7 @@
  *
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
-Ir::forceDebug();
+
 ini_set('display_errors', TRUE);
 
 /**
@@ -43,6 +43,13 @@ class Tx_CunddComposer_Controller_PackageController extends Tx_Extbase_MVC_Contr
 	protected $phpExecutable = '';
 
 	/**
+	 * The minimum stability
+	 * http://getcomposer.org/doc/04-schema.md#minimum-stability
+	 * @var string
+	 */
+	protected $minimumStability = 'stable';
+
+	/**
 	 * packageRepository
 	 *
 	 * @var Tx_CunddComposer_Domain_Repository_PackageRepository
@@ -50,11 +57,18 @@ class Tx_CunddComposer_Controller_PackageController extends Tx_Extbase_MVC_Contr
 	protected $packageRepository;
 
 	/**
+	 * The merged composer.json
+	 * @var array
+	 */
+	protected $mergedComposerJson;
+
+	/**
 	 * Enable or disable installation of development dependencies
 	 *
 	 * @var boolean
 	 */
 	protected $developmentDependencies = FALSE;
+
 
 	/**
 	 * injectPackageRepository
@@ -75,6 +89,9 @@ class Tx_CunddComposer_Controller_PackageController extends Tx_Extbase_MVC_Contr
 		if (isset($this->settings['developmentDependencies'])) {
 			$this->developmentDependencies = $this->settings['developmentDependencies'];
 		}
+		if (isset($this->settings['minimum-stability'])) {
+			$this->minimumStability = $this->settings['minimum-stability'];
+		}
 	}
 
 	/**
@@ -83,12 +100,26 @@ class Tx_CunddComposer_Controller_PackageController extends Tx_Extbase_MVC_Contr
 	 * @return void
 	 */
 	public function listAction() {
-		$composerJson = $this->getMergedComposerJson();
-
-		#Tx_Extbase_Property_PropertyMapper
+		$mergedComposerJson = NULL;
+		$mergedComposerJsonString = '';
 
 		$packages = $this->packageRepository->findAll();
 		$this->view->assign('packages', $packages);
+
+		// Set the development mode to TRUE to see the dev-requirements
+		$this->developmentDependencies = TRUE;
+		$mergedComposerJson = $this->getMergedComposerJson();
+
+		// Prepare the composer.json to be displayed
+		if (defined('JSON_PRETTY_PRINT')) {
+			$mergedComposerJsonString = json_encode($mergedComposerJson, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES);
+		} else {
+			$mergedComposerJsonString = json_encode($mergedComposerJson);
+		}
+		$mergedComposerJsonString = rtrim($mergedComposerJsonString);
+
+		$this->view->assign('mergedComposerJson', $mergedComposerJson);
+		$this->view->assign('mergedComposerJsonString', $mergedComposerJsonString);
 	}
 
 	/**
@@ -108,20 +139,33 @@ class Tx_CunddComposer_Controller_PackageController extends Tx_Extbase_MVC_Contr
 	/**
 	 * Returns the composer.json array merged with the template
 	 *
+	 * @param boolean $development Indicates if the dev-requirements should be merged
 	 * @return array
 	 */
-	public function getMergedComposerJson() {
-		$composerJson = file_get_contents($this->getPathToResource() . 'Private/Templates/composer.json');
-		if (!$composerJson) {
-			throw new \UnexpectedValueException('Could not load the composer.json template file', 1355952845);
+	public function getMergedComposerJson($development = FALSE) {
+		if (!$this->mergedComposerJson) {
+			$composerJson = file_get_contents($this->getPathToResource() . 'Private/Templates/composer.json');
+			if (!$composerJson) {
+				throw new \UnexpectedValueException('Could not load the composer.json template file', 1355952845);
+			}
+			$composerJson = str_replace('%EXT_PATH%', $this->getExtensionPath(), $composerJson);
+			$composerJson = str_replace('%RESOURCE_PATH%', $this->getPathToResource(), $composerJson);
+			$composerJson = str_replace('%MINIMUM_STABILITY%', $this->minimumStability, $composerJson);
+
+			$composerJson = json_decode($composerJson, TRUE);
+
+			$this->pd($composerJson);
+			$composerJson['require'] = $this->getMergedComposerRequirements();
+
+			if ($development || $this->developmentDependencies) {
+				$composerJson['require-dev'] = $this->getMergedComposerDevelopmentRequirements();
+			}
+
+			$this->pd($composerJson);
+			$this->mergedComposerJson = $composerJson;
 		}
-		$composerJson = str_replace('%EXT_PATH%', $this->getExtensionPath(), $composerJson);
-		$composerJson = str_replace('%RESOURCE_PATH%', $this->getPathToResource(), $composerJson);
-		Ir::pd($composerJson);
-		$composerJson = json_decode($composerJson, TRUE);
-		Ir::pd($composerJson);
-		$composerJson['require'] = $this->getMergedComposerRequirements();
-		return $composerJson;
+
+		return $this->mergedComposerJson;
 	}
 
 	/**
@@ -133,7 +177,29 @@ class Tx_CunddComposer_Controller_PackageController extends Tx_Extbase_MVC_Contr
 		$jsonData = array();
 		$composerJson = $this->packageRepository->getComposerJson();
 		foreach ($composerJson as $currentJsonData) {
-			$jsonData = array_merge($jsonData, $currentJsonData['require']);
+			$mergeData = $currentJsonData['require'];
+			if (is_array($mergeData)) {
+				$jsonData = array_merge($jsonData, $mergeData);
+			}
+		}
+		return $jsonData;
+	}
+
+	/**
+	 * Retrieve the merged composer.json development requirements
+	 *
+	 * @return array<string>
+	 */
+	public function getMergedComposerDevelopmentRequirements() {
+		$jsonData = array();
+		$composerJson = $this->packageRepository->getComposerJson();
+		foreach ($composerJson as $currentJsonData) {
+			if (isset($currentJsonData['require-dev'])) {
+				$mergeData = $currentJsonData['require-dev'];
+				if (is_array($mergeData)) {
+					$jsonData = array_merge($jsonData, $mergeData);
+				}
+			}
 		}
 		return $jsonData;
 	}
@@ -141,10 +207,11 @@ class Tx_CunddComposer_Controller_PackageController extends Tx_Extbase_MVC_Contr
 	/**
 	 * Call composer on the command line to install the dependencies.
 	 *
-	 * @return string Returns the composer output
+	 * @param boolean	$dev 		Call it with the --dev flag
+	 * @return string 				Returns the composer output
 	 */
-	protected function install() {
-		return $this->executeComposerCommand('update');
+	protected function install($dev = -1) {
+		return $this->executeComposerCommand('update', $dev);
 	}
 
 	/**
@@ -174,7 +241,7 @@ class Tx_CunddComposer_Controller_PackageController extends Tx_Extbase_MVC_Contr
 
 		$output = shell_exec($fullCommand);
 
-		Ir::pd($output);
+		$this->pd($output);
 		return $output;
 	}
 
@@ -324,12 +391,29 @@ class Tx_CunddComposer_Controller_PackageController extends Tx_Extbase_MVC_Contr
 	/**
 	 * action install
 	 *
+	 * @param boolean $development Indicates if the dev flag should be specified
 	 * @return void
 	 */
-	public function installAction() {
+	public function installAction($development = FALSE) {
+		$this->developmentDependencies = $development;
+
 		$didWriteComposerJson = $this->writeMergedComposerJson();
-		$composerOutput = $this->install();
+		$composerOutput = rtrim($this->install());
 		$this->view->assign('composerOutput', $composerOutput);
+		$this->view->assign('developmentDependencies', $this->developmentDependencies);
+	}
+
+	/**
+	 * Dumps a given variable (or the given variables) wrapped into a 'pre' tag.
+	 *
+	 * @param	mixed	$var1
+	 * @return	string The printed content
+	 */
+	public function pd($var1 = '__iresults_pd_noValue') {
+		if (class_exists('Tx_Iresults')) {
+			$arguments = func_get_args();
+			call_user_func_array(array('Tx_Iresults', 'pd'), $arguments);
+		}
 	}
 
 }
