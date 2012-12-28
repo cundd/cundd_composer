@@ -3,11 +3,6 @@ if (!defined('TYPO3_MODE')) {
 	die ('Access denied.');
 }
 
-$composerAutoloaderFile = __DIR__ . '/ext/' . $_EXTKEY . '/vendor/autoload.php';
-if (file_exists($composerAutoloaderFile)) {
-	require_once($composerAutoloaderFile);
-}
-
 if (TYPO3_MODE === 'BE') {
 
 	/**

@@ -1,13 +1,1 @@
-config.tx_extbase{
-    persistence{
-        classes{
-
-            Tx_CunddComposer_Domain_Model_Package {
-                mapping {
-                    
-                }
-            }
-            
-    	}
-    }
-}
+includeLibs.0000_composer = EXT:cundd_composer/vendor/autoload.php
