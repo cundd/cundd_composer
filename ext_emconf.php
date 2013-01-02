@@ -3,7 +3,7 @@
 /***************************************************************
  * Extension Manager/Repository config file for ext "cundd_composer".
  *
- * Auto generated 02-01-2013 15:51
+ * Auto generated 02-01-2013 17:57
  *
  * Manual updates:
  * Only the data in the array - everything else is removed by next
@@ -27,7 +27,7 @@ $EM_CONF[$_EXTKEY] = array(
 	'modify_tables' => '',
 	'clearCacheOnLoad' => 0,
 	'lockType' => '',
-	'version' => '0.1.0',
+	'version' => '1.0.0',
 	'constraints' => array(
 		'depends' => array(
 			'extbase' => '1.3',
