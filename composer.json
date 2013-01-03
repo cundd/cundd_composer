@@ -4,6 +4,7 @@
     "keywords": ["typo3cms"],
     "type": "library",
     "license": "MIT",
+    "homepage": "https://github.com/cundd/CunddComposer",
     "authors": [
         {
             "name": "Daniel Corn",

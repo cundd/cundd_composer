@@ -157,6 +157,9 @@ class Tx_CunddComposer_Controller_PackageController extends Tx_Extbase_MVC_Contr
 			$this->pd($composerJson);
 			$composerJson['require'] = $this->getMergedComposerRequirements();
 
+
+			$composerJson['repositories'] = $this->getMergedComposerData('repositories');
+
 			if ($development || $this->developmentDependencies) {
 				$composerJson['require-dev'] = $this->getMergedComposerDevelopmentRequirements();
 			}
@@ -174,15 +177,7 @@ class Tx_CunddComposer_Controller_PackageController extends Tx_Extbase_MVC_Contr
 	 * @return array<string>
 	 */
 	public function getMergedComposerRequirements() {
-		$jsonData = array();
-		$composerJson = $this->packageRepository->getComposerJson();
-		foreach ($composerJson as $currentJsonData) {
-			$mergeData = $currentJsonData['require'];
-			if (is_array($mergeData)) {
-				$jsonData = array_merge($jsonData, $mergeData);
-			}
-		}
-		return $jsonData;
+		return $this->getMergedComposerData('require');
 	}
 
 	/**
@@ -191,11 +186,20 @@ class Tx_CunddComposer_Controller_PackageController extends Tx_Extbase_MVC_Contr
 	 * @return array<string>
 	 */
 	public function getMergedComposerDevelopmentRequirements() {
+		return $this->getMergedComposerData('require-dev');
+	}
+
+	/**
+	 * Returns the merged composer.json data for the given key
+	 * @param  string $key The key for which to merge the data
+	 * @return array
+	 */
+	protected function getMergedComposerData($key) {
 		$jsonData = array();
 		$composerJson = $this->packageRepository->getComposerJson();
 		foreach ($composerJson as $currentJsonData) {
-			if (isset($currentJsonData['require-dev'])) {
-				$mergeData = $currentJsonData['require-dev'];
+			if (isset($currentJsonData[$key])) {
+				$mergeData = $currentJsonData[$key];
 				if (is_array($mergeData)) {
 					$jsonData = array_merge($jsonData, $mergeData);
 				}
