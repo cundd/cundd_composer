@@ -1,7 +1,7 @@
 #################################
 ### PROJECT SETTINGS
 vendor/
-Resources/Private/Temp/
+Resources/Private/Temp/*
 
 #################################
 ### GENERAL SETTINGS

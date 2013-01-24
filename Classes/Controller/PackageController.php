@@ -232,6 +232,7 @@ class Tx_CunddComposer_Controller_PackageController extends Tx_Extbase_MVC_Contr
 		if ($dev === -1) {
 			$dev = $this->developmentDependencies;
 		}
+
 		$fullCommand = $this->getPHPExecutable() . ' '
 			. '-c ' . php_ini_loaded_file() . ' '
 			. '"' . $pathToComposer . '" ' . $command . ' --working-dir "'
