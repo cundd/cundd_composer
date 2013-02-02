@@ -47,7 +47,7 @@ class Tx_CunddComposer_Controller_PackageController extends Tx_Extbase_MVC_Contr
 	 * http://getcomposer.org/doc/04-schema.md#minimum-stability
 	 * @var string
 	 */
-	protected $minimumStability = 'stable';
+	protected $minimumStability = 'dev';
 
 	/**
 	 * packageRepository
@@ -110,13 +110,7 @@ class Tx_CunddComposer_Controller_PackageController extends Tx_Extbase_MVC_Contr
 		$this->developmentDependencies = TRUE;
 		$mergedComposerJson = $this->getMergedComposerJson();
 
-		// Prepare the composer.json to be displayed
-		if (defined('JSON_PRETTY_PRINT')) {
-			$mergedComposerJsonString = json_encode($mergedComposerJson, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES);
-		} else {
-			$mergedComposerJsonString = json_encode($mergedComposerJson);
-		}
-		$mergedComposerJsonString = rtrim($mergedComposerJsonString);
+		$mergedComposerJsonString = $this->formatJSON($mergedComposerJson);
 
 		$this->view->assign('mergedComposerJson', $mergedComposerJson);
 		$this->view->assign('mergedComposerJsonString', $mergedComposerJsonString);
@@ -131,6 +125,7 @@ class Tx_CunddComposer_Controller_PackageController extends Tx_Extbase_MVC_Contr
 		$composerJson = $this->getMergedComposerJson();
 		$composerJson = json_encode($composerJson);
 		if ($composerJson) {
+			$this->makeSureTempPathExists();
 			return file_put_contents($this->getTempPath() . 'composer.json', $composerJson);
 		}
 		return FALSE;
@@ -233,19 +228,25 @@ class Tx_CunddComposer_Controller_PackageController extends Tx_Extbase_MVC_Contr
 			$dev = $this->developmentDependencies;
 		}
 
+
+		$this->makeSureTempPathExists();
 		$fullCommand = $this->getPHPExecutable() . ' '
 			. '-c ' . php_ini_loaded_file() . ' '
-			. '"' . $pathToComposer . '" ' . $command . ' --working-dir "'
-			. $this->getTempPath() . '" '
+			. '"' . $pathToComposer . '" ' . $command . ' --working-dir '
+			. '"' . $this->getTempPath() . '" '
 			. '--no-interaction '
 			. '--no-ansi '
-			# . '--ansi '
+			. '--verbose '
 			. '--profile '
+			. '--optimize-autoloader '
 			. ($dev ? '--dev ' : '')
 			. '2>&1';
 
+		$fullCommand = 'COMPOSER_HOME=' . $this->getTempPath() . ' ' . $fullCommand;
+
 		$output = shell_exec($fullCommand);
 
+		$this->pd($fullCommand);
 		$this->pd($output);
 		return $output;
 	}
@@ -324,6 +325,47 @@ class Tx_CunddComposer_Controller_PackageController extends Tx_Extbase_MVC_Contr
 	 */
 	public function getTempPath() {
 		return $this->getPathToResource() . 'Private/Temp/';
+	}
+
+	/**
+	 * Make sure that the temporary directory exists
+	 * @return void
+	 */
+	protected function makeSureTempPathExists() {
+		$workingDir = $this->getTempPath();
+
+		// Check if the working/temporary directory exists
+		if (!file_exists($workingDir)) {
+			@mkdir($workingDir);
+
+			if (!file_exists($workingDir)) {
+				throw new \RuntimeException('Working directory "' . $workingDir . '" doesn\'t exists and can not be created', 1359541465);
+			}
+		}
+	}
+
+	/**
+	 * Format the given JSON data
+	 * @param  array $json
+	 * @return string
+	 */
+	protected function formatJSON($json) {
+		// Prepare the composer.json to be displayed
+		if (defined('JSON_PRETTY_PRINT')) {
+			$jsonString = json_encode($json, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES);
+		} else {
+			$jsonString = json_encode($json);
+			$jsonString = str_replace('\\/', '/', $jsonString);
+			$jsonString = str_replace(',', ',' . PHP_EOL, $jsonString);
+			$jsonString = str_replace('{', '{' . PHP_EOL, $jsonString);
+			$jsonString = str_replace('}', PHP_EOL . '}', $jsonString);
+			$jsonString = str_replace('[{', '[' . PHP_EOL . '{', $jsonString);
+			$jsonString = str_replace('{{', '{' . PHP_EOL . '{', $jsonString);
+			$jsonString = str_replace('}]', '}' . PHP_EOL . ']', $jsonString);
+			$jsonString = str_replace('}}', '}' . PHP_EOL . '}', $jsonString);
+		}
+		$jsonString = rtrim($jsonString);
+		return $jsonString;
 	}
 
 	/**
