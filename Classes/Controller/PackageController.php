@@ -86,9 +86,6 @@ class Tx_CunddComposer_Controller_PackageController extends Tx_Extbase_MVC_Contr
 	 * @return
 	 */
 	public function initializeAction() {
-		if (isset($this->settings['developmentDependencies'])) {
-			$this->developmentDependencies = $this->settings['developmentDependencies'];
-		}
 		if (isset($this->settings['minimum-stability'])) {
 			$this->minimumStability = $this->settings['minimum-stability'];
 		}
@@ -114,6 +111,7 @@ class Tx_CunddComposer_Controller_PackageController extends Tx_Extbase_MVC_Contr
 
 		$this->view->assign('mergedComposerJson', $mergedComposerJson);
 		$this->view->assign('mergedComposerJsonString', $mergedComposerJsonString);
+		$this->view->assign('usedPHPBin', $this->getPHPExecutable());
 	}
 
 	/**
@@ -259,10 +257,19 @@ class Tx_CunddComposer_Controller_PackageController extends Tx_Extbase_MVC_Contr
 	 */
 	public function getPHPExecutable() {
 		if (!$this->phpExecutable) {
-			if (isset($this->settings['phpExecutable'])) {
-				$this->phpExecutable = $this->settings['phpExecutable'];
-			} else {
-				$this->phpExecutable = $this->getPHPExecutableFromPath();
+			if (isset($GLOBALS['TYPO3_CONF_VARS']['EXT']['extConf']['cundd_composer'])) {
+				$configuration = unserialize($GLOBALS['TYPO3_CONF_VARS']['EXT']['extConf']['cundd_composer']);
+				if ($configuration && isset($configuration['phpExecutable']) && $configuration['phpExecutable']) {
+					$this->phpExecutable = $configuration['phpExecutable'];
+				}
+			}
+
+			if (!$this->phpExecutable) {
+				if (isset($this->settings['phpExecutable'])) {
+					$this->phpExecutable = $this->settings['phpExecutable'];
+				} else {
+					$this->phpExecutable = $this->getPHPExecutableFromPath();
+				}
 			}
 		}
 		return $this->phpExecutable;
@@ -285,6 +292,9 @@ class Tx_CunddComposer_Controller_PackageController extends Tx_Extbase_MVC_Contr
 	 * @return string Returns the path to the PHP executable, or FALSE on error
 	 */
 	public function getPHPExecutableFromPath() {
+		if (defined('PHP_BINDIR') && file_exists(PHP_BINDIR . '/php') && is_executable(PHP_BINDIR . '/php')) {
+			return PHP_BINDIR . '/php';
+		}
 		$paths = explode(PATH_SEPARATOR, getenv('PATH'));
 		foreach ($paths as $path) {
 			// we need this for XAMPP (Windows)

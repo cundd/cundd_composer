@@ -1,0 +1,2 @@
+# cat=basic/configuration; type=string; label=Path to the PHP executable: If none is given, it will be determined automatically
+phpExecutable =

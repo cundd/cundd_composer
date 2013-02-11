@@ -25,7 +25,7 @@ if (TYPO3_MODE === 'BE') {
 
 }
 
-t3lib_extMgm::addStaticFile($_EXTKEY, 'Configuration/TypoScript', 'Cundd Composer');
+#t3lib_extMgm::addStaticFile($_EXTKEY, 'Configuration/TypoScript', 'Cundd Composer');
 
 // t3lib_extMgm::addLLrefForTCAdescr('tx_cunddcomposer_domain_model_package', 'EXT:cundd_composer/Resources/Private/Language/locallang_csh_tx_cunddcomposer_domain_model_package.xml');
 // t3lib_extMgm::allowTableOnStandardPages('tx_cunddcomposer_domain_model_package');
