@@ -44,7 +44,6 @@ class Tx_CunddComposer_Domain_Repository_PackageRepository extends Tx_Extbase_Pe
 	 * The property mapper
 	 *
 	 * @var Tx_Extbase_Property_PropertyMapper
-	 * @inject
 	 */
 	protected $propertyMapper;
 
@@ -52,7 +51,6 @@ class Tx_CunddComposer_Domain_Repository_PackageRepository extends Tx_Extbase_Pe
 	 * The property mapping configuration builder
 	 *
 	 * @var Tx_Extbase_Property_PropertyMappingConfigurationBuilder
-	 * @inject
 	 */
 	protected $propertyMappingConfigurationBuilder;
 
@@ -62,6 +60,24 @@ class Tx_CunddComposer_Domain_Repository_PackageRepository extends Tx_Extbase_Pe
 	 * @var SplObjectStorage
 	 */
 	protected $packages = NULL;
+
+	/**
+	 * Inject the property mapper
+	 * @param  Tx_Extbase_Property_PropertyMapper $propertyMappingConfigurationBuilder
+	 * @return  void
+	 */
+	public function injectPropertyMapper(Tx_Extbase_Property_PropertyMapper $propertyMapper) {
+		$this->propertyMapper = $propertyMapper;
+	}
+
+	/**
+	 * Inject the property mapping configuration builder
+	 * @param  Tx_Extbase_Property_PropertyMappingConfigurationBuilder $propertyMappingConfigurationBuilder
+	 * @return  void
+	 */
+	public function injectPropertyMappingConfigurationBuilder(Tx_Extbase_Property_PropertyMappingConfigurationBuilder $propertyMappingConfigurationBuilder) {
+		$this->propertyMappingConfigurationBuilder = $propertyMappingConfigurationBuilder;
+	}
 
 	/**
 	 * Returns all objects of this repository.
