@@ -69,13 +69,6 @@ class Tx_CunddComposer_Domain_Repository_PackageRepository extends Tx_Extbase_Pe
 	protected $propertyMapper;
 
 	/**
-	 * The property mapping configuration builder
-	 *
-	 * @var Tx_Extbase_Property_PropertyMappingConfigurationBuilder
-	 */
-	protected $propertyMappingConfigurationBuilder;
-
-	/**
 	 * Array of package objects
 	 *
 	 * @var SplObjectStorage
@@ -89,15 +82,6 @@ class Tx_CunddComposer_Domain_Repository_PackageRepository extends Tx_Extbase_Pe
 	 */
 	public function injectPropertyMapper(Tx_Extbase_Property_PropertyMapper $propertyMapper) {
 		$this->propertyMapper = $propertyMapper;
-	}
-
-	/**
-	 * Inject the property mapping configuration builder
-	 * @param  Tx_Extbase_Property_PropertyMappingConfigurationBuilder $propertyMappingConfigurationBuilder
-	 * @return  void
-	 */
-	public function injectPropertyMappingConfigurationBuilder(Tx_Extbase_Property_PropertyMappingConfigurationBuilder $propertyMappingConfigurationBuilder) {
-		$this->propertyMappingConfigurationBuilder = $propertyMappingConfigurationBuilder;
 	}
 
 	/**
@@ -120,12 +104,8 @@ class Tx_CunddComposer_Domain_Repository_PackageRepository extends Tx_Extbase_Pe
 				$this->convertPropertyForKey($currentJsonData, 'require');
 				$this->convertPropertyForKey($currentJsonData, 'require-dev', 'requireDev');
 
-				// Prepare the property mapping configuration
-				$propertyMappingConfiguration = $this->propertyMappingConfigurationBuilder->build();
-
 				// Filter the properties
 				$currentJsonData = array_intersect_key($currentJsonData, array_flip($properties));
-				// Doesn't work in extbase: $propertyMappingConfiguration->allowProperties($properties);
 
 				$package = $this->propertyMapper->convert($currentJsonData, 'Tx_CunddComposer_Domain_Model_Package');
 				if ($package) {
