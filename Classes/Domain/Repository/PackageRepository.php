@@ -24,6 +24,27 @@
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
+if (!class_exists('Tx_Extbase_Property_PropertyMapper')) {
+	class Tx_Extbase_Property_PropertyMapper {
+		/**
+		 * Converts the given data to an instance of the given class
+		 *
+		 * @param  array $data
+		 * @param  string $targetClass
+		 * @return  object Returns an object of type $targetClass
+		 */
+		public function convert($data, $targetClass) {
+			$object = new $targetClass();
+			if (method_exists($object, '_setProperty')) {
+				foreach ($data as $key => $property) {
+					$object->_setProperty($key, $property);
+				}
+			}
+			return $object;
+		}
+	}
+}
+
 /**
  *
  *
