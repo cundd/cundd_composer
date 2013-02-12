@@ -149,7 +149,7 @@ class Tx_CunddComposer_Controller_PackageController extends Tx_Extbase_MVC_Contr
 
 			$this->pd($composerJson);
 			$composerJson['require'] = $this->getMergedComposerRequirements();
-                        
+
                         $composerJson['autoload'] = $this->getMergedComposerAutoload();
 
 			$composerJson['repositories'] = $this->getMergedComposerData('repositories');
@@ -191,7 +191,7 @@ class Tx_CunddComposer_Controller_PackageController extends Tx_Extbase_MVC_Contr
 	public function getMergedComposerAutoload() {
 		return $this->getMergedComposerData('autoload');
 	}
-        
+
 	/**
 	 * Returns the merged composer.json data for the given key
 	 * @param  string $key The key for which to merge the data
@@ -204,11 +204,40 @@ class Tx_CunddComposer_Controller_PackageController extends Tx_Extbase_MVC_Contr
 			if (isset($currentJsonData[$key])) {
 				$mergeData = $currentJsonData[$key];
 				if (is_array($mergeData)) {
-					$jsonData = array_merge_recursive($jsonData, $mergeData);
+					$jsonData = static::arrayMergeRecursive($jsonData, $mergeData, FALSE);
+					#$jsonData = static::arrayMergeRecursive($jsonData, $mergeData, TRUE);
 				}
 			}
 		}
 		return $jsonData;
+	}
+
+	/**
+	 * Merge two arrays recursively.
+	 *
+	 * Unlike the implementation of array_merge_recursive() the second value will
+	 * overwrite the first, if a key is already set.
+	 *
+	 * Thanks to Gabriel Sobrinho http://www.php.net/manual/en/function.array-merge-recursive.php#92195
+	 *
+	 * @param array $array1
+	 * @param array $array2
+	 * @param boolean $strict If set to TRUE an exception will be thrown if a key already is set with a different value
+	 * @return  array Returns the merged array
+	 */
+	static protected function arrayMergeRecursive($array1, $array2, $strict = FALSE) {
+		$merged = $array1;
+		foreach ($array2 as $key => &$value) {
+			if ($strict && isset($merged[$key]) && !is_array($merged[$key]) && $merged[$key] != $value) {
+				throw new \UnexpectedValueException('Key "' . $key . '" already exists with a different value', 1360672930);
+			}
+			if (is_array($value) && isset($merged[$key]) && is_array($merged[$key])) {
+				$merged[$key] = self::arrayMergeRecursive($merged[$key], $value);
+			} else {
+				$merged[$key] = $value;
+			}
+		}
+		return $merged;
 	}
 
 	/**

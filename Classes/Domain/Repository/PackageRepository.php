@@ -120,7 +120,7 @@ class Tx_CunddComposer_Domain_Repository_PackageRepository extends Tx_Extbase_Pe
 	 * Converts an array property to a string
 	 *
 	 * @param array 	$source Reference to the input array
-	 * @param string 	$key    The key which to convert
+	 * @param string 	$key	The key which to convert
 	 * @param string 	$newKey The new key under which to store the converted data
 	 * @return void
 	 */
@@ -166,10 +166,10 @@ class Tx_CunddComposer_Domain_Repository_PackageRepository extends Tx_Extbase_Pe
 			$jsonData = array();
 			$composerFiles = $this->getComposerFiles();
 			foreach ($composerFiles as $composerFilePath) {
-                            
-                                $composerFile = new SplFileInfo($composerFilePath);
-                                $relativeComposerFilePath = '../../../../../../' . str_replace(PATH_site,'',$composerFile->getPath());
-                                
+				#$composerFile = new SplFileInfo($composerFilePath);
+				#$relativeComposerFilePath = '../../../../../../' . str_replace(PATH_site,'',$composerFile->getPath());
+				$relativeComposerFilePath = dirname($composerFilePath) . '/';
+
 				$currentJsonData = NULL;
 				$jsonString = file_get_contents($composerFilePath);
 
@@ -179,27 +179,24 @@ class Tx_CunddComposer_Domain_Repository_PackageRepository extends Tx_Extbase_Pe
 				if (!$currentJsonData) {
 					throw new \DomainException('Exception while parsing composer file ' . $composerFilePath . ': ' . $this->getJsonErrorDescription(), 1356356009);
 				}
-                                if (isset($currentJsonData['autoload']) && is_array($currentJsonData['autoload']) ){
-                                    
-                                    foreach($currentJsonData['autoload'] as $autoloadType => $autoLoadConfig){
-                                        
-                                        switch($autoloadType){
-                                            case 'classmap':
-                                            case 'psr-0':
-                                            case 'files';
-                                                foreach( $autoLoadConfig as $pathKey => $pathOrFile){
-                                                    $autoLoadConfig[$pathKey] = $relativeComposerFilePath . $pathOrFile;
-                                                }
-                                                $currentJsonData['autoload'][$autoloadType]=$autoLoadConfig;
-                                                break;
-                                            default:
-                                                throw new \DomainException('Exception while adjusting autoload paths in' . $composerFilePath . ': unknown type "' .$autoloadType. '"');
-                                                
-                                            
-                                        }
-                                    }
-                                    
-                                }
+
+				// Merge the autoload
+				if (isset($currentJsonData['autoload']) && is_array($currentJsonData['autoload'])){
+					foreach ($currentJsonData['autoload'] as $autoloadType => $autoLoadConfig) {
+						switch ($autoloadType) {
+							case 'classmap':
+							case 'psr-0':
+							case 'files';
+								foreach( $autoLoadConfig as $pathKey => $pathOrFile) {
+									$autoLoadConfig[$pathKey] = $relativeComposerFilePath . $pathOrFile;
+								}
+								$currentJsonData['autoload'][$autoloadType] = $autoLoadConfig;
+								break;
+							default:
+								throw new \DomainException('Exception while adjusting autoload paths in' . $composerFilePath . ': unknown type "' . $autoloadType . '"');
+						}
+					}
+				}
 				$jsonData[] = $currentJsonData;
 			}
 			$this->composerJson = $jsonData;

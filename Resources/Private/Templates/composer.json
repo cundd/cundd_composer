@@ -13,7 +13,7 @@
         }
     ],
     "autoload": {
-        "psr-0": { "Cundd": "Classes/" }
+        "psr-0": { "CunddComposer": "Classes/" }
     },
     "config": {
         "vendor-dir": "%EXT_PATH%vendor/"
