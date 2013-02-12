@@ -16,6 +16,6 @@
         "psr-0": { "Cundd": "Classes/" }
     },
     "config": {
-        "vendor-dir": "%EXT_PATH%/vendor/"
+        "vendor-dir": "%EXT_PATH%vendor/"
     }
 }
