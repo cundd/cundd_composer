@@ -166,6 +166,10 @@ class Tx_CunddComposer_Domain_Repository_PackageRepository extends Tx_Extbase_Pe
 			$jsonData = array();
 			$composerFiles = $this->getComposerFiles();
 			foreach ($composerFiles as $composerFilePath) {
+                            
+                                $composerFile = new SplFileInfo($composerFilePath);
+                                $relativeComposerFilePath = '../../../../../../' . str_replace(PATH_site,'',$composerFile->getPath());
+                                
 				$currentJsonData = NULL;
 				$jsonString = file_get_contents($composerFilePath);
 
@@ -175,6 +179,27 @@ class Tx_CunddComposer_Domain_Repository_PackageRepository extends Tx_Extbase_Pe
 				if (!$currentJsonData) {
 					throw new \DomainException('Exception while parsing composer file ' . $composerFilePath . ': ' . $this->getJsonErrorDescription(), 1356356009);
 				}
+                                if (isset($currentJsonData['autoload']) && is_array($currentJsonData['autoload']) ){
+                                    
+                                    foreach($currentJsonData['autoload'] as $autoloadType => $autoLoadConfig){
+                                        
+                                        switch($autoloadType){
+                                            case 'classmap':
+                                            case 'psr-0':
+                                            case 'files';
+                                                foreach( $autoLoadConfig as $pathKey => $pathOrFile){
+                                                    $autoLoadConfig[$pathKey] = $relativeComposerFilePath . $pathOrFile;
+                                                }
+                                                $currentJsonData['autoload'][$autoloadType]=$autoLoadConfig;
+                                                break;
+                                            default:
+                                                throw new \DomainException('Exception while adjusting autoload paths in' . $composerFilePath . ': unknown type "' .$autoloadType. '"');
+                                                
+                                            
+                                        }
+                                    }
+                                    
+                                }
 				$jsonData[] = $currentJsonData;
 			}
 			$this->composerJson = $jsonData;

@@ -149,7 +149,8 @@ class Tx_CunddComposer_Controller_PackageController extends Tx_Extbase_MVC_Contr
 
 			$this->pd($composerJson);
 			$composerJson['require'] = $this->getMergedComposerRequirements();
-
+                        
+                        $composerJson['autoload'] = $this->getMergedComposerAutoload();
 
 			$composerJson['repositories'] = $this->getMergedComposerData('repositories');
 
@@ -182,6 +183,15 @@ class Tx_CunddComposer_Controller_PackageController extends Tx_Extbase_MVC_Contr
 		return $this->getMergedComposerData('require-dev');
 	}
 
+        /**
+	 * Retrieve the merged composer.json autoload settings
+	 *
+	 * @return array<string>
+	 */
+	public function getMergedComposerAutoload() {
+		return $this->getMergedComposerData('autoload');
+	}
+        
 	/**
 	 * Returns the merged composer.json data for the given key
 	 * @param  string $key The key for which to merge the data
@@ -194,7 +204,7 @@ class Tx_CunddComposer_Controller_PackageController extends Tx_Extbase_MVC_Contr
 			if (isset($currentJsonData[$key])) {
 				$mergeData = $currentJsonData[$key];
 				if (is_array($mergeData)) {
-					$jsonData = array_merge($jsonData, $mergeData);
+					$jsonData = array_merge_recursive($jsonData, $mergeData);
 				}
 			}
 		}
