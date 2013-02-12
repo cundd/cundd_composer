@@ -166,9 +166,9 @@ class Tx_CunddComposer_Domain_Repository_PackageRepository extends Tx_Extbase_Pe
 			$jsonData = array();
 			$composerFiles = $this->getComposerFiles();
 			foreach ($composerFiles as $composerFilePath) {
-				#$composerFile = new SplFileInfo($composerFilePath);
-				#$relativeComposerFilePath = '../../../../../../' . str_replace(PATH_site,'',$composerFile->getPath());
-				$relativeComposerFilePath = dirname($composerFilePath) . '/';
+				$composerFile = new \SplFileInfo($composerFilePath);
+				$relativeComposerFilePath = '../../../../../../' . str_replace(PATH_site, '', $composerFile->getPath());
+				#$relativeComposerFilePath = dirname($composerFilePath) . '/';
 
 				$currentJsonData = NULL;
 				$jsonString = file_get_contents($composerFilePath);
