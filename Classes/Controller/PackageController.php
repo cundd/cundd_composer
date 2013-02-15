@@ -157,6 +157,9 @@ class Tx_CunddComposer_Controller_PackageController extends Tx_Extbase_MVC_Contr
 			if ($development || $this->developmentDependencies) {
 				$composerJson['require-dev'] = $this->getMergedComposerDevelopmentRequirements();
 			}
+			if (!isset($composerJson['require-dev']) || !$composerJson['require-dev']) {
+				unset($composerJson['require-dev']);
+			}
 
 			$this->pd($composerJson);
 			$this->mergedComposerJson = $composerJson;
