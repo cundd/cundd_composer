@@ -24,7 +24,7 @@
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
-ini_set('display_errors', TRUE);
+
 
 /**
  *
@@ -149,13 +149,14 @@ class Tx_CunddComposer_Controller_PackageController extends Tx_Extbase_MVC_Contr
 
 			$this->pd($composerJson);
 			$composerJson['require'] = $this->getMergedComposerRequirements();
-
-                        $composerJson['autoload'] = $this->getMergedComposerAutoload();
-
+			$composerJson['autoload'] = $this->getMergedComposerAutoload();
 			$composerJson['repositories'] = $this->getMergedComposerData('repositories');
 
 			if ($development || $this->developmentDependencies) {
 				$composerJson['require-dev'] = $this->getMergedComposerDevelopmentRequirements();
+			}
+			if (!isset($composerJson['require-dev']) || !$composerJson['require-dev']) {
+				unset($composerJson['require-dev']);
 			}
 
 			$this->pd($composerJson);
@@ -232,7 +233,11 @@ class Tx_CunddComposer_Controller_PackageController extends Tx_Extbase_MVC_Contr
 				throw new \UnexpectedValueException('Key "' . $key . '" already exists with a different value', 1360672930);
 			}
 			if (is_array($value) && isset($merged[$key]) && is_array($merged[$key])) {
-				$merged[$key] = self::arrayMergeRecursive($merged[$key], $value);
+				$value = self::arrayMergeRecursive($merged[$key], $value);
+			}
+
+			if (is_integer($key)) {
+				$merged[] = $value;
 			} else {
 				$merged[$key] = $value;
 			}
