@@ -112,6 +112,8 @@ class Tx_CunddComposer_Controller_PackageController extends Tx_Extbase_MVC_Contr
 		$this->view->assign('mergedComposerJson', $mergedComposerJson);
 		$this->view->assign('mergedComposerJsonString', $mergedComposerJsonString);
 		$this->view->assign('usedPHPBin', $this->getPHPExecutable());
+
+		$this->postUpdate();
 	}
 
 	/**
@@ -500,8 +502,33 @@ class Tx_CunddComposer_Controller_PackageController extends Tx_Extbase_MVC_Contr
 
 		$didWriteComposerJson = $this->writeMergedComposerJson();
 		$composerOutput = rtrim($this->install());
+
+		$this->postUpdate();
 		$this->view->assign('composerOutput', $composerOutput);
 		$this->view->assign('developmentDependencies', $this->developmentDependencies);
+	}
+
+	/**
+	 * Invoked after the install/update action
+	 * @return void
+	 */
+	public function postUpdate() {
+		$packages = $this->packageRepository->findAll();
+		$mergedComposerJson = $this->getMergedComposerJson();
+		$this->pd($packages, $mergedComposerJson);
+
+		$vendorDirectory = $this->getExtensionPath() . 'vendor/';
+		// foreach ($mergedComposerJson as $packageName => $composerJson) {
+		foreach ($mergedComposerJson['require'] as $package => $version) {
+			$packagePath = $vendorDirectory . $package . DIRECTORY_SEPARATOR;
+			$this->pd($packagePath, file_exists($packagePath), file_exists($packagePath . 'Resources'));
+		}
+
+
+		// foreach ($packages as $package) {
+		// 	$packagePath = $this->getExtensionPath() . 'vendor/' . $package->getName();
+		// 	$this->pd($packagePath, file_exists($packagePath));
+		// }
 	}
 
 	/**

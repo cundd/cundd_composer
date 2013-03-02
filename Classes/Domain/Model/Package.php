@@ -4,7 +4,7 @@
  *  Copyright notice
  *
  *  (c) 2012 Daniel Corn <info@cundd.net>, cundd
- *  
+ *
  *  All rights reserved
  *
  *  This script is part of the TYPO3 project. The TYPO3 project is
@@ -99,6 +99,13 @@ class Tx_CunddComposer_Domain_Model_Package extends Tx_Extbase_DomainObject_Abst
 	 * @var string
 	 */
 	protected $require;
+
+	/**
+	 * Name of the extension
+	 *
+	 * @var string
+	 */
+	protected $package;
 
 	/**
 	 * Development requirements
@@ -295,6 +302,25 @@ class Tx_CunddComposer_Domain_Model_Package extends Tx_Extbase_DomainObject_Abst
 	 */
 	public function setAuthors($authors) {
 		$this->authors = $authors;
+	}
+
+	/**
+	 * Returns the package
+	 *
+	 * @return string $package
+	 */
+	public function getPackage() {
+		return $this->package;
+	}
+
+	/**
+	 * Sets the package
+	 *
+	 * @param string $package
+	 * @return void
+	 */
+	public function setPackage($package) {
+		$this->package = $package;
 	}
 
 }
