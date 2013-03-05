@@ -17,6 +17,10 @@
 			<label index="tx_cunddcomposer_domain_model_package.license">License</label>
 			<label index="tx_cunddcomposer_domain_model_package.tx_cunddcomposer_require">Requirements</label>
 			<label index="tx_cunddcomposer_domain_model_package.require_dev">Development requirements</label>
+			<label index="tx_cunddcomposer_domain_model_asset.name">Name</label>
+			<label index="tx_cunddcomposer_domain_model_asset.version">Version</label>
+			<label index="tx_cunddcomposer_domain_model_asset.source">Source</label>
+			<label index="tx_cunddcomposer_domain_model_asset.target">Target</label>
 		</languageKey>
 	</data>
 </T3locallang>

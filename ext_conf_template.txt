@@ -1,2 +1,5 @@
 # cat=basic/configuration; type=string; label=Path to the PHP executable: If none is given, it will be determined automatically
 phpExecutable =
+
+# cat=basic/configuration; type=boolean; label=Install assets: If enabled the folder "Resources/Public" inside a package will be symlinked to EXT:cundd_composer/Resources/Public/package_name
+installAssets = 1
