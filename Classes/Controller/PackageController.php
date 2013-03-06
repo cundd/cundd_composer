@@ -524,7 +524,11 @@ class Tx_CunddComposer_Controller_PackageController extends Tx_Extbase_MVC_Contr
 	 * @return void
 	 */
 	public function installAssetsAction() {
-		$installedAssets = $this->assetInstaller->installAssets($this);
+		if (!$this->getConfiguration('allowInstallAssets')) {
+			$this->view->assign('error', 'Asset installation disabled in Extension Manager');
+		}
+		$this->assetInstaller->manuallyInjectController($this);
+		$installedAssets = $this->assetInstaller->installAssets();
 		$this->view->assign('installedAssets', $installedAssets);
 	}
 
@@ -533,8 +537,10 @@ class Tx_CunddComposer_Controller_PackageController extends Tx_Extbase_MVC_Contr
 	 * @return void
 	 */
 	public function postUpdate() {
-		if ($this->getConfiguration('installAssets')) {
-			$this->assetInstaller->installAssets($this);
+		if ($this->getConfiguration('automaticallyInstallAssets')) {
+			$this->assetInstaller->manuallyInjectController($this);
+			$installedAssets = $this->assetInstaller->installAssets();
+			$this->view->assign('installedAssets', $installedAssets);
 		}
 	}
 

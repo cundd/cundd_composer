@@ -12,27 +12,16 @@ in /Configuration/ExtensionBuilder/settings.yaml:
 Otherwise your changes will be overwritten the next time you save the extension in the extension builder
 
 <f:section name="content">
-<h1>Listing for installed assets</h1>
 
 <f:flashMessages />
 
-<table  class="tx_cunddcomposer" >
-	<tr>
-		<th><f:translate key="tx_cunddcomposer_domain_model_asset.name" /></th>
-		<th><f:translate key="tx_cunddcomposer_domain_model_asset.version" /></th>
-		<th><f:translate key="tx_cunddcomposer_domain_model_asset.source" /></th>
-		<th><f:translate key="tx_cunddcomposer_domain_model_asset.target" /></th>
-	</tr>
+<f:if condition="{error}">
+	<div class="alert alert-error">
+		{error}
+	</div>
+</f:if>
 
-	<f:for each="{installedAssets}" as="installedAsset">
-		<tr>
-			<td>{installedAsset.name}</td>
-			<td>{installedAsset.version}</td>
-			<td>{installedAsset.source}</td>
-			<td>{installedAsset.target}</td>
-		</tr>
-	</f:for>
-</table>
+<f:render partial="Asset/List" arguments="{installedAssets: installedAssets}" />
 
 <f:link.action action="list" class="btn">Back to list</f:link.action>
 </f:section>

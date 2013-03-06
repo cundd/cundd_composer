@@ -24,7 +24,7 @@
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
-
+ini_set('display_errors', TRUE);
 
 /**
  *
@@ -35,6 +35,7 @@
  */
 class Tx_CunddComposer_Installer_AssetInstaller {
 	/**
+	 * The package controller
 	 * @var Tx_CunddComposer_Controller_PackageController
 	 */
 	protected $controller = NULL;
@@ -43,10 +44,17 @@ class Tx_CunddComposer_Installer_AssetInstaller {
 	 * An array of paths to look for assets inside the installed packages
 	 * @var array
 	 */
-	protected $assetPaths = array(
-		'Resources/Public/',
-		'build'
-	);
+	protected $assetPaths = array();
+
+	/**
+	 * Inject the Package Controller
+	 *
+	 * @param Tx_CunddComposer_Controller_PackageController $controller
+	 * @return void
+	 */
+	public function manuallyInjectController(Tx_CunddComposer_Controller_PackageController $controller) {
+		$this->controller = $controller;
+	}
 
 	/**
 	 * Creates symlinks for installed assets
@@ -61,20 +69,20 @@ class Tx_CunddComposer_Installer_AssetInstaller {
 	 *  EXT:cundd_composer/Resources/Public/foo_bar/ which will point to
 	 *  EXT:cundd_composer/vendor/foo/bar/Resources/Public/
 	 *
-	 * @param Tx_CunddComposer_Controller_PackageController $controller
 	 * @return array<array<string>>	Returns an array of installed assets
 	 */
-	public function installAssets($controller) {
-		$this->controller = $controller;
+	public function installAssets() {
+		if (!$this->controller->getConfiguration('allowInstallAssets')) {
+			return array();
+		}
 		$success = TRUE;
 		$installedAssets = array();
-		$mergedComposerJson = $controller->getMergedComposerJson();
+		$mergedComposerJson = $this->controller->getMergedComposerJson(TRUE);
 
-		$vendorDirectory = $this->getExtensionPath() . 'vendor/';
-		$assetsDirectoryPath = $this->getAssetsDirectoryPath();
 
 		// Remove the old links
-		$this->removeFilesInDirectory($assetsDirectoryPath);
+		$assetsDirectoryPath = $this->getAssetsDirectoryPath();
+		$this->removeDirectoryRecursive($assetsDirectoryPath);
 		$this->createDirectoryIfNotExists($assetsDirectoryPath);
 		if (!file_exists($assetsDirectoryPath)) {
 			throw new \RuntimeException('Directory "' . $assetsDirectoryPath . '" doesn\'t exists and can not be created', 1362514209);
@@ -83,30 +91,79 @@ class Tx_CunddComposer_Installer_AssetInstaller {
 		#echo __LINE__ . ':' . t3lib_div::mkdir($this->getAssetsDirectoryPath());
 
 		// foreach ($mergedComposerJson as $packageName => $composerJson) {
-		foreach ($mergedComposerJson['require'] as $package => $version) {
+
+
+		#extra
+
+
+		// Merge the require and require-dev packages
+		$requiredPackages = $mergedComposerJson['require'];
+		if (!is_array($requiredPackages)) {
+			$requiredPackages = array();
+		}
+		if (is_array($mergedComposerJson['require-dev'])) {
+			$requiredPackages = array_merge($requiredPackages, $mergedComposerJson['require-dev']);
+		}
+		$installedAssets = array_merge($installedAssets, $this->installAssetsOfPackages($requiredPackages));
+		return $installedAssets;
+
+	}
+
+	/**
+	 * Loops through the packages and the available Asset paths and installs
+	 * found packages
+	 *
+	 * @param  array $requiredPackages Array of packages
+	 * @return @return array<array<string>>	Returns an array of installed assets
+	 */
+	public function installAssetsOfPackages($requiredPackages) {
+		$installedAssets = array();
+		$vendorDirectory = $this->getExtensionPath() . 'vendor/';
+		$assetsDirectoryPath = $this->getAssetsDirectoryPath();
+
+		foreach ($requiredPackages as $package => $version) {
 			$packagePublicResourcePath = 'Not found';
 			$packagePath = $vendorDirectory . $package . DIRECTORY_SEPARATOR;
-			$symlinkName = $assetsDirectoryPath . str_replace(DIRECTORY_SEPARATOR, '_', $package);
+			$symlinkDirectory = $assetsDirectoryPath . str_replace(DIRECTORY_SEPARATOR, '_', $package);
 
-			foreach ($this->assetPaths as $assetPaths) {
-				$packagePublicResourcePath = $packagePath . $assetPaths;
+			$allAssetPaths = $this->getAssetPaths();
+
+			/*
+			 * Add the package name as file to the Asset paths
+			 *
+			 * Convert "cundd/jquery-backstretch" to "jquery.backstretch"
+			 */
+			$mainJavaScriptFile = str_replace('-', '.', substr($package, strrpos($package, '/') + 1));
+			$allAssetPaths[] = $mainJavaScriptFile . '.js';
+			$allAssetPaths[] = $mainJavaScriptFile . '.min.js';
+			foreach ($allAssetPaths as $currentAssetPath) {
+				$packagePublicResourcePath = $packagePath . $currentAssetPath;
+
+				$this->controller->pd('Checking if "' . $packagePublicResourcePath . '" exists: ' . (file_exists($packagePublicResourcePath) ? 'Yes' : 'No'));
 
 				// Check if the public resource folders exist
 				if (file_exists($packagePublicResourcePath)) {
+					$this->createDirectoryIfNotExists($symlinkDirectory);
+
+					$symlinkName = $symlinkDirectory . DIRECTORY_SEPARATOR . $currentAssetPath;
+
 					// Add the asset information to the array
-					$installedAssets[$package] = array(
+					$installedAssets[$package . $currentAssetPath] = array(
 						'name' 		=> $package,
 						'version' 	=> $version,
-						'source' 	=> $packagePublicResourcePath,
-						'target' 	=> $symlinkName
+						'assetKey' 	=> $currentAssetPath,
+						'source' 	=> $this->getRelativePathOfUri($packagePublicResourcePath),
+						'target' 	=> $this->getRelativePathOfUri($symlinkName)
 					);
 
 					// Create the symlink if it doesn't exist
 					if (!file_exists($symlinkName)) {
 						$symlinkCreated = symlink($packagePublicResourcePath, $symlinkName);
 						$success *= $symlinkCreated;
-						if (!$symlinkCreated) {
-							$controller->pd('Could not create symlink of "' . $packagePublicResourcePath . '" to "' . $symlinkName . '"');
+						if ($symlinkCreated) {
+							$this->controller->pd('Created symlink of "' . $packagePublicResourcePath . '" to "' . $symlinkName . '"');
+						} else {
+							$this->controller->pd('Could not create symlink of "' . $packagePublicResourcePath . '" to "' . $symlinkName . '"');
 						}
 					}
 				}
@@ -115,6 +172,48 @@ class Tx_CunddComposer_Installer_AssetInstaller {
 		return $installedAssets;
 	}
 
+	/**
+	 * Returns the relative path of the given URI
+	 * @param string $uri
+	 * @return string
+	 */
+	public function getRelativePathOfUri($uri) {
+		return str_replace($this->getExtensionPath(), '', $uri);
+	}
+
+	/**
+	 * Returns the array of relative paths that will be used to find assets
+	 *
+	 * The installer will loop through this paths. If the current path exists
+	 * inside the package a symlink to this directory will be created and no
+	 * further asset paths will be checked.
+	 *
+	 * Example:
+	 * 	Package: foo/bar
+	 * 	Current asset path: Resources/Public/
+	 * 	Check if exists: EXT:cundd_composer/vendor/foo/bar/Resources/Public/
+	 *  If not move on
+	 *  Current asset path: build
+	 * 	Check if exists: EXT:cundd_composer/vendor/foo/bar/build
+	 *  If exists create symlink to EXT:cundd_composer/vendor/foo/bar/build and break
+	 *
+	 * @return array<string>
+	 */
+	public function getAssetPaths() {
+		if (!$this->assetPaths) {
+			$assetPaths = $this->controller->getConfiguration('assetPaths');
+			if ($assetPaths) {
+				$assetPaths = explode(',', $assetPaths);
+				$assetPaths = array_map(function($path) {
+					$path = trim($path);
+					return $path;
+				}, $assetPaths);
+				$this->controller->pd($assetPaths);
+				$this->assetPaths = $assetPaths;
+			}
+		}
+		return $this->assetPaths;
+	}
 
 	/**
 	 * Returns the path to the assets
@@ -132,7 +231,13 @@ class Tx_CunddComposer_Installer_AssetInstaller {
 	public function createDirectoryIfNotExists($directory) {
 		// Check if the directory exists
 		if (!file_exists($directory)) {
-			return @mkdir($directory);
+			$permission = 0777;
+			if (isset($GLOBALS['TYPO3_CONF_VARS'])
+				&& isset($GLOBALS['TYPO3_CONF_VARS']['BE']['folderCreateMask'])
+				&& $GLOBALS['TYPO3_CONF_VARS']['BE']['folderCreateMask']) {
+				$permission = octdec($GLOBALS['TYPO3_CONF_VARS']['BE']['folderCreateMask']);
+			}
+			return @mkdir($directory, $permission, TRUE);
 		}
 		return TRUE;
 	}
@@ -142,22 +247,29 @@ class Tx_CunddComposer_Installer_AssetInstaller {
 	 * @param  string $directory
 	 * @return boolean            TRUE on success, otherwise FALSE
 	 */
-	public function removeFilesInDirectory($directory) {
+	public function removeDirectoryRecursive($directory) {
 		$success = TRUE;
-		// $this->controller->pd($directory);
-		// $this->controller->pd(`ls -hal $directory`);
 		if (!file_exists($directory)) {
 			return FALSE;
 		}
-		foreach (new DirectoryIterator($directory) as $fileInfo) {
-			if ($fileInfo->isDot()) continue;
-			if ($fileInfo->isLink()) {
-				$success *= unlink($fileInfo->getPathname());
+
+		$iterator = new RecursiveIteratorIterator(
+			new RecursiveDirectoryIterator($directory),
+			RecursiveIteratorIterator::CHILD_FIRST
+		);
+		foreach ($iterator as $path) {
+			if ($path->isLink()) {
+				$success *= unlink($path->getPathname());
+			} else if ($path->isDir()) {
+				$success *= rmdir($path->getPathname());
+			} else {
+				$success *= unlink($path->getPathname());
 			}
 		}
-		rmdir($directory);
-		// $this->controller->pd(`ls -hal $directory`);
-		return (bool) $success;
+		if (is_dir($directory)) {
+			rmdir($directory);
+		}
+		return $success;
 	}
 
 	/**

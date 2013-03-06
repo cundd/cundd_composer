@@ -21,6 +21,8 @@
 			<label index="tx_cunddcomposer_domain_model_asset.version">Version</label>
 			<label index="tx_cunddcomposer_domain_model_asset.source">Source</label>
 			<label index="tx_cunddcomposer_domain_model_asset.target">Target</label>
+			<label index="tx_cunddcomposer_domain_model_asset.assetKey">Asset key</label>
+			<label index="tx_cunddcomposer_domain_model_asset.key">Key</label>
 		</languageKey>
 	</data>
 </T3locallang>
