@@ -161,9 +161,11 @@ class Tx_CunddComposer_Domain_Repository_PackageRepository extends Tx_Extbase_Pe
 	/**
 	 * Returns the composer.json contents as array
 	 *
+	 * @param boolean $graceful If set to TRUE no exception will be thrown if a JSON file couldn't be read
 	 * @return array
+	 * @throws \DomainException if a JSON file couldn't be read
 	 */
-	public function getComposerJson() {
+	public function getComposerJson($graceful = FALSE) {
 		if (!$this->composerJson) {
 			$jsonData = array();
 			$composerFiles = $this->getComposerFiles();
@@ -178,7 +180,7 @@ class Tx_CunddComposer_Domain_Repository_PackageRepository extends Tx_Extbase_Pe
 				if ($jsonString) {
 					$currentJsonData = json_decode($jsonString, TRUE);
 				}
-				if (!$currentJsonData) {
+				if (!$currentJsonData && !$graceful) {
 					throw new \DomainException('Exception while parsing composer file ' . $composerFilePath . ': ' . $this->getJsonErrorDescription(), 1356356009);
 				}
 

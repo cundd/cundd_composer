@@ -1,0 +1,34 @@
+<f:layout name="Default" />
+
+This Template is responsible for displaying a single view for a domain object
+
+If you modify this template, do not forget to change the overwrite settings
+in /Configuration/ExtensionBuilder/settings.yaml:
+  Resources:
+    Private:
+      Templates:
+        Show.html: keep
+
+Otherwise your changes will be overwritten the next time you save the extension in the extension builder
+
+<f:section name="content">
+<h1>Composer update result</h1>
+<p>
+	Install development dependencies:
+	<f:if condition="{developmentDependencies}">
+		<f:then>Yes</f:then>
+		<f:else>No</f:else>
+	</f:if>
+</p>
+
+<pre>
+{composerOutput}
+</pre>
+
+<f:if condition="{installedAssets}">
+	<f:render partial="Asset/List" arguments="{installedAssets: installedAssets}" />
+</f:if>
+
+<f:link.action action="list" class="btn">Back to list</f:link.action>
+<f:link.action action="install" arguments="{development: developmentDependencies}" class="btn">Reload</f:link.action>
+</f:section>

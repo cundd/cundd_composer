@@ -116,7 +116,11 @@ class Tx_CunddComposer_Controller_PackageController extends Tx_Extbase_MVC_Contr
 		$mergedComposerJson = NULL;
 		$mergedComposerJsonString = '';
 
-		$packages = $this->packageRepository->findAll();
+		try {
+			$packages = $this->packageRepository->findAll();
+		} catch (\DomainException $exception) {
+			$this->view->assign('error', $exception->getMessage());
+		}
 		$this->view->assign('packages', $packages);
 
 		// Set the development mode to TRUE to see the dev-requirements
@@ -216,7 +220,12 @@ class Tx_CunddComposer_Controller_PackageController extends Tx_Extbase_MVC_Contr
 	 */
 	protected function getMergedComposerData($key) {
 		$jsonData = array();
-		$composerJson = $this->packageRepository->getComposerJson();
+		try {
+			$composerJson = $this->packageRepository->getComposerJson();
+		} catch (\DomainException $exception) {
+			$this->view->assign('error', $exception->getMessage());
+			return array();
+		}
 		foreach ($composerJson as $currentJsonData) {
 			if (isset($currentJsonData[$key])) {
 				$mergeData = $currentJsonData[$key];
@@ -271,6 +280,16 @@ class Tx_CunddComposer_Controller_PackageController extends Tx_Extbase_MVC_Contr
 	 * @return string 				Returns the composer output
 	 */
 	protected function install($dev = -1) {
+		return $this->executeComposerCommand('install', $dev);
+	}
+
+	/**
+	 * Call composer on the command line to update the dependencies.
+	 *
+	 * @param boolean	$dev 		Call it with the --dev flag
+	 * @return string 				Returns the composer output
+	 */
+	protected function update($dev = -1) {
 		return $this->executeComposerCommand('update', $dev);
 	}
 
@@ -479,18 +498,6 @@ class Tx_CunddComposer_Controller_PackageController extends Tx_Extbase_MVC_Contr
 	}
 
 	/**
-	 * action update
-	 *
-	 * @param Tx_CunddComposer_Domain_Model_Package $package
-	 * @return void
-	 */
-	public function updateAction(Tx_CunddComposer_Domain_Model_Package $package) {
-		$this->packageRepository->update($package);
-		$this->flashMessageContainer->add('Your Package was updated.');
-		$this->redirect('list');
-	}
-
-	/**
 	 * action delete
 	 *
 	 * @param Tx_CunddComposer_Domain_Model_Package $package
@@ -513,6 +520,23 @@ class Tx_CunddComposer_Controller_PackageController extends Tx_Extbase_MVC_Contr
 
 		$didWriteComposerJson = $this->writeMergedComposerJson();
 		$composerOutput = rtrim($this->install());
+
+		$this->postUpdate();
+		$this->view->assign('composerOutput', $composerOutput);
+		$this->view->assign('developmentDependencies', $this->developmentDependencies);
+	}
+
+	/**
+	 * action update
+	 *
+	 * @param boolean $development Indicates if the dev flag should be specified
+	 * @return void
+	 */
+	public function updateAction($development = FALSE) {
+		$this->developmentDependencies = $development;
+
+		$didWriteComposerJson = $this->writeMergedComposerJson();
+		$composerOutput = rtrim($this->update());
 
 		$this->postUpdate();
 		$this->view->assign('composerOutput', $composerOutput);
