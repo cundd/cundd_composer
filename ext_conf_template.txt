@@ -1,2 +1,11 @@
 # cat=basic/configuration; type=string; label=Path to the PHP executable: If none is given, it will be determined automatically
 phpExecutable =
+
+# cat=basic/configuration; type=boolean; label=Allow install assets: Allow/disallow Asset installation
+allowInstallAssets = 1
+
+# cat=basic/configuration; type=boolean; label=Automatically install Assets: If enabled the Assets will be installed automatically after an install/update
+automaticallyInstallAssets = 1
+
+# cat=basic/configuration; type=string; label=Asset paths: Defines which paths inside a package will be used as Asset
+assetPaths = Resources/Public/,build,lib,js,font,less,sass

@@ -16,7 +16,13 @@ Otherwise your changes will be overwritten the next time you save the extension 
 
 <f:flashMessages />
 
-<table  class="tx_cunddcomposer" >
+<f:if condition="{error}">
+	<div class="alert alert-error">
+		{error}
+	</div>
+</f:if>
+
+<table class="tx_cunddcomposer table table-striped">
 	<tr>
 		<th><f:translate key="tx_cunddcomposer_domain_model_package.name" /></th>
 		<th><f:translate key="tx_cunddcomposer_domain_model_package.description" /></th>
@@ -49,6 +55,15 @@ Otherwise your changes will be overwritten the next time you save the extension 
 <pre>{mergedComposerJsonString}</pre>
 
 <pre>Used PHP: {usedPHPBin}</pre>
-<f:link.action action="install" class="btn">Merge and install</f:link.action>
-<f:link.action action="install" arguments="{development: 1}" class="btn">Merge and install development mode</f:link.action>
+
+<div class="btn-group">
+	<f:link.action action="install" class="btn">Merge and install</f:link.action>
+	<f:link.action action="install" class="btn btn-inverse" arguments="{development: 1}">dev mode</f:link.action>
+</div>
+
+<div class="btn-group">
+	<f:link.action action="update" class="btn">Merge and update</f:link.action>
+	<f:link.action action="update" class="btn btn-inverse" arguments="{development: 1}">dev mode</f:link.action>
+</div>
+<f:link.action action="installAssets" class="btn">Install assets</f:link.action>
 </f:section>

@@ -98,11 +98,13 @@ class Tx_CunddComposer_Domain_Repository_PackageRepository extends Tx_Extbase_Pe
 
 			$this->packages = new \SplObjectStorage();
 			$composerJson = $this->getComposerJson();
-			foreach ($composerJson as $currentJsonData) {
+			foreach ($composerJson as $packageName => $currentJsonData) {
 				// Flatten the fields "require" and "authors"
 				$this->convertPropertyForKey($currentJsonData, 'authors');
 				$this->convertPropertyForKey($currentJsonData, 'require');
 				$this->convertPropertyForKey($currentJsonData, 'require-dev', 'requireDev');
+
+				$currentJsonData['package'] = $packageName;
 
 				// Filter the properties
 				$currentJsonData = array_intersect_key($currentJsonData, array_flip($properties));
@@ -150,7 +152,7 @@ class Tx_CunddComposer_Domain_Repository_PackageRepository extends Tx_Extbase_Pe
 		foreach ($extensions as $extension) {
 			$composerFilePath = t3lib_extMgm::extPath($extension) . '/composer.json';
 			if (file_exists($composerFilePath)) {
-				$composerFiles[] = $composerFilePath;
+				$composerFiles[$extension] = $composerFilePath;
 			}
 		}
 		return $composerFiles;
@@ -159,13 +161,15 @@ class Tx_CunddComposer_Domain_Repository_PackageRepository extends Tx_Extbase_Pe
 	/**
 	 * Returns the composer.json contents as array
 	 *
+	 * @param boolean $graceful If set to TRUE no exception will be thrown if a JSON file couldn't be read
 	 * @return array
+	 * @throws \DomainException if a JSON file couldn't be read
 	 */
-	public function getComposerJson() {
+	public function getComposerJson($graceful = FALSE) {
 		if (!$this->composerJson) {
 			$jsonData = array();
 			$composerFiles = $this->getComposerFiles();
-			foreach ($composerFiles as $composerFilePath) {
+			foreach ($composerFiles as $package => $composerFilePath) {
 				$composerFile = new \SplFileInfo($composerFilePath);
 				$relativeComposerFilePath = '../../../../../../' . str_replace(PATH_site, '', $composerFile->getPath());
 				#$relativeComposerFilePath = dirname($composerFilePath) . '/';
@@ -176,7 +180,7 @@ class Tx_CunddComposer_Domain_Repository_PackageRepository extends Tx_Extbase_Pe
 				if ($jsonString) {
 					$currentJsonData = json_decode($jsonString, TRUE);
 				}
-				if (!$currentJsonData) {
+				if (!$currentJsonData && !$graceful) {
 					throw new \DomainException('Exception while parsing composer file ' . $composerFilePath . ': ' . $this->getJsonErrorDescription(), 1356356009);
 				}
 
@@ -197,7 +201,7 @@ class Tx_CunddComposer_Domain_Repository_PackageRepository extends Tx_Extbase_Pe
 						}
 					}
 				}
-				$jsonData[] = $currentJsonData;
+				$jsonData[$package] = $currentJsonData;
 			}
 			$this->composerJson = $jsonData;
 		}

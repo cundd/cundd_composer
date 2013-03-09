@@ -14,7 +14,7 @@ if (TYPO3_MODE === 'BE') {
 		'composer',	// Submodule key
 		'',						// Position
 		array(
-			'Package' => 'list, show, new, create, edit, update, delete, install',
+			'Package' => 'list, show, new, create, edit, update, delete, install, installAssets',
 		),
 		array(
 			'access' => 'user,group',

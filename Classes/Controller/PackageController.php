@@ -57,6 +57,12 @@ class Tx_CunddComposer_Controller_PackageController extends Tx_Extbase_MVC_Contr
 	protected $packageRepository;
 
 	/**
+	 * Asset installer
+	 * @var Tx_CunddComposer_Installer_AssetInstaller
+	 */
+	protected $assetInstaller;
+
+	/**
 	 * The merged composer.json
 	 * @var array
 	 */
@@ -81,6 +87,16 @@ class Tx_CunddComposer_Controller_PackageController extends Tx_Extbase_MVC_Contr
 	}
 
 	/**
+	 * injectPackageRepository
+	 *
+	 * @param Tx_CunddComposer_Installer_AssetInstaller $assetInstaller
+	 * @return void
+	 */
+	public function injectAssetInstaller(Tx_CunddComposer_Installer_AssetInstaller $assetInstaller) {
+		$this->assetInstaller = $assetInstaller;
+	}
+
+	/**
 	 * initializeAction
 	 *
 	 * @return
@@ -100,7 +116,11 @@ class Tx_CunddComposer_Controller_PackageController extends Tx_Extbase_MVC_Contr
 		$mergedComposerJson = NULL;
 		$mergedComposerJsonString = '';
 
-		$packages = $this->packageRepository->findAll();
+		try {
+			$packages = $this->packageRepository->findAll();
+		} catch (\DomainException $exception) {
+			$this->view->assign('error', $exception->getMessage());
+		}
 		$this->view->assign('packages', $packages);
 
 		// Set the development mode to TRUE to see the dev-requirements
@@ -200,7 +220,12 @@ class Tx_CunddComposer_Controller_PackageController extends Tx_Extbase_MVC_Contr
 	 */
 	protected function getMergedComposerData($key) {
 		$jsonData = array();
-		$composerJson = $this->packageRepository->getComposerJson();
+		try {
+			$composerJson = $this->packageRepository->getComposerJson();
+		} catch (\DomainException $exception) {
+			$this->view->assign('error', $exception->getMessage());
+			return array();
+		}
 		foreach ($composerJson as $currentJsonData) {
 			if (isset($currentJsonData[$key])) {
 				$mergeData = $currentJsonData[$key];
@@ -232,7 +257,10 @@ class Tx_CunddComposer_Controller_PackageController extends Tx_Extbase_MVC_Contr
 			if ($strict && isset($merged[$key]) && !is_array($merged[$key]) && $merged[$key] != $value) {
 				throw new \UnexpectedValueException('Key "' . $key . '" already exists with a different value', 1360672930);
 			}
-			if (is_array($value) && isset($merged[$key]) && is_array($merged[$key])) {
+			if (is_array($value) // If the current value is an array it may has to be merged
+				&& !is_integer($key) // Check if we are not inside of an array (only merge objects)
+				&& isset($merged[$key])
+				&& is_array($merged[$key])) {
 				$value = self::arrayMergeRecursive($merged[$key], $value);
 			}
 
@@ -252,6 +280,16 @@ class Tx_CunddComposer_Controller_PackageController extends Tx_Extbase_MVC_Contr
 	 * @return string 				Returns the composer output
 	 */
 	protected function install($dev = -1) {
+		return $this->executeComposerCommand('install', $dev);
+	}
+
+	/**
+	 * Call composer on the command line to update the dependencies.
+	 *
+	 * @param boolean	$dev 		Call it with the --dev flag
+	 * @return string 				Returns the composer output
+	 */
+	protected function update($dev = -1) {
 		return $this->executeComposerCommand('update', $dev);
 	}
 
@@ -301,13 +339,7 @@ class Tx_CunddComposer_Controller_PackageController extends Tx_Extbase_MVC_Contr
 	 */
 	public function getPHPExecutable() {
 		if (!$this->phpExecutable) {
-			if (isset($GLOBALS['TYPO3_CONF_VARS']['EXT']['extConf']['cundd_composer'])) {
-				$configuration = unserialize($GLOBALS['TYPO3_CONF_VARS']['EXT']['extConf']['cundd_composer']);
-				if ($configuration && isset($configuration['phpExecutable']) && $configuration['phpExecutable']) {
-					$this->phpExecutable = $configuration['phpExecutable'];
-				}
-			}
-
+			$this->phpExecutable = $this->getConfiguration('phpExecutable');
 			if (!$this->phpExecutable) {
 				if (isset($this->settings['phpExecutable'])) {
 					$this->phpExecutable = $this->settings['phpExecutable'];
@@ -466,18 +498,6 @@ class Tx_CunddComposer_Controller_PackageController extends Tx_Extbase_MVC_Contr
 	}
 
 	/**
-	 * action update
-	 *
-	 * @param Tx_CunddComposer_Domain_Model_Package $package
-	 * @return void
-	 */
-	public function updateAction(Tx_CunddComposer_Domain_Model_Package $package) {
-		$this->packageRepository->update($package);
-		$this->flashMessageContainer->add('Your Package was updated.');
-		$this->redirect('list');
-	}
-
-	/**
 	 * action delete
 	 *
 	 * @param Tx_CunddComposer_Domain_Model_Package $package
@@ -500,8 +520,74 @@ class Tx_CunddComposer_Controller_PackageController extends Tx_Extbase_MVC_Contr
 
 		$didWriteComposerJson = $this->writeMergedComposerJson();
 		$composerOutput = rtrim($this->install());
+
+		$this->postUpdate();
 		$this->view->assign('composerOutput', $composerOutput);
 		$this->view->assign('developmentDependencies', $this->developmentDependencies);
+	}
+
+	/**
+	 * action update
+	 *
+	 * @param boolean $development Indicates if the dev flag should be specified
+	 * @return void
+	 */
+	public function updateAction($development = FALSE) {
+		$this->developmentDependencies = $development;
+
+		$didWriteComposerJson = $this->writeMergedComposerJson();
+		$composerOutput = rtrim($this->update());
+
+		$this->postUpdate();
+		$this->view->assign('composerOutput', $composerOutput);
+		$this->view->assign('developmentDependencies', $this->developmentDependencies);
+	}
+
+	/**
+	 * Install the assets
+	 * @return void
+	 */
+	public function installAssetsAction() {
+		if (!$this->getConfiguration('allowInstallAssets')) {
+			$this->view->assign('error', 'Asset installation disabled in Extension Manager');
+		}
+		$this->assetInstaller->manuallyInjectController($this);
+		$installedAssets = $this->assetInstaller->installAssets();
+		$this->view->assign('installedAssets', $installedAssets);
+	}
+
+	/**
+	 * Invoked after the install/update action
+	 * @return void
+	 */
+	public function postUpdate() {
+		if ($this->getConfiguration('automaticallyInstallAssets')) {
+			$this->assetInstaller->manuallyInjectController($this);
+			$installedAssets = $this->assetInstaller->installAssets();
+			$this->view->assign('installedAssets', $installedAssets);
+		}
+	}
+
+	/**
+	 * Returns the extension configuration for the given key
+	 * @param  string $key Configuration key
+	 * @return mixed      Configuration value
+	 */
+	public function getConfiguration($key) {
+		static $configuration = NULL;
+
+		// Read the configuration from the globals
+		if ($configuration === NULL) {
+			if (isset($GLOBALS['TYPO3_CONF_VARS']['EXT']['extConf']['cundd_composer'])) {
+				$configuration = unserialize($GLOBALS['TYPO3_CONF_VARS']['EXT']['extConf']['cundd_composer']);
+			}
+		}
+
+		// Return the configuration value
+		if ($configuration && isset($configuration[$key])) {
+			return $configuration[$key];
+		}
+		return FALSE;
 	}
 
 	/**

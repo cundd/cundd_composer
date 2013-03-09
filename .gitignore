@@ -1,6 +1,7 @@
 #################################
 ### PROJECT SETTINGS
 vendor/
+Resources/Public/Assets/*
 Resources/Private/Temp/*
 
 #################################
