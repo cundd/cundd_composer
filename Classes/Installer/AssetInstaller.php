@@ -149,11 +149,13 @@ class Tx_CunddComposer_Installer_AssetInstaller {
 
 					// Add the asset information to the array
 					$installedAssets[$package . $currentAssetPath] = array(
-						'name' 		=> $package,
-						'version' 	=> $version,
-						'assetKey' 	=> $currentAssetPath,
-						'source' 	=> $this->getRelativePathOfUri($packagePublicResourcePath),
-						'target' 	=> $this->getRelativePathOfUri($symlinkName)
+						'name' 				=> $package,
+						'version' 			=> $version,
+						'assetKey' 			=> $currentAssetPath,
+						'source' 			=> $this->getRelativePathOfUri($packagePublicResourcePath),
+						'sourceDownload'	=> $this->getDownloadUriOfUri($packagePublicResourcePath),
+						'target' 			=> $this->getRelativePathOfUri($symlinkName),
+						'targetDownload' 	=> $this->getDownloadUriOfUri($symlinkName)
 					);
 
 					// Create the symlink if it doesn't exist
@@ -179,6 +181,27 @@ class Tx_CunddComposer_Installer_AssetInstaller {
 	 */
 	public function getRelativePathOfUri($uri) {
 		return str_replace($this->getExtensionPath(), '', $uri);
+	}
+
+	/**
+	 * Returns the URI to download or reference the given URI
+	 * @param  string $uri
+	 * @return string
+	 */
+	public function getDownloadUriOfUri($uri) {
+		static $baseUrl = NULL;
+		if ($baseUrl === NULL) {
+			$baseUrl = '';
+			if (isset($GLOBALS['TSFE']) && isset($GLOBALS['TSFE']->baseUrl)) {
+				$baseUrl = $GLOBALS['TSFE']->baseUrl;
+			}
+
+			if (TYPO3_MODE === 'BE') {
+				$baseUrl .= '../';
+			}
+			$baseUrl .= 'typo3conf/ext/cundd_composer/';
+		}
+		return $baseUrl . $this->getRelativePathOfUri($uri);
 	}
 
 	/**

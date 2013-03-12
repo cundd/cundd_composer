@@ -12,8 +12,8 @@
 		<tr>
 			<td>{installedAsset.name}:{installedAsset.assetKey}</td>
 			<td>{installedAsset.version}</td>
-			<td>{installedAsset.source}</td>
-			<td>{installedAsset.target}</td>
+			<td><a href="{installedAsset.sourceDownload}" target="_blank">{installedAsset.source}</a></td>
+			<td><a href="{installedAsset.targetDownload}" target="_blank">{installedAsset.target}</a></td>
 		</tr>
 	</f:for>
 </table>
