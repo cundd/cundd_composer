@@ -28,4 +28,19 @@ For extension developers
 
 Place a valid composer.json file in the root directory of your extension. If you want to use the Composer packages in a fronted extension you can simply use the package classes. In case of a backend module you have to register the Cundd Composer autoloader through `Tx_CunddComposer_Autoloader::register()`.
 
-![Piwik](http://piwik.cundd.net/piwik.php?idsite=1&amp;rec=1 "User tracking through a private Piwik installation")
+
+Assets
+------
+
+The Asset Installer loops through all the installed composer packages and checks if they contain one of the directories defined in the extension manager (configuration name: `assetPaths`, defaults: `Resources/Public/`, `build`, `lib`, `js`, `font`, `less` and `sass`). If one of the directories exist, a symlink to the directory will be created inside of Cundd Composer's `Resources/Public/Assets/` folder.
+
+Before the Asset Installer can be used, it has to be enabled in the extension manager. Therefore `allowInstallAssets` has to be checked. If `automaticallyInstallAssets` (and `allowInstallAssets`) is enabled the Assets will be installed automatically after Cundd Composer's `install` or `update` function is invoked.
+
+
+### Example
+
+If the package `foo/bar` contains the directory `Resources/Public/` Cundd Composer will create a symlink at `EXT:cundd_composer/Resources/Public/Assets/foo_bar/` which will point to `EXT:cundd_composer/vendor/foo/bar/Resources/Public/`.
+
+
+### Aim
+The aim of the Asset Installer is to provide a schema to reference asset files and to publish  those files in a public folder, which allows the `vendor` directory to be inaccessible by browsers.

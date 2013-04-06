@@ -160,7 +160,14 @@ class Tx_CunddComposer_Installer_AssetInstaller {
 
 					// Create the symlink if it doesn't exist
 					if (!file_exists($symlinkName)) {
-						$symlinkCreated = symlink($packagePublicResourcePath, $symlinkName);
+						/**
+						 * Path to thes target relative to the directory inside
+						 * the Assets folder
+						 * @var string
+						 */
+						$symlinkSource = './../../../../' . $this->getRelativePathOfUri($packagePublicResourcePath);
+						echo "<pre>$symlinkSource</pre>";
+						$symlinkCreated = symlink($symlinkSource, $symlinkName);
 						$success *= $symlinkCreated;
 						if ($symlinkCreated) {
 							$this->controller->pd('Created symlink of "' . $packagePublicResourcePath . '" to "' . $symlinkName . '"');
