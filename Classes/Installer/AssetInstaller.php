@@ -166,7 +166,6 @@ class Tx_CunddComposer_Installer_AssetInstaller {
 						 * @var string
 						 */
 						$symlinkSource = './../../../../' . $this->getRelativePathOfUri($packagePublicResourcePath);
-						echo "<pre>$symlinkSource</pre>";
 						$symlinkCreated = symlink($symlinkSource, $symlinkName);
 						$success *= $symlinkCreated;
 						if ($symlinkCreated) {
