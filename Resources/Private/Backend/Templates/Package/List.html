@@ -56,14 +56,32 @@ Otherwise your changes will be overwritten the next time you save the extension 
 
 <pre>Used PHP: {usedPHPBin}</pre>
 
-<div class="btn-group">
-	<f:link.action action="install" class="btn">Merge and install</f:link.action>
-	<f:link.action action="install" class="btn btn-inverse" arguments="{development: 1}">dev mode</f:link.action>
-</div>
 
-<div class="btn-group">
-	<f:link.action action="update" class="btn">Merge and update</f:link.action>
-	<f:link.action action="update" class="btn btn-inverse" arguments="{development: 1}">dev mode</f:link.action>
-</div>
+<!-- Show a the buttons if the PHP binary is set, otherwise show them as disabled -->
+<f:if condition="{usedPHPBin}">
+	<f:then>
+		<div class="btn-group">
+			<f:link.action action="install" class="btn">Merge and install</f:link.action>
+			<f:link.action action="install" class="btn btn-inverse" arguments="{development: 1}">dev mode</f:link.action>
+		</div>
+
+		<div class="btn-group">
+			<f:link.action action="update" class="btn">Merge and update</f:link.action>
+			<f:link.action action="update" class="btn btn-inverse" arguments="{development: 1}">dev mode</f:link.action>
+		</div>
+	</f:then>
+	<f:else>
+		<div class="btn-group">
+			<span class="btn disabled">Merge and install</span>
+			<span class="btn disabled btn-inverse" arguments="{development: 1}">dev mode</span>
+		</div>
+
+		<div class="btn-group">
+			<span class="btn disabled">Merge and update</span>
+			<span class="btn disabled btn-inverse" arguments="{development: 1}">dev mode</span>
+		</div>
+	</f:else>
+</f:if>
+
 <f:link.action action="installAssets" class="btn">Install assets</f:link.action>
 </f:section>

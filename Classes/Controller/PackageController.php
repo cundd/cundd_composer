@@ -132,6 +132,10 @@ class Tx_CunddComposer_Controller_PackageController extends Tx_Extbase_MVC_Contr
 		$this->view->assign('mergedComposerJson', $mergedComposerJson);
 		$this->view->assign('mergedComposerJsonString', $mergedComposerJsonString);
 		$this->view->assign('usedPHPBin', $this->getPHPExecutable());
+
+		if (!$this->getPHPExecutable()) {
+			$this->view->assign('error', 'PHP executable could not be found');
+		}
 	}
 
 	/**
@@ -339,7 +343,7 @@ class Tx_CunddComposer_Controller_PackageController extends Tx_Extbase_MVC_Contr
 	 */
 	public function getPHPExecutable() {
 		if (!$this->phpExecutable) {
-			$this->phpExecutable = trim($this->getConfiguration('phpExecutable'));
+			$this->phpExecutable = $this->getConfiguration('phpExecutable');
 			if (!$this->phpExecutable) {
 				if (isset($this->settings['phpExecutable'])) {
 					$this->phpExecutable = $this->settings['phpExecutable'];
@@ -347,6 +351,7 @@ class Tx_CunddComposer_Controller_PackageController extends Tx_Extbase_MVC_Contr
 					$this->phpExecutable = $this->getPHPExecutableFromPath();
 				}
 			}
+			$this->phpExecutable = trim($this->phpExecutable);
 		}
 		return $this->phpExecutable;
 	}
