@@ -2,14 +2,24 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="98baaff2-8a46-4be6-a1f7-b5c70e6bd84a" name="Default" comment="">
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/Resources/Private/Backend/Templates/Package/ManualInstallation.html" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Resources/Private/PHP/composer.phar" afterPath="$PROJECT_DIR$/Resources/Private/PHP/composer.phar" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Resources/Private/Backend/Templates/Package/List.html" afterPath="$PROJECT_DIR$/Resources/Private/Backend/Templates/Package/List.html" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Classes/Controller/PackageController.php" afterPath="$PROJECT_DIR$/Classes/Controller/PackageController.php" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Resources/Private/Backend/Templates/Package/Update.html" afterPath="$PROJECT_DIR$/Resources/Private/Backend/Templates/Package/Update.html" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/cundd_composer.iml" afterPath="$PROJECT_DIR$/.idea/cundd_composer.iml" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/ext_tables.php" afterPath="$PROJECT_DIR$/ext_tables.php" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
     </list>
     <ignored path="cundd_composer.iws" />
     <ignored path=".idea/workspace.xml" />
-    <file path="/Dummy.txt" changelist="98baaff2-8a46-4be6-a1f7-b5c70e6bd84a" time="1379153806043" ignored="false" />
-    <file path="/PackageController.php" changelist="98baaff2-8a46-4be6-a1f7-b5c70e6bd84a" time="1368089826749" ignored="false" />
-    <file path="/List.html" changelist="98baaff2-8a46-4be6-a1f7-b5c70e6bd84a" time="1368090355179" ignored="false" />
+    <file path="/Dummy.txt" changelist="98baaff2-8a46-4be6-a1f7-b5c70e6bd84a" time="1381571484681" ignored="false" />
+    <file path="/PackageController.php" changelist="98baaff2-8a46-4be6-a1f7-b5c70e6bd84a" time="1381573978480" ignored="false" />
+    <file path="/List.html" changelist="98baaff2-8a46-4be6-a1f7-b5c70e6bd84a" time="1381574014850" ignored="false" />
     <file path="$PROJECT_DIR$/../sourcero/Classes/Driver/GitDriver.php" changelist="98baaff2-8a46-4be6-a1f7-b5c70e6bd84a" time="1368126204985" ignored="false" />
+    <file path="/Update.html" changelist="98baaff2-8a46-4be6-a1f7-b5c70e6bd84a" time="1381572572850" ignored="false" />
+    <file path="/dummy.xml" changelist="98baaff2-8a46-4be6-a1f7-b5c70e6bd84a" time="1381573792745" ignored="false" />
+    <file path="/ManualInstallation.html" changelist="98baaff2-8a46-4be6-a1f7-b5c70e6bd84a" time="1381574889970" ignored="false" />
     <option name="TRACKING_ENABLED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -29,19 +39,10 @@
   </component>
   <component name="FileEditorManager">
     <leaf>
-      <file leaf-file-name="ext_conf_template.txt" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/ext_conf_template.txt">
-          <provider selected="true" editor-type-id="text-editor">
-            <state line="0" column="0" selection-start="0" selection-end="0" vertical-scroll-proportion="0.0">
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
       <file leaf-file-name="PackageController.php" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/Classes/Controller/PackageController.php">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="353" column="62" selection-start="10323" selection-end="10323" vertical-scroll-proportion="0.0">
+            <state line="149" column="45" selection-start="3865" selection-end="3881" vertical-scroll-proportion="50.408165">
               <folding />
             </state>
           </provider>
@@ -50,7 +51,43 @@
       <file leaf-file-name="List.html" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/Resources/Private/Backend/Templates/Package/List.html">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="60" column="29" selection-start="2024" selection-end="2024" vertical-scroll-proportion="0.0">
+            <state line="81" column="11" selection-start="2694" selection-end="2694" vertical-scroll-proportion="-40.0">
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="ManualInstallation.html" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/Resources/Private/Backend/Templates/Package/ManualInstallation.html">
+          <provider selected="true" editor-type-id="text-editor">
+            <state line="26" column="20" selection-start="676" selection-end="676" vertical-scroll-proportion="-16.25">
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="ext_tables.php" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/ext_tables.php">
+          <provider selected="true" editor-type-id="text-editor">
+            <state line="16" column="115" selection-start="411" selection-end="411" vertical-scroll-proportion="-10.0">
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="Install.html" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/Resources/Private/Backend/Templates/Package/Install.html">
+          <provider selected="true" editor-type-id="text-editor">
+            <state line="0" column="0" selection-start="0" selection-end="0" vertical-scroll-proportion="-0.0">
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="Update.html" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/Resources/Private/Backend/Templates/Package/Update.html">
+          <provider selected="true" editor-type-id="text-editor">
+            <state line="31" column="0" selection-start="771" selection-end="840" vertical-scroll-proportion="-19.375">
               <folding />
             </state>
           </provider>
@@ -65,19 +102,10 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="config.php" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/../../../Codiad-Codiad-0124a26/config.php">
-          <provider selected="true" editor-type-id="text-editor">
-            <state line="44" column="2" selection-start="1451" selection-end="1451" vertical-scroll-proportion="0.0">
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
       <file leaf-file-name="ext_emconf.php" pinned="false" current="true" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/ext_emconf.php">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="0" column="0" selection-start="0" selection-end="0" vertical-scroll-proportion="0.0">
+            <state line="23" column="21" selection-start="759" selection-end="759" vertical-scroll-proportion="0.22015655">
               <folding />
             </state>
           </provider>
@@ -101,8 +129,12 @@
   <component name="IdeDocumentHistory">
     <option name="changedFiles">
       <list>
-        <option value="$PROJECT_DIR$/Classes/Controller/PackageController.php" />
+        <option value="$PROJECT_DIR$/ext_emconf.php" />
+        <option value="$PROJECT_DIR$/Resources/Private/Backend/Templates/Package/Update.html" />
+        <option value="$PROJECT_DIR$/ext_tables.php" />
         <option value="$PROJECT_DIR$/Resources/Private/Backend/Templates/Package/List.html" />
+        <option value="$PROJECT_DIR$/Classes/Controller/PackageController.php" />
+        <option value="$PROJECT_DIR$/Resources/Private/Backend/Templates/Package/ManualInstallation.html" />
       </list>
     </option>
   </component>
@@ -110,6 +142,7 @@
     <include_path>
       <path value="$PROJECT_DIR$/../../../typo3/sysext/extbase" />
       <path value="$PROJECT_DIR$/../../../typo3/sysext/fluid" />
+      <path value="$PROJECT_DIR$/../../../typo3/sysext/core" />
     </include_path>
   </component>
   <component name="ProjectFrameBounds">
@@ -143,12 +176,39 @@
       <sortByType />
     </navigator>
     <panes>
+      <pane id="Scope" />
       <pane id="ProjectPane">
         <subPane>
           <PATH>
             <PATH_ELEMENT>
               <option name="myItemId" value="cundd_composer" />
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="External Libraries" />
+              <option name="myItemType" value="com.jetbrains.php.config.PhpExternalLibrariesNodePatcher$PatchedExternalLibrariesNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="PHP" />
+              <option name="myItemType" value="com.jetbrains.php.config.PhpExternalLibrariesNodePatcher$PatchedLibraryNode" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="cundd_composer" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="External Libraries" />
+              <option name="myItemType" value="com.jetbrains.php.config.PhpExternalLibrariesNodePatcher$PatchedExternalLibrariesNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="PHP" />
+              <option name="myItemType" value="com.jetbrains.php.config.PhpExternalLibrariesNodePatcher$PatchedLibraryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="core" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
           </PATH>
           <PATH>
@@ -315,21 +375,43 @@
           </PATH>
         </subPane>
       </pane>
-      <pane id="Scope" />
     </panes>
   </component>
   <component name="PropertiesComponent">
     <property name="options.splitter.main.proportions" value="0.3" />
     <property name="WebServerToolWindowFactoryState" value="false" />
     <property name="options.lastSelected" value="preferences.sourceCode.General" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$/../../../typo3/sysext/fluid" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/../../../typo3/sysext/core" />
+    <property name="FullScreen" value="false" />
     <property name="options.searchVisible" value="true" />
     <property name="options.splitter.details.proportions" value="0.2" />
   </component>
+  <component name="PublishConfig">
+    <servers>
+      <server id="4d2882d2-9c7b-4635-8e9b-c0ae49b64fa7">
+        <serverdata>
+          <mappings>
+            <mapping local="$PROJECT_DIR$" />
+          </mappings>
+        </serverdata>
+      </server>
+    </servers>
+  </component>
+  <component name="RecentsManager">
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/Resources/Private/Backend/Templates/Package" />
+    </key>
+  </component>
   <component name="RunManager">
+    <configuration default="true" type="PhpLocalRunConfigurationType" factoryName="PHP Console">
+      <method />
+    </configuration>
     <list size="0" />
   </component>
   <component name="ShelveChangesManager" show_recycled="false" />
+  <component name="StructureViewFactory">
+    <option name="ACTIVE_ACTIONS" value="ALPHA_COMPARATOR" />
+  </component>
   <component name="TaskManager">
     <task active="true" id="Default" summary="Default task">
       <changelist id="98baaff2-8a46-4be6-a1f7-b5c70e6bd84a" name="Default" comment="" />
@@ -340,13 +422,13 @@
   </component>
   <component name="ToolWindowManager">
     <frame x="0" y="22" width="1856" height="1178" extended-state="0" />
-    <editor active="false" />
+    <editor active="true" />
     <layout>
       <window_info id="Changes" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
       <window_info id="Database" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
-      <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
-      <window_info id="Project" active="true" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.2552486" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
+      <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.24972376" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
+      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.26077348" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
       <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.4" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="2" side_tool="true" content_ui="tabs" />
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="true" content_ui="tabs" />
@@ -422,41 +504,6 @@
     <breakpoint-manager />
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/.gitignore">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="70" column="0" selection-start="943" selection-end="943" vertical-scroll-proportion="0.0">
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/../../../Codiad-Codiad-0124a26/config.php">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="44" column="2" selection-start="1451" selection-end="1451" vertical-scroll-proportion="0.0">
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/Resources/Private/Backend/Templates/Package/List.html">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="60" column="29" selection-start="2024" selection-end="2024" vertical-scroll-proportion="0.0">
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/ext_emconf.php">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="0" column="0" selection-start="0" selection-end="0" vertical-scroll-proportion="0.0">
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/ext_conf_template.txt">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="0" column="0" selection-start="0" selection-end="0" vertical-scroll-proportion="0.0">
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/Classes/Controller/PackageController.php">
       <provider selected="true" editor-type-id="text-editor">
         <state line="353" column="62" selection-start="10323" selection-end="10323" vertical-scroll-proportion="0.0">
@@ -480,30 +527,7 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/../../../Codiad-Codiad-0124a26/config.php">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="44" column="2" selection-start="1451" selection-end="1451" vertical-scroll-proportion="0.0">
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/ext_conf_template.txt">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="0" column="0" selection-start="0" selection-end="0" vertical-scroll-proportion="0.0">
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/Classes/Controller/PackageController.php">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="353" column="62" selection-start="10323" selection-end="10323" vertical-scroll-proportion="0.0">
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/Resources/Private/Backend/Templates/Package/List.html">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="60" column="29" selection-start="2024" selection-end="2024" vertical-scroll-proportion="0.0">
-          <folding />
-        </state>
+        <state line="44" column="2" selection-start="1451" selection-end="1451" vertical-scroll-proportion="0.0" />
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/../../../../web_governmentpackage-4.7.7/typo3conf/ext/cundd_composer/Documentation/Index.rst">
@@ -511,6 +535,11 @@
         <state line="0" column="0" selection-start="0" selection-end="0" vertical-scroll-proportion="0.0" />
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/../../../Codiad-Codiad-0124a26/config.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="44" column="2" selection-start="1451" selection-end="1451" vertical-scroll-proportion="0.5797101" />
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/.gitignore">
       <provider selected="true" editor-type-id="text-editor">
         <state line="70" column="0" selection-start="943" selection-end="943" vertical-scroll-proportion="0.0">
@@ -518,16 +547,65 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/../../../Codiad-Codiad-0124a26/config.php">
+    <entry file="file://$PROJECT_DIR$/../../../typo3/sysext/extbase/Classes/Utility/ExtensionUtility.php">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="44" column="2" selection-start="1451" selection-end="1451" vertical-scroll-proportion="0.0">
+        <state line="204" column="27" selection-start="11502" selection-end="11502" vertical-scroll-proportion="0.369863">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/ext_conf_template.txt">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="1" column="0" selection-start="128" selection-end="128" vertical-scroll-proportion="0.014164306">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Resources/Private/Backend/Templates/Package/Install.html">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="0" column="0" selection-start="0" selection-end="0" vertical-scroll-proportion="0.0">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/ext_tables.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="16" column="115" selection-start="411" selection-end="411" vertical-scroll-proportion="-10.0">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Resources/Private/Backend/Templates/Package/Update.html">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="31" column="0" selection-start="771" selection-end="840" vertical-scroll-proportion="-19.375">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Resources/Private/Backend/Templates/Package/List.html">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="81" column="11" selection-start="2694" selection-end="2694" vertical-scroll-proportion="-40.0">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Resources/Private/Backend/Templates/Package/ManualInstallation.html">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="26" column="20" selection-start="676" selection-end="676" vertical-scroll-proportion="-16.25">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Classes/Controller/PackageController.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="149" column="45" selection-start="3865" selection-end="3881" vertical-scroll-proportion="50.408165">
           <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/ext_emconf.php">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="0" column="0" selection-start="0" selection-end="0" vertical-scroll-proportion="0.0">
+        <state line="23" column="21" selection-start="759" selection-end="759" vertical-scroll-proportion="0.22015655">
           <folding />
         </state>
       </provider>
