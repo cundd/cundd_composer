@@ -2,24 +2,13 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="98baaff2-8a46-4be6-a1f7-b5c70e6bd84a" name="Default" comment="">
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/Resources/Private/Backend/Templates/Package/ManualInstallation.html" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Resources/Private/PHP/composer.phar" afterPath="$PROJECT_DIR$/Resources/Private/PHP/composer.phar" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Resources/Private/Backend/Templates/Package/List.html" afterPath="$PROJECT_DIR$/Resources/Private/Backend/Templates/Package/List.html" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Classes/Controller/PackageController.php" afterPath="$PROJECT_DIR$/Classes/Controller/PackageController.php" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Resources/Private/Backend/Templates/Package/Update.html" afterPath="$PROJECT_DIR$/Resources/Private/Backend/Templates/Package/Update.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/cundd_composer.iml" afterPath="$PROJECT_DIR$/.idea/cundd_composer.iml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/ext_tables.php" afterPath="$PROJECT_DIR$/ext_tables.php" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Classes/Domain/Repository/PackageRepository.php" afterPath="$PROJECT_DIR$/Classes/Domain/Repository/PackageRepository.php" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
     </list>
     <ignored path="cundd_composer.iws" />
     <ignored path=".idea/workspace.xml" />
-    <file path="/Dummy.txt" changelist="98baaff2-8a46-4be6-a1f7-b5c70e6bd84a" time="1381571484681" ignored="false" />
-    <file path="/PackageController.php" changelist="98baaff2-8a46-4be6-a1f7-b5c70e6bd84a" time="1381573978480" ignored="false" />
-    <file path="/List.html" changelist="98baaff2-8a46-4be6-a1f7-b5c70e6bd84a" time="1381574014850" ignored="false" />
-    <file path="$PROJECT_DIR$/../sourcero/Classes/Driver/GitDriver.php" changelist="98baaff2-8a46-4be6-a1f7-b5c70e6bd84a" time="1368126204985" ignored="false" />
-    <file path="/Update.html" changelist="98baaff2-8a46-4be6-a1f7-b5c70e6bd84a" time="1381572572850" ignored="false" />
-    <file path="/dummy.xml" changelist="98baaff2-8a46-4be6-a1f7-b5c70e6bd84a" time="1381573792745" ignored="false" />
-    <file path="/ManualInstallation.html" changelist="98baaff2-8a46-4be6-a1f7-b5c70e6bd84a" time="1381574889970" ignored="false" />
     <option name="TRACKING_ENABLED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -39,10 +28,10 @@
   </component>
   <component name="FileEditorManager">
     <leaf>
-      <file leaf-file-name="PackageController.php" pinned="false" current="false" current-in-tab="false">
+      <file leaf-file-name="PackageController.php" pinned="false" current="true" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/Classes/Controller/PackageController.php">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="149" column="45" selection-start="3865" selection-end="3881" vertical-scroll-proportion="50.408165">
+            <state line="416" column="5" selection-start="12176" selection-end="12176" vertical-scroll-proportion="0.0" vertical-offset="5910" max-vertical-offset="10335">
               <folding />
             </state>
           </provider>
@@ -51,7 +40,7 @@
       <file leaf-file-name="List.html" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/Resources/Private/Backend/Templates/Package/List.html">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="81" column="11" selection-start="2694" selection-end="2694" vertical-scroll-proportion="-40.0">
+            <state line="81" column="11" selection-start="2694" selection-end="2694" vertical-scroll-proportion="0.0" vertical-offset="1215" max-vertical-offset="1365">
               <folding />
             </state>
           </provider>
@@ -60,7 +49,7 @@
       <file leaf-file-name="ManualInstallation.html" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/Resources/Private/Backend/Templates/Package/ManualInstallation.html">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="26" column="20" selection-start="676" selection-end="676" vertical-scroll-proportion="-16.25">
+            <state line="26" column="20" selection-start="676" selection-end="676" vertical-scroll-proportion="0.0" vertical-offset="390" max-vertical-offset="675">
               <folding />
             </state>
           </provider>
@@ -69,7 +58,7 @@
       <file leaf-file-name="ext_tables.php" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/ext_tables.php">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="16" column="115" selection-start="411" selection-end="411" vertical-scroll-proportion="-10.0">
+            <state line="16" column="115" selection-start="411" selection-end="411" vertical-scroll-proportion="0.0" vertical-offset="240" max-vertical-offset="960">
               <folding />
             </state>
           </provider>
@@ -78,7 +67,7 @@
       <file leaf-file-name="Install.html" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/Resources/Private/Backend/Templates/Package/Install.html">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="0" column="0" selection-start="0" selection-end="0" vertical-scroll-proportion="-0.0">
+            <state line="0" column="0" selection-start="0" selection-end="0" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="585">
               <folding />
             </state>
           </provider>
@@ -87,7 +76,7 @@
       <file leaf-file-name="Update.html" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/Resources/Private/Backend/Templates/Package/Update.html">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="31" column="0" selection-start="771" selection-end="840" vertical-scroll-proportion="-19.375">
+            <state line="31" column="0" selection-start="771" selection-end="840" vertical-scroll-proportion="0.0" vertical-offset="465" max-vertical-offset="585">
               <folding />
             </state>
           </provider>
@@ -96,16 +85,16 @@
       <file leaf-file-name=".gitignore" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/.gitignore">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="70" column="0" selection-start="943" selection-end="943" vertical-scroll-proportion="0.0">
+            <state line="70" column="0" selection-start="943" selection-end="943" vertical-scroll-proportion="0.0" vertical-offset="1050" max-vertical-offset="1215">
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="ext_emconf.php" pinned="false" current="true" current-in-tab="true">
+      <file leaf-file-name="ext_emconf.php" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/ext_emconf.php">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="23" column="21" selection-start="759" selection-end="759" vertical-scroll-proportion="0.22015655">
+            <state line="23" column="21" selection-start="759" selection-end="759" vertical-scroll-proportion="0.0" vertical-offset="345" max-vertical-offset="765">
               <folding />
             </state>
           </provider>
@@ -133,8 +122,8 @@
         <option value="$PROJECT_DIR$/Resources/Private/Backend/Templates/Package/Update.html" />
         <option value="$PROJECT_DIR$/ext_tables.php" />
         <option value="$PROJECT_DIR$/Resources/Private/Backend/Templates/Package/List.html" />
-        <option value="$PROJECT_DIR$/Classes/Controller/PackageController.php" />
         <option value="$PROJECT_DIR$/Resources/Private/Backend/Templates/Package/ManualInstallation.html" />
+        <option value="$PROJECT_DIR$/Classes/Controller/PackageController.php" />
       </list>
     </option>
   </component>
@@ -383,19 +372,8 @@
     <property name="options.lastSelected" value="preferences.sourceCode.General" />
     <property name="last_opened_file_path" value="$PROJECT_DIR$/../../../typo3/sysext/core" />
     <property name="FullScreen" value="false" />
-    <property name="options.searchVisible" value="true" />
     <property name="options.splitter.details.proportions" value="0.2" />
-  </component>
-  <component name="PublishConfig">
-    <servers>
-      <server id="4d2882d2-9c7b-4635-8e9b-c0ae49b64fa7">
-        <serverdata>
-          <mappings>
-            <mapping local="$PROJECT_DIR$" />
-          </mappings>
-        </serverdata>
-      </server>
-    </servers>
+    <property name="options.searchVisible" value="true" />
   </component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
@@ -425,10 +403,11 @@
     <editor active="true" />
     <layout>
       <window_info id="Changes" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
+      <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="-1" side_tool="false" content_ui="tabs" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
       <window_info id="Database" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.24972376" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
-      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.26077348" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
+      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.26023707" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
       <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.4" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="2" side_tool="true" content_ui="tabs" />
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="true" content_ui="tabs" />
@@ -447,58 +426,9 @@
     <option name="myLimit" value="2678400000" />
   </component>
   <component name="VcsManagerConfiguration">
-    <option name="OFFER_MOVE_TO_ANOTHER_CHANGELIST_ON_PARTIAL_COMMIT" value="true" />
-    <option name="CHECK_CODE_SMELLS_BEFORE_PROJECT_COMMIT" value="true" />
-    <option name="CHECK_NEW_TODO" value="true" />
     <option name="myTodoPanelSettings">
-      <value>
-        <are-packages-shown value="false" />
-        <are-modules-shown value="false" />
-        <flatten-packages value="false" />
-        <is-autoscroll-to-source value="false" />
-      </value>
+      <TodoPanelSettings />
     </option>
-    <option name="PERFORM_UPDATE_IN_BACKGROUND" value="true" />
-    <option name="PERFORM_COMMIT_IN_BACKGROUND" value="true" />
-    <option name="PERFORM_EDIT_IN_BACKGROUND" value="true" />
-    <option name="PERFORM_CHECKOUT_IN_BACKGROUND" value="true" />
-    <option name="PERFORM_ADD_REMOVE_IN_BACKGROUND" value="true" />
-    <option name="PERFORM_ROLLBACK_IN_BACKGROUND" value="false" />
-    <option name="CHECK_LOCALLY_CHANGED_CONFLICTS_IN_BACKGROUND" value="false" />
-    <option name="CHANGED_ON_SERVER_INTERVAL" value="60" />
-    <option name="SHOW_ONLY_CHANGED_IN_SELECTION_DIFF" value="true" />
-    <option name="CHECK_COMMIT_MESSAGE_SPELLING" value="true" />
-    <option name="DEFAULT_PATCH_EXTENSION" value="patch" />
-    <option name="SHORT_DIFF_HORIZONTALLY" value="true" />
-    <option name="SHORT_DIFF_EXTRA_LINES" value="2" />
-    <option name="SOFT_WRAPS_IN_SHORT_DIFF" value="true" />
-    <option name="INCLUDE_TEXT_INTO_PATCH" value="false" />
-    <option name="INCLUDE_TEXT_INTO_SHELF" value="false" />
-    <option name="SHOW_FILE_HISTORY_DETAILS" value="true" />
-    <option name="SHOW_VCS_ERROR_NOTIFICATIONS" value="true" />
-    <option name="SHOW_DIRTY_RECURSIVELY" value="false" />
-    <option name="LIMIT_HISTORY" value="true" />
-    <option name="MAXIMUM_HISTORY_ROWS" value="1000" />
-    <option name="UPDATE_FILTER_SCOPE_NAME" />
-    <option name="USE_COMMIT_MESSAGE_MARGIN" value="false" />
-    <option name="COMMIT_MESSAGE_MARGIN_SIZE" value="72" />
-    <option name="WRAP_WHEN_TYPING_REACHES_RIGHT_MARGIN" value="false" />
-    <option name="FORCE_NON_EMPTY_COMMENT" value="false" />
-    <option name="CLEAR_INITIAL_COMMIT_MESSAGE" value="false" />
-    <option name="LAST_COMMIT_MESSAGE" />
-    <option name="MAKE_NEW_CHANGELIST_ACTIVE" value="false" />
-    <option name="OPTIMIZE_IMPORTS_BEFORE_PROJECT_COMMIT" value="false" />
-    <option name="CHECK_FILES_UP_TO_DATE_BEFORE_COMMIT" value="false" />
-    <option name="REFORMAT_BEFORE_PROJECT_COMMIT" value="false" />
-    <option name="REFORMAT_BEFORE_FILE_COMMIT" value="false" />
-    <option name="FILE_HISTORY_DIALOG_COMMENTS_SPLITTER_PROPORTION" value="0.8" />
-    <option name="FILE_HISTORY_DIALOG_SPLITTER_PROPORTION" value="0.5" />
-    <option name="ACTIVE_VCS_NAME" />
-    <option name="UPDATE_GROUP_BY_PACKAGES" value="false" />
-    <option name="UPDATE_GROUP_BY_CHANGELIST" value="false" />
-    <option name="UPDATE_FILTER_BY_SCOPE" value="false" />
-    <option name="SHOW_FILE_HISTORY_AS_TREE" value="false" />
-    <option name="FILE_HISTORY_SPLITTER_PROPORTION" value="0.6" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager />
@@ -506,106 +436,102 @@
   <component name="editorHistoryManager">
     <entry file="file://$PROJECT_DIR$/Classes/Controller/PackageController.php">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="353" column="62" selection-start="10323" selection-end="10323" vertical-scroll-proportion="0.0">
+        <state line="353" column="62" selection-start="10323" selection-end="10323" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="0">
           <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/Resources/Private/Backend/Templates/Package/List.html">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="60" column="29" selection-start="2024" selection-end="2024" vertical-scroll-proportion="0.0">
+        <state line="60" column="29" selection-start="2024" selection-end="2024" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="0">
           <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/.gitignore">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="0" column="0" selection-start="0" selection-end="0" vertical-scroll-proportion="0.0">
+        <state line="0" column="0" selection-start="0" selection-end="0" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="0">
           <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/../../../Codiad-Codiad-0124a26/config.php">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="44" column="2" selection-start="1451" selection-end="1451" vertical-scroll-proportion="0.0" />
+        <state line="44" column="2" selection-start="1451" selection-end="1451" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="0" />
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/../../../../web_governmentpackage-4.7.7/typo3conf/ext/cundd_composer/Documentation/Index.rst">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="0" column="0" selection-start="0" selection-end="0" vertical-scroll-proportion="0.0" />
+        <state line="0" column="0" selection-start="0" selection-end="0" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="0" />
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/../../../Codiad-Codiad-0124a26/config.php">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="44" column="2" selection-start="1451" selection-end="1451" vertical-scroll-proportion="0.5797101" />
+        <state line="44" column="2" selection-start="1451" selection-end="1451" vertical-scroll-proportion="0.5797101" vertical-offset="0" max-vertical-offset="0" />
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/.gitignore">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="70" column="0" selection-start="943" selection-end="943" vertical-scroll-proportion="0.0">
+        <state line="70" column="0" selection-start="943" selection-end="943" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="0">
           <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/../../../typo3/sysext/extbase/Classes/Utility/ExtensionUtility.php">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="204" column="27" selection-start="11502" selection-end="11502" vertical-scroll-proportion="0.369863">
-          <folding />
-        </state>
+        <state line="204" column="27" selection-start="11502" selection-end="11502" vertical-scroll-proportion="0.369863" vertical-offset="0" max-vertical-offset="0" />
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/ext_conf_template.txt">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="1" column="0" selection-start="128" selection-end="128" vertical-scroll-proportion="0.014164306">
-          <folding />
-        </state>
+        <state line="1" column="0" selection-start="128" selection-end="128" vertical-scroll-proportion="0.014164306" vertical-offset="0" max-vertical-offset="0" />
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/Resources/Private/Backend/Templates/Package/Install.html">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="0" column="0" selection-start="0" selection-end="0" vertical-scroll-proportion="0.0">
+        <state line="0" column="0" selection-start="0" selection-end="0" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="0">
           <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/ext_tables.php">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="16" column="115" selection-start="411" selection-end="411" vertical-scroll-proportion="-10.0">
+        <state line="16" column="115" selection-start="411" selection-end="411" vertical-scroll-proportion="0.0" vertical-offset="240" max-vertical-offset="960">
           <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/Resources/Private/Backend/Templates/Package/Update.html">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="31" column="0" selection-start="771" selection-end="840" vertical-scroll-proportion="-19.375">
+        <state line="31" column="0" selection-start="771" selection-end="840" vertical-scroll-proportion="0.0" vertical-offset="465" max-vertical-offset="585">
           <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/Resources/Private/Backend/Templates/Package/List.html">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="81" column="11" selection-start="2694" selection-end="2694" vertical-scroll-proportion="-40.0">
+        <state line="81" column="11" selection-start="2694" selection-end="2694" vertical-scroll-proportion="0.0" vertical-offset="1215" max-vertical-offset="1365">
           <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/Resources/Private/Backend/Templates/Package/ManualInstallation.html">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="26" column="20" selection-start="676" selection-end="676" vertical-scroll-proportion="-16.25">
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/Classes/Controller/PackageController.php">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="149" column="45" selection-start="3865" selection-end="3881" vertical-scroll-proportion="50.408165">
+        <state line="26" column="20" selection-start="676" selection-end="676" vertical-scroll-proportion="0.0" vertical-offset="390" max-vertical-offset="675">
           <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/ext_emconf.php">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="23" column="21" selection-start="759" selection-end="759" vertical-scroll-proportion="0.22015655">
+        <state line="23" column="21" selection-start="759" selection-end="759" vertical-scroll-proportion="0.0" vertical-offset="345" max-vertical-offset="765">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Classes/Controller/PackageController.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="416" column="5" selection-start="12176" selection-end="12176" vertical-scroll-proportion="0.0" vertical-offset="5910" max-vertical-offset="10335">
           <folding />
         </state>
       </provider>

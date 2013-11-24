@@ -146,6 +146,7 @@ class Tx_CunddComposer_Controller_PackageController extends Tx_Extbase_MVC_Contr
 			. '--no-ansi '
 			. '--verbose '
 			. '--profile '
+			. '--dev '
 			. '--optimize-autoloader';
 		$this->view->assign('manualInstallTip', $fullCommand);
 
@@ -341,23 +342,69 @@ class Tx_CunddComposer_Controller_PackageController extends Tx_Extbase_MVC_Contr
 
 		$this->makeSureTempPathExists();
 		$fullCommand = $this->getPHPExecutable() . ' '
-			. '-c ' . php_ini_loaded_file() . ' '
-			. '"' . $pathToComposer . '" ' . $command . ' --working-dir '
-			. '"' . $this->getTempPath() . '" '
-			. '--no-interaction '
-			. '--no-ansi '
+//			. '-c ' . php_ini_loaded_file() . ' '
+			. '"' . $pathToComposer . '" ' . $command . ' '
+			. '--working-dir ' . '"' . $this->getTempPath() . '" '
+//			. '--no-interaction '
+//			. '--no-ansi '
 			. '--verbose '
-			. '--profile '
-			. '--optimize-autoloader '
-			. ($dev ? '--dev ' : '')
-			. '2>&1';
+//			. '--profile '
+//			. '--optimize-autoloader '
+//			. ($dev ? '--dev ' : '')
+			. '2>&1'
+		;
 
 		$fullCommand = 'COMPOSER_HOME=' . $this->getTempPath() . ' ' . $fullCommand;
 
-		$output = shell_exec($fullCommand);
+		$output = $this->executeShellCommand($fullCommand);
 
 		$this->pd($fullCommand);
 		$this->pd($output);
+		return $output;
+	}
+
+	/**
+	 * Execute the shell command
+	 *
+	 * @param string $fullCommand Full composer command
+	 * @return string
+	 */
+	protected function executeShellCommand($fullCommand) {
+		$useShellExec = FALSE;
+		if ($useShellExec) {
+			return shell_exec($fullCommand);
+		}
+
+		$output = '';
+		$descriptorSpec = array(
+			0 => array('pipe', 'r'),  // stdin is a pipe that the child will read from
+			1 => array('pipe', 'w'),  // stdout is a pipe that the child will write to
+			2 => array('pipe', sys_get_temp_dir() . '/error-output.txt', 'a') // stderr is a file to write to
+		);
+
+		$cwd = $this->getTempPath();
+		$env = $_ENV;
+
+		$process = proc_open($fullCommand, $descriptorSpec, $pipes, $cwd, $env);
+
+		if (is_resource($process)) {
+			// $pipes now looks like this:
+			// 0 => writeable handle connected to child stdin
+			// 1 => readable handle connected to child stdout
+			// Any error output will be appended to /tmp/error-output.txt
+
+			// fwrite($pipes[0], '<?php print_r($_ENV); ? >');
+			fclose($pipes[0]);
+
+			$output = stream_get_contents($pipes[1]);
+			fclose($pipes[1]);
+
+			// It is important that you close any pipes before calling
+			// proc_close in order to avoid a deadlock
+			$returnValue = proc_close($process);
+
+			$this->pd('Return value:', $returnValue);
+		}
 		return $output;
 	}
 

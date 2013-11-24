@@ -147,12 +147,7 @@ class Tx_CunddComposer_Domain_Repository_PackageRepository extends Tx_Extbase_Pe
 	 */
 	public function getComposerFiles() {
 		$composerFiles = array();
-		if (is_callable(array('t3lib_extMgm', 'getEnabledExtensionList'))) {
-			$extensions = explode(',', t3lib_extMgm::getEnabledExtensionList());
-		} else {
-			$extensions = \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::getLoadedExtensionListArray();
-		}
-
+		$extensions = explode(',', t3lib_extMgm::getEnabledExtensionList());
 
 		foreach ($extensions as $extension) {
 			$composerFilePath = t3lib_extMgm::extPath($extension) . '/composer.json';
