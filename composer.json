@@ -2,7 +2,7 @@
     "name": "cundd/composer",
     "description": "Composer for TYPO3 CMS",
     "keywords": ["typo3cms"],
-    "type": "library",
+    "type": "typo3-cms-extension",
     "license": "MIT",
     "homepage": "https://github.com/cundd/CunddComposer",
     "authors": [
