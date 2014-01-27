@@ -17,5 +17,9 @@
     },
     "autoload": {
         "psr-0": { "CunddComposer": "Classes/" }
-    }
+    },
+	"replace": {
+		"cundd_composer": "*",
+		"cundd.composer": "*"
+	}
 }

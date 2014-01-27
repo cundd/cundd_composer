@@ -62,6 +62,13 @@ class Tx_CunddComposer_Domain_Repository_PackageRepository extends Tx_Extbase_Pe
 	protected $composerJson;
 
 	/**
+	 * Name of the composer JSON file
+	 *
+	 * @var string
+	 */
+	protected $composerFileName = 'cundd_composer.json';
+
+	/**
 	 * The property mapper
 	 *
 	 * @var Tx_Extbase_Property_PropertyMapper
@@ -77,7 +84,9 @@ class Tx_CunddComposer_Domain_Repository_PackageRepository extends Tx_Extbase_Pe
 
 	/**
 	 * Inject the property mapper
-	 * @param  Tx_Extbase_Property_PropertyMapper $propertyMappingConfigurationBuilder
+	 *
+	 * @param Tx_Extbase_Property_PropertyMapper $propertyMapper
+	 * @internal param \Tx_Extbase_Property_PropertyMapper $propertyMappingConfigurationBuilder
 	 * @return  void
 	 */
 	public function injectPropertyMapper(Tx_Extbase_Property_PropertyMapper $propertyMapper) {
@@ -147,12 +156,30 @@ class Tx_CunddComposer_Domain_Repository_PackageRepository extends Tx_Extbase_Pe
 	 */
 	public function getComposerFiles() {
 		$composerFiles = array();
-		$extensions = explode(',', t3lib_extMgm::getEnabledExtensionList());
+		if (version_compare(TYPO3_version, '6.1.99') > 0) {
+			/** @var \TYPO3\CMS\Core\Package\PackageManager $packageManager */
+			$packageManager = $this->objectManager->get('TYPO3\\CMS\\Core\\Package\\PackageManager');
+			$extensions = $packageManager->getActivePackages();
 
-		foreach ($extensions as $extension) {
-			$composerFilePath = t3lib_extMgm::extPath($extension) . '/composer.json';
-			if (file_exists($composerFilePath)) {
-				$composerFiles[$extension] = $composerFilePath;
+			/** @var \TYPO3\CMS\Core\Package\Package $extension */
+			foreach ($extensions as $extension) {
+				$extensionKey = $extension->getPackageKey();
+				$composerFilePath = $extension->getPackagePath() . '/' . $this->composerFileName;
+				if (file_exists($composerFilePath)) {
+					$composerFiles[$extensionKey] = $composerFilePath;
+				}
+			}
+		} else {
+			$extensions = explode(',', t3lib_extMgm::getEnabledExtensionList());
+			foreach ($extensions as $extension) {
+				$extensionDirectoryPath = t3lib_extMgm::extPath($extension) . '/';
+				$composerFilePath = $extensionDirectoryPath . $this->composerFileName;
+				if (file_exists($composerFilePath)) {
+					$composerFiles[$extension] = $composerFilePath;
+				} else if (file_exists($extensionDirectoryPath . 'composer.json')) {
+					$composerFilePath = $extensionDirectoryPath . 'composer.json';
+					$composerFiles[$extension] = $composerFilePath;
+				}
 			}
 		}
 		return $composerFiles;
@@ -197,7 +224,8 @@ class Tx_CunddComposer_Domain_Repository_PackageRepository extends Tx_Extbase_Pe
 								$currentJsonData['autoload'][$autoloadType] = $autoLoadConfig;
 								break;
 							default:
-								throw new \DomainException('Exception while adjusting autoload paths in' . $composerFilePath . ': unknown type "' . $autoloadType . '"');
+								if (!$graceful) throw new \DomainException('Exception while adjusting autoload paths in' . $composerFilePath . ': unknown type "' . $autoloadType . '"');
+
 						}
 					}
 				}

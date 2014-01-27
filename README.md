@@ -10,6 +10,16 @@ Installation
 Upload the extension files to your TYPO3 installation's extension folder and install Cundd Composer as usual through the Extension manager.
 
 
+Upgrade to TYPO3 6.2
+--------------------
+
+TYPO3 6.2 will parse the extensions `composer.json` files and retrieve different information from it. TYPO3's new Package Manager also allows the definition of dependencies. Unfortunately these dependencies are limited to real TYPO3 extension. If you want to install an extension, which requires a non-TYPO3 package in `composer.json`, the Package Manager tries to resolve this dependency in vain and the installation fails.
+
+To work around this issue cundd_composer will look for the file `cundd_composer.json` instead of `composer.json`. For legacy reasons cundd_composer will still use `composer.json` TYPO3 versions below 6.2. 
+
+**Please check the installed extensions before upgrading to TYPO3 6.2.**
+
+
 Usage
 -----
 
