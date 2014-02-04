@@ -8,4 +8,4 @@ allowInstallAssets = 1
 automaticallyInstallAssets = 1
 
 # cat=basic/configuration; type=string; label=Asset paths: Defines which paths inside a package will be used as Asset
-assetPaths = Resources/Public/,build,lib,js,font,less,sass,scss
+assetPaths = Resources/Public/,build,lib,js,font,less,sass,scss,fonts
