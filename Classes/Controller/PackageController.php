@@ -97,9 +97,7 @@ class Tx_CunddComposer_Controller_PackageController extends Tx_Extbase_MVC_Contr
 	}
 
 	/**
-	 * initializeAction
-	 *
-	 * @return
+	 * Initialize the action
 	 */
 	public function initializeAction() {
 		if (isset($this->settings['minimum-stability'])) {
@@ -113,6 +111,7 @@ class Tx_CunddComposer_Controller_PackageController extends Tx_Extbase_MVC_Contr
 	 * @return void
 	 */
 	public function listAction() {
+		$packages = NULL;
 		$mergedComposerJson = NULL;
 		$mergedComposerJsonString = '';
 
@@ -125,17 +124,43 @@ class Tx_CunddComposer_Controller_PackageController extends Tx_Extbase_MVC_Contr
 
 		// Set the development mode to TRUE to see the dev-requirements
 		$this->developmentDependencies = TRUE;
-		$mergedComposerJson = $this->getMergedComposerJson();
-
-		$mergedComposerJsonString = $this->formatJSON($mergedComposerJson);
-
-		$this->view->assign('mergedComposerJson', $mergedComposerJson);
-		$this->view->assign('mergedComposerJsonString', $mergedComposerJsonString);
-		$this->view->assign('usedPHPBin', $this->getPHPExecutable());
+		$this->writeMergedComposerJson();
+		$this->assignViewVariables();
 
 		if (!$this->getPHPExecutable()) {
 			$this->view->assign('error', 'PHP executable could not be found');
 		}
+	}
+
+	/**
+	 * Assign the view variables
+	 */
+	protected function assignViewVariables() {
+		$command = 'install';
+		$this->makeSureTempPathExists();
+		$fullCommand = $this->getPHPExecutable() . ' '
+			. '-c ' . php_ini_loaded_file() . ' '
+			. '"' . $this->getComposerPath() . '" ' . $command . ' --working-dir '
+			. '"' . $this->getTempPath() . '" '
+			. '--no-interaction '
+			. '--no-ansi '
+			. '--verbose '
+			. '--profile '
+			. '--dev '
+			. '--optimize-autoloader';
+		$this->view->assign('manualInstallTip', $fullCommand);
+
+
+		$this->view->assign('usedPHPBin', $this->getPHPExecutable());
+		$this->view->assign('workingDirectory', $this->getTempPath());
+		$this->view->assign('composerPath', $this->getComposerPath());
+
+		// The merged composer install
+		$mergedComposerJson = $this->getMergedComposerJson();
+		$mergedComposerJsonString = $this->formatJSON($mergedComposerJson);
+		$this->view->assign('mergedComposerJson', $mergedComposerJson);
+		$this->view->assign('mergedComposerJsonString', $mergedComposerJsonString);
+
 	}
 
 	/**
@@ -157,6 +182,7 @@ class Tx_CunddComposer_Controller_PackageController extends Tx_Extbase_MVC_Contr
 	 * Returns the composer.json array merged with the template
 	 *
 	 * @param boolean $development Indicates if the dev-requirements should be merged
+	 * @throws UnexpectedValueException if the composer.json template could not be loaded
 	 * @return array
 	 */
 	public function getMergedComposerJson($development = FALSE) {
@@ -208,7 +234,7 @@ class Tx_CunddComposer_Controller_PackageController extends Tx_Extbase_MVC_Contr
 		return $this->getMergedComposerData('require-dev');
 	}
 
-        /**
+    /**
 	 * Retrieve the merged composer.json autoload settings
 	 *
 	 * @return array<string>
@@ -250,9 +276,10 @@ class Tx_CunddComposer_Controller_PackageController extends Tx_Extbase_MVC_Contr
 	 *
 	 * Thanks to Gabriel Sobrinho http://www.php.net/manual/en/function.array-merge-recursive.php#92195
 	 *
-	 * @param array $array1
-	 * @param array $array2
+	 * @param array   $array1
+	 * @param array   $array2
 	 * @param boolean $strict If set to TRUE an exception will be thrown if a key already is set with a different value
+	 * @throws UnexpectedValueException if the strict mode is enabled and a key already exists
 	 * @return  array Returns the merged array
 	 */
 	static protected function arrayMergeRecursive($array1, $array2, $strict = FALSE) {
@@ -306,7 +333,7 @@ class Tx_CunddComposer_Controller_PackageController extends Tx_Extbase_MVC_Contr
 	 */
 	protected function executeComposerCommand($command, $dev = -1) {
 		$output = '';
-		$pathToComposer = $this->getPathToResource() . '/Private/PHP/composer.phar';
+		$pathToComposer = $this->getComposerPath();
 
 		if ($dev === -1) {
 			$dev = $this->developmentDependencies;
@@ -315,20 +342,21 @@ class Tx_CunddComposer_Controller_PackageController extends Tx_Extbase_MVC_Contr
 
 		$this->makeSureTempPathExists();
 		$fullCommand = $this->getPHPExecutable() . ' '
-			. '-c ' . php_ini_loaded_file() . ' '
-			. '"' . $pathToComposer . '" ' . $command . ' --working-dir '
-			. '"' . $this->getTempPath() . '" '
-			. '--no-interaction '
-			. '--no-ansi '
+//			. '-c ' . php_ini_loaded_file() . ' '
+			. '"' . $pathToComposer . '" ' . $command . ' '
+			. '--working-dir ' . '"' . $this->getTempPath() . '" '
+//			. '--no-interaction '
+//			. '--no-ansi '
 			. '--verbose '
-			. '--profile '
-			. '--optimize-autoloader '
-			. ($dev ? '--dev ' : '')
-			. '2>&1';
+//			. '--profile '
+//			. '--optimize-autoloader '
+//			. ($dev ? '--dev ' : '')
+			. '2>&1'
+		;
 
 		$fullCommand = 'COMPOSER_HOME=' . $this->getTempPath() . ' ' . $fullCommand;
 
-		$output = shell_exec($fullCommand);
+		$output = $this->executeShellCommand($fullCommand);
 
 		$this->pd($fullCommand);
 		$this->pd($output);
@@ -336,10 +364,63 @@ class Tx_CunddComposer_Controller_PackageController extends Tx_Extbase_MVC_Contr
 	}
 
 	/**
+	 * Execute the shell command
+	 *
+	 * @param string $fullCommand Full composer command
+	 * @return string
+	 */
+	protected function executeShellCommand($fullCommand) {
+		$useShellExec = FALSE;
+		if ($useShellExec) {
+			return shell_exec($fullCommand);
+		}
+
+		$output = '';
+		$descriptorSpec = array(
+			0 => array('pipe', 'r'),  // stdin is a pipe that the child will read from
+			1 => array('pipe', 'w'),  // stdout is a pipe that the child will write to
+			2 => array('pipe', sys_get_temp_dir() . '/error-output.txt', 'a') // stderr is a file to write to
+		);
+
+		$cwd = $this->getTempPath();
+		$env = $_ENV;
+
+		$process = proc_open($fullCommand, $descriptorSpec, $pipes, $cwd, $env);
+
+		if (is_resource($process)) {
+			// $pipes now looks like this:
+			// 0 => writeable handle connected to child stdin
+			// 1 => readable handle connected to child stdout
+			// Any error output will be appended to /tmp/error-output.txt
+
+			// fwrite($pipes[0], '<?php print_r($_ENV); ? >');
+			fclose($pipes[0]);
+
+			$output = stream_get_contents($pipes[1]);
+			fclose($pipes[1]);
+
+			// It is important that you close any pipes before calling
+			// proc_close in order to avoid a deadlock
+			$returnValue = proc_close($process);
+
+			$this->pd('Return value:', $returnValue);
+		}
+		return $output;
+	}
+
+	/**
+	 * Returns the path to the composer phar
+	 *
+	 * @return string
+	 */
+	public function getComposerPath() {
+		return $this->getPathToResource() . '/Private/PHP/composer.phar';
+	}
+
+	/**
 	 * Returns the path to the PHP executable
 	 *
-	 * @var string
-	 * @return
+	 * @return string
 	 */
 	public function getPHPExecutable() {
 		if (!$this->phpExecutable) {
@@ -360,8 +441,7 @@ class Tx_CunddComposer_Controller_PackageController extends Tx_Extbase_MVC_Contr
 	 * Sets the path to the PHP executable
 	 *
 	 * @param $phpExecutable
-	 * @var string
-	 * @return
+	 * @return void
 	 */
 	public function setPHPExecutable($phpExecutable) {
 		$this->phpExecutable = $phpExecutable;
@@ -420,6 +500,8 @@ class Tx_CunddComposer_Controller_PackageController extends Tx_Extbase_MVC_Contr
 
 	/**
 	 * Make sure that the temporary directory exists
+	 *
+	 * @throws RuntimeException if the temporary directory does not exist
 	 * @return void
 	 */
 	protected function makeSureTempPathExists() {
@@ -437,6 +519,7 @@ class Tx_CunddComposer_Controller_PackageController extends Tx_Extbase_MVC_Contr
 
 	/**
 	 * Format the given JSON data
+	 *
 	 * @param  array $json
 	 * @return string
 	 */
@@ -457,6 +540,16 @@ class Tx_CunddComposer_Controller_PackageController extends Tx_Extbase_MVC_Contr
 		}
 		$jsonString = rtrim($jsonString);
 		return $jsonString;
+	}
+
+	/**
+	 * action to show the manual installation
+	 *
+	 * @return void
+	 */
+	public function manualInstallationAction() {
+		$this->writeMergedComposerJson();
+		$this->assignViewVariables();
 	}
 
 	/**
@@ -537,7 +630,7 @@ class Tx_CunddComposer_Controller_PackageController extends Tx_Extbase_MVC_Contr
 	 * @param boolean $development Indicates if the dev flag should be specified
 	 * @return void
 	 */
-	public function updateAction($development = FALSE) {
+	public function updateAction($development = TRUE) {
 		$this->developmentDependencies = $development;
 
 		$didWriteComposerJson = $this->writeMergedComposerJson();
