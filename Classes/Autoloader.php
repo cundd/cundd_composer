@@ -38,7 +38,9 @@ class Autoloader {
 	 * @return void
 	 */
 	static public function register() {
-		include_once(__DIR__ . '/../vendor/autoload.php');
+		if (file_exists(__DIR__ . '/../vendor/autoload.php')) {
+			include_once(__DIR__ . '/../vendor/autoload.php');
+		}
 	}
 }
 class_alias('Cundd\\Composer\\Autoloader', 'Tx_CunddComposer_Autoloader');
