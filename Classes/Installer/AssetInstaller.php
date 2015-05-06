@@ -36,13 +36,6 @@ use Tx_CunddComposer_Controller_PackageController as PackageController;
 class Tx_CunddComposer_Installer_AssetInstaller
 {
     /**
-     * Package controller
-     *
-     * @var PackageController
-     */
-    protected $controller = null;
-
-    /**
      * An array of paths to look for assets inside the installed packages
      *
      * @var array
@@ -56,17 +49,6 @@ class Tx_CunddComposer_Installer_AssetInstaller
      * @inject
      */
     protected $definitionWriter;
-
-    /**
-     * Inject the Package Controller
-     *
-     * @param PackageController $controller
-     * @return void
-     */
-    public function manuallyInjectController(PackageController $controller)
-    {
-        $this->controller = $controller;
-    }
 
     /**
      * Creates symlinks for installed assets
@@ -85,16 +67,12 @@ class Tx_CunddComposer_Installer_AssetInstaller
      */
     public function installAssets()
     {
-        if (!$this->controller->getConfiguration('allowInstallAssets')) {
-            return array();
-        }
         $installedAssets = array();
         $mergedComposerJson = $this->definitionWriter->getMergedComposerJson(true);
 
-
         // Remove the old links
         $assetsDirectoryPath = $this->getAssetsDirectoryPath();
-        $this->removeDirectoryRecursive($assetsDirectoryPath);
+        Tx_CunddComposer_GeneralUtility::removeDirectoryRecursive($assetsDirectoryPath);
         $this->createDirectoryIfNotExists($assetsDirectoryPath);
         if (!file_exists($assetsDirectoryPath)) {
             throw new \RuntimeException(
@@ -125,7 +103,7 @@ class Tx_CunddComposer_Installer_AssetInstaller
     public function installAssetsOfPackages($requiredPackages)
     {
         $installedAssets = array();
-        $vendorDirectory = $this->getExtensionPath() . 'vendor/';
+        $vendorDirectory = Tx_CunddComposer_GeneralUtility::getExtensionPath() . 'vendor/';
         $assetsDirectoryPath = $this->getAssetsDirectoryPath();
 
         foreach ($requiredPackages as $package => $version) {
@@ -193,7 +171,7 @@ class Tx_CunddComposer_Installer_AssetInstaller
      */
     public function getRelativePathOfUri($uri)
     {
-        return str_replace($this->getExtensionPath(), '', $uri);
+        return str_replace(Tx_CunddComposer_GeneralUtility::getExtensionPath(), '', $uri);
     }
 
     /**
@@ -239,19 +217,25 @@ class Tx_CunddComposer_Installer_AssetInstaller
      */
     public function getAssetPaths()
     {
-        if (!$this->assetPaths) {
-            $assetPaths = $this->controller->getConfiguration('assetPaths');
+        return $this->assetPaths;
+    }
+
+    /**
+     * Sets the asset paths
+     *
+     * @param array|string $assetPaths
+     */
+    public function setAssetPaths($assetPaths){
+        $this->assetPaths = array();
             if ($assetPaths) {
                 $assetPaths = explode(',', $assetPaths);
-                $assetPaths = array_map(function ($path) {
+                $this->assetPaths = array_map(function ($path) {
                     $path = trim($path);
                     return $path;
                 }, $assetPaths);
-                Tx_CunddComposer_GeneralUtility::pd($assetPaths);
-                $this->assetPaths = $assetPaths;
+                Tx_CunddComposer_GeneralUtility::pd($this->assetPaths);
             }
-        }
-        return $this->assetPaths;
+
     }
 
     /**
@@ -261,7 +245,7 @@ class Tx_CunddComposer_Installer_AssetInstaller
      */
     public function getAssetsDirectoryPath()
     {
-        return $this->getPathToResource() . 'Public/Assets/';
+        return Tx_CunddComposer_GeneralUtility::getPathToResource() . 'Public/Assets/';
     }
 
     /**
@@ -284,69 +268,5 @@ class Tx_CunddComposer_Installer_AssetInstaller
             return @mkdir($directory, $permission, true);
         }
         return true;
-    }
-
-    /**
-     * Remove all files in the given directory
-     *
-     * @param  string $directory
-     * @return boolean TRUE on success, otherwise FALSE
-     */
-    public function removeDirectoryRecursive($directory)
-    {
-        $success = true;
-        if (!file_exists($directory)) {
-            return false;
-        }
-
-        $iterator = new RecursiveIteratorIterator(
-            new RecursiveDirectoryIterator($directory),
-            RecursiveIteratorIterator::CHILD_FIRST
-        );
-        foreach ($iterator as $path) {
-            if ($path->isLink()) {
-                $success *= unlink($path->getPathname());
-            } else {
-                if ($path->isDir()) {
-                    $success *= rmdir($path->getPathname());
-                } else {
-                    $success *= unlink($path->getPathname());
-                }
-            }
-        }
-        if (is_dir($directory)) {
-            rmdir($directory);
-        }
-        return $success;
-    }
-
-    /**
-     * Returns the path to the extensions base
-     *
-     * @return string
-     */
-    public function getExtensionPath()
-    {
-        return __DIR__ . '/../../';
-    }
-
-    /**
-     * Returns the path to the resources folder
-     *
-     * @return string
-     */
-    public function getPathToResource()
-    {
-        return $this->getExtensionPath() . 'Resources/';
-    }
-
-    /**
-     * Returns the path to the temporary directory
-     *
-     * @return string
-     */
-    public function getTempPath()
-    {
-        return $this->getPathToResource() . 'Private/Temp/';
     }
 }

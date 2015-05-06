@@ -115,4 +115,38 @@ class Tx_CunddComposer_GeneralUtility
     {
         return self::getPathToResource() . 'Private/Temp/';
     }
+
+    /**
+     * Remove all files in the given directory
+     *
+     * @param  string $directory
+     * @return boolean TRUE on success, otherwise FALSE
+     */
+    public static function removeDirectoryRecursive($directory)
+    {
+        $success = true;
+        if (!file_exists($directory)) {
+            return false;
+        }
+
+        $iterator = new RecursiveIteratorIterator(
+            new RecursiveDirectoryIterator($directory),
+            RecursiveIteratorIterator::CHILD_FIRST
+        );
+        foreach ($iterator as $path) {
+            if ($path->isLink()) {
+                $success *= unlink($path->getPathname());
+            } else {
+                if ($path->isDir()) {
+                    $success *= rmdir($path->getPathname());
+                } else {
+                    $success *= unlink($path->getPathname());
+                }
+            }
+        }
+        if (is_dir($directory)) {
+            rmdir($directory);
+        }
+        return $success;
+    }
 }
