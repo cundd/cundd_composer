@@ -50,6 +50,14 @@ class Tx_CunddComposer_Installer_AssetInstaller
     protected $assetPaths = array();
 
     /**
+     * Definition writer
+     *
+     * @var \Tx_CunddComposer_Definition_Writer
+     * @inject
+     */
+    protected $definitionWriter;
+
+    /**
      * Inject the Package Controller
      *
      * @param PackageController $controller
@@ -81,7 +89,7 @@ class Tx_CunddComposer_Installer_AssetInstaller
             return array();
         }
         $installedAssets = array();
-        $mergedComposerJson = $this->controller->getMergedComposerJson(true);
+        $mergedComposerJson = $this->definitionWriter->getMergedComposerJson(true);
 
 
         // Remove the old links
@@ -137,7 +145,7 @@ class Tx_CunddComposer_Installer_AssetInstaller
             foreach ($allAssetPaths as $currentAssetPath) {
                 $packagePublicResourcePath = $packagePath . $currentAssetPath;
 
-                $this->controller->pd('Checking if "' . $packagePublicResourcePath . '" exists: ' . (file_exists($packagePublicResourcePath) ? 'Yes' : 'No'));
+                Tx_CunddComposer_GeneralUtility::pd('Checking if "' . $packagePublicResourcePath . '" exists: ' . (file_exists($packagePublicResourcePath) ? 'Yes' : 'No'));
 
                 // Check if the public resource folders exist
                 if (file_exists($packagePublicResourcePath)) {
@@ -166,9 +174,9 @@ class Tx_CunddComposer_Installer_AssetInstaller
                         $symlinkSource = './../../../../' . $this->getRelativePathOfUri($packagePublicResourcePath);
                         $symlinkCreated = symlink($symlinkSource, $symlinkName);
                         if ($symlinkCreated) {
-                            $this->controller->pd('Created symlink of "' . $packagePublicResourcePath . '" to "' . $symlinkName . '"');
+                            Tx_CunddComposer_GeneralUtility::pd('Created symlink of "' . $packagePublicResourcePath . '" to "' . $symlinkName . '"');
                         } else {
-                            $this->controller->pd('Could not create symlink of "' . $packagePublicResourcePath . '" to "' . $symlinkName . '"');
+                            Tx_CunddComposer_GeneralUtility::pd('Could not create symlink of "' . $packagePublicResourcePath . '" to "' . $symlinkName . '"');
                         }
                     }
                 }
@@ -239,7 +247,7 @@ class Tx_CunddComposer_Installer_AssetInstaller
                     $path = trim($path);
                     return $path;
                 }, $assetPaths);
-                $this->controller->pd($assetPaths);
+                Tx_CunddComposer_GeneralUtility::pd($assetPaths);
                 $this->assetPaths = $assetPaths;
             }
         }
