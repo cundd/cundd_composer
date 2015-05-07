@@ -24,7 +24,8 @@
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
-use Tx_CunddComposer_Controller_PackageController as PackageController;
+use Tx_CunddComposer_GeneralUtility as ComposerGeneralUtility;
+
 
 /**
  *
@@ -35,6 +36,7 @@ use Tx_CunddComposer_Controller_PackageController as PackageController;
  */
 class Tx_CunddComposer_Definition_Writer
 {
+
     /**
      * The minimum stability
      * http://getcomposer.org/doc/04-schema.md#minimum-stability
@@ -75,8 +77,8 @@ class Tx_CunddComposer_Definition_Writer
         $composerJson = $this->getMergedComposerJson();
         $composerJson = json_encode($composerJson);
         if ($composerJson) {
-            $this->makeSureTempPathExists();
-            return file_put_contents(Tx_CunddComposer_GeneralUtility::getTempPath() . 'composer.json', $composerJson);
+            ComposerGeneralUtility::makeSureTempPathExists();
+            return file_put_contents(ComposerGeneralUtility::getTempPath() . 'composer.json', $composerJson);
         }
         return false;
     }
@@ -91,17 +93,17 @@ class Tx_CunddComposer_Definition_Writer
     public function getMergedComposerJson($development = false)
     {
         if (!$this->mergedComposerJson) {
-            $composerJson = file_get_contents(Tx_CunddComposer_GeneralUtility::getPathToResource() . 'Private/Templates/composer.json');
+            $composerJson = file_get_contents(ComposerGeneralUtility::getPathToResource() . 'Private/Templates/composer.json');
             if (!$composerJson) {
                 throw new UnexpectedValueException('Could not load the composer.json template file', 1355952845);
             }
-            $composerJson = str_replace('%EXT_PATH%', Tx_CunddComposer_GeneralUtility::getExtensionPath(), $composerJson);
-            $composerJson = str_replace('%RESOURCE_PATH%', Tx_CunddComposer_GeneralUtility::getPathToResource(), $composerJson);
+            $composerJson = str_replace('%EXT_PATH%', ComposerGeneralUtility::getExtensionPath(), $composerJson);
+            $composerJson = str_replace('%RESOURCE_PATH%', ComposerGeneralUtility::getPathToResource(), $composerJson);
             $composerJson = str_replace('%MINIMUM_STABILITY%', $this->minimumStability, $composerJson);
 
             $composerJson = json_decode($composerJson, true);
 
-            Tx_CunddComposer_GeneralUtility::pd($composerJson);
+            ComposerGeneralUtility::pd($composerJson, $this->getMergedComposerRequirements());
             $composerJson['require'] = $this->getMergedComposerRequirements();
             $composerJson['autoload'] = $this->getMergedComposerAutoload();
             $composerJson['repositories'] = $this->getMergedComposerData('repositories');
@@ -113,7 +115,7 @@ class Tx_CunddComposer_Definition_Writer
                 unset($composerJson['require-dev']);
             }
 
-            Tx_CunddComposer_GeneralUtility::pd($composerJson);
+            ComposerGeneralUtility::pd($composerJson);
             $this->mergedComposerJson = $composerJson;
         }
 
@@ -151,6 +153,49 @@ class Tx_CunddComposer_Definition_Writer
     }
 
     /**
+     * Returns if development dependencies should be included
+     *
+     * @return boolean
+     */
+    public function getIncludeDevelopmentDependencies()
+    {
+        return $this->developmentDependencies;
+    }
+
+    /**
+     * Sets if development dependencies should be included
+     *
+     * @param boolean $developmentDependencies
+     */
+    public function setIncludeDevelopmentDependencies($developmentDependencies)
+    {
+        $this->developmentDependencies = $developmentDependencies;
+    }
+
+    /**
+     * Returns the minimum stability
+     * http://getcomposer.org/doc/04-schema.md#minimum-stability
+     *
+     * @return string
+     */
+    public function getMinimumStability()
+    {
+        return $this->minimumStability;
+    }
+
+    /**
+     * Sets the minimum stability
+     * http://getcomposer.org/doc/04-schema.md#minimum-stability
+     *
+     * @param string $minimumStability
+     */
+    public function setMinimumStability($minimumStability)
+    {
+        $this->minimumStability = $minimumStability;
+    }
+
+
+    /**
      * Returns the merged composer.json data for the given key
      *
      * @param  string $key The key for which to merge the data
@@ -161,35 +206,16 @@ class Tx_CunddComposer_Definition_Writer
         $jsonData = array();
         $composerJson = $this->packageRepository->getComposerJson();
         foreach ($composerJson as $currentJsonData) {
+            ComposerGeneralUtility::pd($currentJsonData, isset($currentJsonData[$key]));
             if (isset($currentJsonData[$key])) {
                 $mergeData = $currentJsonData[$key];
                 if (is_array($mergeData)) {
-                    $jsonData = Tx_CunddComposer_GeneralUtility::arrayMergeRecursive($jsonData, $mergeData, false);
+                    ComposerGeneralUtility::pd($jsonData, $key);
+                    $jsonData = ComposerGeneralUtility::arrayMergeRecursive($jsonData, $mergeData, false);
+                    ComposerGeneralUtility::pd($jsonData);
                 }
             }
         }
         return $jsonData;
-    }
-
-
-    /**
-     * Make sure that the temporary directory exists
-     *
-     * @throws RuntimeException if the temporary directory does not exist
-     * @return void
-     */
-    public function makeSureTempPathExists()
-    {
-        $workingDir = Tx_CunddComposer_GeneralUtility::getTempPath();
-
-        // Check if the working/temporary directory exists
-        if (!file_exists($workingDir)) {
-            @mkdir($workingDir);
-
-            if (!file_exists($workingDir)) {
-                throw new RuntimeException('Working directory "' . $workingDir . '" doesn\'t exists and can not be created',
-                    1359541465);
-            }
-        }
     }
 }

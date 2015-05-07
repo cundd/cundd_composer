@@ -1,8 +1,9 @@
 <?php
-$extensionPath = t3lib_extMgm::extPath('cundd_composer');
+$extensionPath = TYPO3\CMS\Core\Utility\ExtensionManagementUtility::extPath('cundd_composer');
 return array(
 	'tx_cunddcomposer_autoloader' 	=> $extensionPath . 'Classes/Autoloader.php',
 	'Cundd\\Composer\\Autoloader' 	=> $extensionPath . 'Classes/Autoloader.php',
-	'Cundd\\Composer\\Controller\\PackageController' 	=> $extensionPath . 'Classes/Controller/PackageController.php',
+	'Cundd\\CunddComposer\\Autoloader' 	=> $extensionPath . 'Classes/Autoloader.php',
+    'tx_cunddcomposer_generalutility' 	=> $extensionPath . 'Classes/GeneralUtility.php',
 );
 ?>

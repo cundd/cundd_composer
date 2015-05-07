@@ -41,9 +41,13 @@ class Tx_CunddComposer_GeneralUtility
      */
     public static function pd($var1 = '__iresults_pd_noValue')
     {
+        $arguments = func_get_args();
         if (class_exists('Tx_Iresults')) {
-            $arguments = func_get_args();
             call_user_func_array(array('Tx_Iresults', 'pd'), $arguments);
+        } else {
+            foreach ($arguments as $argument) {
+                //\TYPO3\CMS\Extbase\Utility\DebuggerUtility::var_dump($argument);
+            }
         }
     }
 
@@ -107,6 +111,16 @@ class Tx_CunddComposer_GeneralUtility
     }
 
     /**
+     * Returns the path to the resources folder
+     *
+     * @return string
+     */
+    public static function getPathToVendorDirectory()
+    {
+        return self::getExtensionPath() . 'vendor/';
+    }
+
+    /**
      * Returns the path to the temporary directory
      *
      * @return string
@@ -114,6 +128,55 @@ class Tx_CunddComposer_GeneralUtility
     public static function getTempPath()
     {
         return self::getPathToResource() . 'Private/Temp/';
+    }
+
+    /**
+     * Returns the path to the composer phar
+     *
+     * @return string
+     */
+    public static function getComposerPath()
+    {
+        return self::getPathToResource() . '/Private/PHP/composer.phar';
+    }
+
+    /**
+     * Create the given directory if it does not already exist
+     *
+     * @param  string $directory
+     * @return boolean Returns TRUE if the directory exists, or could be created, otherwise FALSE
+     */
+    public static function createDirectoryIfNotExists($directory)
+    {
+        // Check if the directory exists
+        if (!file_exists($directory)) {
+            $permission = 0777;
+            if (isset($GLOBALS['TYPO3_CONF_VARS'])
+                && isset($GLOBALS['TYPO3_CONF_VARS']['BE']['folderCreateMask'])
+                && $GLOBALS['TYPO3_CONF_VARS']['BE']['folderCreateMask']
+            ) {
+                $permission = octdec($GLOBALS['TYPO3_CONF_VARS']['BE']['folderCreateMask']);
+            }
+            return @mkdir($directory, $permission, true);
+        }
+        return true;
+    }
+
+    /**
+     * Make sure that the temporary directory exists
+     *
+     * @throws RuntimeException if the temporary directory does not exist
+     * @return void
+     */
+    public static function makeSureTempPathExists()
+    {
+        $workingDir = self::getTempPath();
+
+        // Check if the working/temporary directory exists
+        if (!self::createDirectoryIfNotExists($workingDir)) {
+            throw new RuntimeException('Working directory "' . $workingDir . '" doesn\'t exists and can not be created',
+                1359541465);
+        }
     }
 
     /**

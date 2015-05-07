@@ -25,6 +25,8 @@ namespace Cundd\Composer;
  *  This copyright notice MUST APPEAR in all copies of the script!
  */
 
+use Tx_CunddComposer_GeneralUtility as ComposerGeneralUtility;
+
 /**
  *
  *
@@ -38,10 +40,11 @@ class Autoloader {
 	 * @return void
 	 */
 	static public function register() {
-		if (file_exists(__DIR__ . '/../vendor/autoload.php')) {
-			include_once(__DIR__ . '/../vendor/autoload.php');
+		if (file_exists(ComposerGeneralUtility::getPathToVendorDirectory() .  'autoload.php')) {
+			include_once(ComposerGeneralUtility::getPathToVendorDirectory() . 'autoload.php');
 		}
 	}
 }
 class_alias('Cundd\\Composer\\Autoloader', 'Tx_CunddComposer_Autoloader');
+class_alias('Cundd\\CunddComposer\\Autoloader', 'Tx_CunddComposer_Autoloader');
 ?>

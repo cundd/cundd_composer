@@ -24,7 +24,7 @@
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
-use Tx_CunddComposer_Controller_PackageController as PackageController;
+use Tx_CunddComposer_GeneralUtility as ComposerGeneralUtility;
 
 /**
  *
@@ -72,8 +72,8 @@ class Tx_CunddComposer_Installer_AssetInstaller
 
         // Remove the old links
         $assetsDirectoryPath = $this->getAssetsDirectoryPath();
-        Tx_CunddComposer_GeneralUtility::removeDirectoryRecursive($assetsDirectoryPath);
-        $this->createDirectoryIfNotExists($assetsDirectoryPath);
+        ComposerGeneralUtility::removeDirectoryRecursive($assetsDirectoryPath);
+        ComposerGeneralUtility::createDirectoryIfNotExists($assetsDirectoryPath);
         if (!file_exists($assetsDirectoryPath)) {
             throw new \RuntimeException(
                 sprintf('Directory "%s" does not exists and can not be created', $assetsDirectoryPath),
@@ -102,8 +102,10 @@ class Tx_CunddComposer_Installer_AssetInstaller
      */
     public function installAssetsOfPackages($requiredPackages)
     {
+        ComposerGeneralUtility::pd($requiredPackages);
+
         $installedAssets = array();
-        $vendorDirectory = Tx_CunddComposer_GeneralUtility::getExtensionPath() . 'vendor/';
+        $vendorDirectory = ComposerGeneralUtility::getPathToVendorDirectory();
         $assetsDirectoryPath = $this->getAssetsDirectoryPath();
 
         foreach ($requiredPackages as $package => $version) {
@@ -123,11 +125,11 @@ class Tx_CunddComposer_Installer_AssetInstaller
             foreach ($allAssetPaths as $currentAssetPath) {
                 $packagePublicResourcePath = $packagePath . $currentAssetPath;
 
-                Tx_CunddComposer_GeneralUtility::pd('Checking if "' . $packagePublicResourcePath . '" exists: ' . (file_exists($packagePublicResourcePath) ? 'Yes' : 'No'));
+                ComposerGeneralUtility::pd('Checking if "' . $packagePublicResourcePath . '" exists: ' . (file_exists($packagePublicResourcePath) ? 'Yes' : 'No'));
 
                 // Check if the public resource folders exist
                 if (file_exists($packagePublicResourcePath)) {
-                    $this->createDirectoryIfNotExists($symlinkDirectory);
+                    ComposerGeneralUtility::createDirectoryIfNotExists($symlinkDirectory);
 
                     $symlinkName = $symlinkDirectory . DIRECTORY_SEPARATOR . $currentAssetPath;
 
@@ -152,9 +154,9 @@ class Tx_CunddComposer_Installer_AssetInstaller
                         $symlinkSource = './../../../../' . $this->getRelativePathOfUri($packagePublicResourcePath);
                         $symlinkCreated = symlink($symlinkSource, $symlinkName);
                         if ($symlinkCreated) {
-                            Tx_CunddComposer_GeneralUtility::pd('Created symlink of "' . $packagePublicResourcePath . '" to "' . $symlinkName . '"');
+                            ComposerGeneralUtility::pd('Created symlink of "' . $packagePublicResourcePath . '" to "' . $symlinkName . '"');
                         } else {
-                            Tx_CunddComposer_GeneralUtility::pd('Could not create symlink of "' . $packagePublicResourcePath . '" to "' . $symlinkName . '"');
+                            ComposerGeneralUtility::pd('Could not create symlink of "' . $packagePublicResourcePath . '" to "' . $symlinkName . '"');
                         }
                     }
                 }
@@ -171,7 +173,7 @@ class Tx_CunddComposer_Installer_AssetInstaller
      */
     public function getRelativePathOfUri($uri)
     {
-        return str_replace(Tx_CunddComposer_GeneralUtility::getExtensionPath(), '', $uri);
+        return str_replace(ComposerGeneralUtility::getExtensionPath(), '', $uri);
     }
 
     /**
@@ -233,7 +235,7 @@ class Tx_CunddComposer_Installer_AssetInstaller
                     $path = trim($path);
                     return $path;
                 }, $assetPaths);
-                Tx_CunddComposer_GeneralUtility::pd($this->assetPaths);
+                ComposerGeneralUtility::pd($this->assetPaths);
             }
 
     }
@@ -245,28 +247,6 @@ class Tx_CunddComposer_Installer_AssetInstaller
      */
     public function getAssetsDirectoryPath()
     {
-        return Tx_CunddComposer_GeneralUtility::getPathToResource() . 'Public/Assets/';
-    }
-
-    /**
-     * Create the given directory if it doesn't already exist
-     *
-     * @param  string $directory
-     * @return boolean Returns TRUE if the directory exists, or could be created, otherwise FALSE
-     */
-    public function createDirectoryIfNotExists($directory)
-    {
-        // Check if the directory exists
-        if (!file_exists($directory)) {
-            $permission = 0777;
-            if (isset($GLOBALS['TYPO3_CONF_VARS'])
-                && isset($GLOBALS['TYPO3_CONF_VARS']['BE']['folderCreateMask'])
-                && $GLOBALS['TYPO3_CONF_VARS']['BE']['folderCreateMask']
-            ) {
-                $permission = octdec($GLOBALS['TYPO3_CONF_VARS']['BE']['folderCreateMask']);
-            }
-            return @mkdir($directory, $permission, true);
-        }
-        return true;
+        return ComposerGeneralUtility::getPathToResource() . 'Public/Assets/';
     }
 }

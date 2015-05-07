@@ -25,6 +25,7 @@
  ***************************************************************/
 
 use Tx_CunddComposer_Domain_Model_Package as Package;
+use Tx_CunddComposer_GeneralUtility as ComposerGeneralUtility;
 use TYPO3\CMS\Extbase\Mvc\Controller\ActionController;
 
 /**
@@ -37,20 +38,12 @@ use TYPO3\CMS\Extbase\Mvc\Controller\ActionController;
 class Tx_CunddComposer_Controller_PackageController extends ActionController
 {
 
-    /**
-     * The path to the PHP executable
-     *
-     * @var string
-     */
-    protected $phpExecutable = '';
-
-    /**
-     * The minimum stability
-     * http://getcomposer.org/doc/04-schema.md#minimum-stability
-     *
-     * @var string
-     */
-    protected $minimumStability = 'dev';
+    ///**
+    // * The path to the PHP executable
+    // *
+    // * @var string
+    // */
+    //protected $phpExecutable = '';
 
     /**
      * Package repository
@@ -69,6 +62,14 @@ class Tx_CunddComposer_Controller_PackageController extends ActionController
     protected $assetInstaller;
 
     /**
+     * Composer installer
+     *
+     * @var \Tx_CunddComposer_Installer_ComposerInstaller
+     * @inject
+     */
+    protected $composerInstaller;
+
+    /**
      * Definition writer
      *
      * @var \Tx_CunddComposer_Definition_Writer
@@ -76,27 +77,15 @@ class Tx_CunddComposer_Controller_PackageController extends ActionController
      */
     protected $definitionWriter;
 
-    /**
-     * The merged composer.json
-     *
-     * @var array
-     */
-    protected $mergedComposerJson;
-
-    /**
-     * Enable or disable installation of development dependencies
-     *
-     * @var boolean
-     */
-    protected $developmentDependencies = false;
 
     /**
      * Initialize the action
      */
     public function initializeAction()
     {
+        $this->composerInstaller->setPHPExecutable($this->detectPHPExecutable());
         if (isset($this->settings['minimum-stability'])) {
-            $this->minimumStability = $this->settings['minimum-stability'];
+            $this->definitionWriter->setMinimumStability($this->settings['minimum-stability']);
         }
     }
 
@@ -132,43 +121,13 @@ class Tx_CunddComposer_Controller_PackageController extends ActionController
         $this->view->assign('packages', $packages);
 
         // Set the development mode to TRUE to see the dev-requirements
-        $this->developmentDependencies = true;
+        $this->definitionWriter->setIncludeDevelopmentDependencies(true);
         $this->definitionWriter->writeMergedComposerJson();
         $this->assignViewVariables();
 
-        if (!$this->getPHPExecutable()) {
+        if (!$this->composerInstaller->getPHPExecutable()) {
             $this->view->assign('error', 'PHP executable could not be found');
         }
-    }
-
-    /**
-     * Assign the view variables
-     */
-    protected function assignViewVariables()
-    {
-        $command = 'install';
-        $this->definitionWriter->makeSureTempPathExists();
-        $fullCommand = $this->getPHPExecutable() . ' '
-            . '-c ' . php_ini_loaded_file() . ' '
-            . '"' . $this->getComposerPath() . '" ' . $command . ' --working-dir '
-            . '"' . Tx_CunddComposer_GeneralUtility::getTempPath() . '" '
-            . '--no-interaction '
-            . '--no-ansi '
-            . '--verbose '
-            . '--profile '
-            . '--dev '
-            . '--optimize-autoloader';
-        $this->view->assign('manualInstallTip', $fullCommand);
-
-        $this->view->assign('usedPHPBin', $this->getPHPExecutable());
-        $this->view->assign('workingDirectory', Tx_CunddComposer_GeneralUtility::getTempPath());
-        $this->view->assign('composerPath', $this->getComposerPath());
-
-        // The merged composer install
-        $mergedComposerJson = $this->definitionWriter->getMergedComposerJson();
-        $mergedComposerJsonString = $this->formatJSON($mergedComposerJson);
-        $this->view->assign('mergedComposerJson', $mergedComposerJson);
-        $this->view->assign('mergedComposerJsonString', $mergedComposerJsonString);
     }
 
     /**
@@ -250,14 +209,14 @@ class Tx_CunddComposer_Controller_PackageController extends ActionController
      */
     public function installAction($development = false)
     {
-        $this->developmentDependencies = $development;
+        $this->definitionWriter->setIncludeDevelopmentDependencies($development);
 
         $this->definitionWriter->writeMergedComposerJson();
-        $composerOutput = rtrim($this->install());
+        $composerOutput = rtrim($this->composerInstaller->install());
 
         $this->postUpdate();
         $this->view->assign('composerOutput', $composerOutput);
-        $this->view->assign('developmentDependencies', $this->developmentDependencies);
+        $this->view->assign('developmentDependencies', $this->definitionWriter->getIncludeDevelopmentDependencies());
     }
 
     /**
@@ -268,14 +227,14 @@ class Tx_CunddComposer_Controller_PackageController extends ActionController
      */
     public function updateAction($development = true)
     {
-        $this->developmentDependencies = $development;
+        $this->definitionWriter->setIncludeDevelopmentDependencies($development);
 
         $this->definitionWriter->writeMergedComposerJson();
-        $composerOutput = rtrim($this->update());
+        $composerOutput = rtrim($this->composerInstaller->update());
 
         $this->postUpdate();
         $this->view->assign('composerOutput', $composerOutput);
-        $this->view->assign('developmentDependencies', $this->developmentDependencies);
+        $this->view->assign('developmentDependencies', $this->definitionWriter->getIncludeDevelopmentDependencies());
     }
 
     /**
@@ -291,6 +250,36 @@ class Tx_CunddComposer_Controller_PackageController extends ActionController
         $this->assetInstaller->setAssetPaths($this->getConfiguration('assetPaths'));
         $installedAssets = $this->assetInstaller->installAssets();
         $this->view->assign('installedAssets', $installedAssets);
+    }
+
+    /**
+     * Assign the view variables
+     */
+    protected function assignViewVariables()
+    {
+        $command = 'install';
+        ComposerGeneralUtility::makeSureTempPathExists();
+        $fullCommand = $this->composerInstaller->getPHPExecutable() . ' '
+            . '-c ' . php_ini_loaded_file() . ' '
+            . '"' . ComposerGeneralUtility::getComposerPath() . '" ' . $command . ' --working-dir '
+            . '"' . ComposerGeneralUtility::getTempPath() . '" '
+            . '--no-interaction '
+            . '--no-ansi '
+            . '--verbose '
+            . '--profile '
+            . '--dev '
+            . '--optimize-autoloader';
+        $this->view->assign('manualInstallTip', $fullCommand);
+
+        $this->view->assign('usedPHPBin', $this->composerInstaller->getPHPExecutable());
+        $this->view->assign('workingDirectory', ComposerGeneralUtility::getTempPath());
+        $this->view->assign('composerPath', ComposerGeneralUtility::getComposerPath());
+
+        // The merged composer install
+        $mergedComposerJson = $this->definitionWriter->getMergedComposerJson();
+        $mergedComposerJsonString = $this->formatJSON($mergedComposerJson);
+        $this->view->assign('mergedComposerJson', $mergedComposerJson);
+        $this->view->assign('mergedComposerJsonString', $mergedComposerJsonString);
     }
 
     /**
@@ -335,151 +324,169 @@ class Tx_CunddComposer_Controller_PackageController extends ActionController
     }
 
     /**
-     * Call composer on the command line to install the dependencies.
-     *
-     * @param boolean $dev Argument will be removed in future version
-     * @return string                Returns the composer output
-     */
-    protected function install($dev = false)
-    {
-        return $this->executeComposerCommand('install', $dev);
-    }
-
-    /**
-     * Call composer on the command line to update the dependencies.
-     *
-     * @param boolean $dev Argument will be removed in future version
-     * @return string                Returns the composer output
-     */
-    protected function update($dev = false)
-    {
-        return $this->executeComposerCommand('update', $dev);
-    }
-
-    /**
-     * Execute the given composer command
-     *
-     * @param string  $command The composer command to execute
-     * @param boolean $dev     Argument will be removed in future version
-     * @return string                Returns the composer output
-     */
-    protected function executeComposerCommand($command, $dev = false)
-    {
-        $pathToComposer = $this->getComposerPath();
-
-        if ($dev || func_num_args() > 1) {
-            Tx_CunddComposer_GeneralUtility::pd('Argument dev is deprecated and ignored');
-        }
-
-        $this->definitionWriter->makeSureTempPathExists();
-        $fullCommand = $this->getPHPExecutable() . ' '
-//			. '-c ' . php_ini_loaded_file() . ' '
-            . '"' . $pathToComposer . '" ' . $command . ' '
-            . '--working-dir ' . '"' . Tx_CunddComposer_GeneralUtility::getTempPath() . '" '
-//			. '--no-interaction '
-//			. '--no-ansi '
-            . '--verbose '
-//			. '--profile '
-//			. '--optimize-autoloader '
-//			. ($dev ? '--dev ' : '')
-            . '2>&1';
-
-        $fullCommand = 'COMPOSER_HOME=' . Tx_CunddComposer_GeneralUtility::getTempPath() . ' ' . $fullCommand;
-
-        $output = $this->executeShellCommand($fullCommand);
-
-        Tx_CunddComposer_GeneralUtility::pd($fullCommand);
-        Tx_CunddComposer_GeneralUtility::pd($output);
-        return $output;
-    }
-
-    /**
-     * Execute the shell command
-     *
-     * @param string $fullCommand Full composer command
-     * @return string
-     */
-    protected function executeShellCommand($fullCommand)
-    {
-        $useShellExec = false;
-        if ($useShellExec) {
-            return shell_exec($fullCommand);
-        }
-
-        $output = '';
-        $descriptorSpec = array(
-            0 => array('pipe', 'r'),  // stdin is a pipe that the child will read from
-            1 => array('pipe', 'w'),  // stdout is a pipe that the child will write to
-            2 => array('pipe', sys_get_temp_dir() . '/error-output.txt', 'a') // stderr is a file to write to
-        );
-
-        $cwd = Tx_CunddComposer_GeneralUtility::getTempPath();
-        $env = $_ENV;
-
-        $process = proc_open($fullCommand, $descriptorSpec, $pipes, $cwd, $env);
-
-        if (is_resource($process)) {
-            // $pipes now looks like this:
-            // 0 => writeable handle connected to child stdin
-            // 1 => readable handle connected to child stdout
-            // Any error output will be appended to /tmp/error-output.txt
-
-            // fwrite($pipes[0], '<?php print_r($_ENV); ? >');
-            fclose($pipes[0]);
-
-            $output = stream_get_contents($pipes[1]);
-            fclose($pipes[1]);
-
-            // It is important that you close any pipes before calling
-            // proc_close in order to avoid a deadlock
-            $returnValue = proc_close($process);
-
-            Tx_CunddComposer_GeneralUtility::pd('Return value:', $returnValue);
-        }
-        return $output;
-    }
-
-    /**
-     * Returns the path to the composer phar
-     *
-     * @return string
-     */
-    public function getComposerPath()
-    {
-        return Tx_CunddComposer_GeneralUtility::getPathToResource() . '/Private/PHP/composer.phar';
-    }
-
-    /**
      * Returns the path to the PHP executable
      *
      * @return string
      */
-    public function getPHPExecutable()
+    protected function detectPHPExecutable()
     {
-        if (!$this->phpExecutable) {
-            $this->phpExecutable = $this->getConfiguration('phpExecutable');
-            if (!$this->phpExecutable) {
-                if (isset($this->settings['phpExecutable'])) {
-                    $this->phpExecutable = $this->settings['phpExecutable'];
-                } else {
-                    $this->phpExecutable = $this->getPHPExecutableFromPath();
-                }
+        $phpExecutable = $this->getConfiguration('phpExecutable');
+        if (!$phpExecutable) {
+            if (isset($this->settings['phpExecutable'])) {
+                $phpExecutable = $this->settings['phpExecutable'];
+            } else {
+                $phpExecutable = $this->getPHPExecutableFromPath();
             }
-            $this->phpExecutable = trim($this->phpExecutable);
         }
-        return $this->phpExecutable;
+        return trim($phpExecutable);
     }
 
-    /**
-     * Sets the path to the PHP executable
-     *
-     * @param $phpExecutable
-     * @return void
-     */
-    public function setPHPExecutable($phpExecutable)
-    {
-        $this->phpExecutable = $phpExecutable;
-    }
+    ///**
+    // * Call composer on the command line to install the dependencies.
+    // *
+    // * @param boolean $dev Argument will be removed in future version
+    // * @return string                Returns the composer output
+    // */
+    //protected function install($dev = false)
+    //{
+    //    return $this->executeComposerCommand('install', $dev);
+    //}
+    //
+    ///**
+    // * Call composer on the command line to update the dependencies.
+    // *
+    // * @param boolean $dev Argument will be removed in future version
+    // * @return string                Returns the composer output
+    // */
+    //protected function update($dev = false)
+    //{
+    //    return $this->executeComposerCommand('update', $dev);
+    //}
+
+//    /**
+//     * Execute the given composer command
+//     *
+//     * @param string  $command The composer command to execute
+//     * @param boolean $dev     Argument will be removed in future version
+//     * @return string                Returns the composer output
+//     */
+//    protected function executeComposerCommand($command, $dev = false)
+//    {
+//        $pathToComposer = $this->getComposerPath();
+//
+//        if ($dev || func_num_args() > 1) {
+//            ComposerGeneralUtility::pd('Argument dev is deprecated and ignored');
+//        }
+//
+//        ComposerGeneralUtility::makeSureTempPathExists();
+//        $fullCommand = $this->getPHPExecutable() . ' '
+////			. '-c ' . php_ini_loaded_file() . ' '
+//            . '"' . $pathToComposer . '" ' . $command . ' '
+//            . '--working-dir ' . '"' . ComposerGeneralUtility::getTempPath() . '" '
+////			. '--no-interaction '
+////			. '--no-ansi '
+//            . '--verbose '
+////			. '--profile '
+////			. '--optimize-autoloader '
+////			. ($dev ? '--dev ' : '')
+//            . '2>&1';
+//
+//        $fullCommand = 'COMPOSER_HOME=' . ComposerGeneralUtility::getTempPath() . ' ' . $fullCommand;
+//
+//        $output = $this->executeShellCommand($fullCommand);
+//
+//        ComposerGeneralUtility::pd($fullCommand);
+//        ComposerGeneralUtility::pd($output);
+//        return $output;
+//    }
+//
+//    /**
+//     * Execute the shell command
+//     *
+//     * @param string $fullCommand Full composer command
+//     * @return string
+//     */
+//    protected function executeShellCommand($fullCommand)
+//    {
+//        $useShellExec = false;
+//        if ($useShellExec) {
+//            return shell_exec($fullCommand);
+//        }
+//
+//        $output = '';
+//        $descriptorSpec = array(
+//            0 => array('pipe', 'r'),  // stdin is a pipe that the child will read from
+//            1 => array('pipe', 'w'),  // stdout is a pipe that the child will write to
+//            2 => array('pipe', sys_get_temp_dir() . '/error-output.txt', 'a') // stderr is a file to write to
+//        );
+//
+//        $cwd = ComposerGeneralUtility::getTempPath();
+//        $env = $_ENV;
+//
+//        $process = proc_open($fullCommand, $descriptorSpec, $pipes, $cwd, $env);
+//
+//        if (is_resource($process)) {
+//            // $pipes now looks like this:
+//            // 0 => writeable handle connected to child stdin
+//            // 1 => readable handle connected to child stdout
+//            // Any error output will be appended to /tmp/error-output.txt
+//
+//            // fwrite($pipes[0], '<?php print_r($_ENV); ? >');
+//            fclose($pipes[0]);
+//
+//            $output = stream_get_contents($pipes[1]);
+//            fclose($pipes[1]);
+//
+//            // It is important that you close any pipes before calling
+//            // proc_close in order to avoid a deadlock
+//            $returnValue = proc_close($process);
+//
+//            ComposerGeneralUtility::pd('Return value:', $returnValue);
+//        }
+//        return $output;
+//    }
+//
+//    /**
+//     * Returns the path to the composer phar
+//     *
+//     * @return string
+//     */
+//    public function getComposerPath()
+//    {
+//        return ComposerGeneralUtility::getPathToResource() . '/Private/PHP/composer.phar';
+//    }
+//
+//    /**
+//     * Returns the path to the PHP executable
+//     *
+//     * @return string
+//     */
+//    public function getPHPExecutable()
+//    {
+//        if (!$this->phpExecutable) {
+//            $this->phpExecutable = $this->getConfiguration('phpExecutable');
+//            if (!$this->phpExecutable) {
+//                if (isset($this->settings['phpExecutable'])) {
+//                    $this->phpExecutable = $this->settings['phpExecutable'];
+//                } else {
+//                    $this->phpExecutable = $this->getPHPExecutableFromPath();
+//                }
+//            }
+//            $this->phpExecutable = trim($this->phpExecutable);
+//        }
+//        return $this->phpExecutable;
+//    }
+//
+//    /**
+//     * Sets the path to the PHP executable
+//     *
+//     * @param $phpExecutable
+//     * @return void
+//     */
+//    public function setPHPExecutable($phpExecutable)
+//    {
+//        $this->phpExecutable = $phpExecutable;
+//    }
 
     /**
      * Tries to find the PHP executable.
