@@ -16,6 +16,13 @@
           </resourceRoots>
         </entryData>
       </entry>
+      <entry url="file://$PROJECT_DIR$/../speciality">
+        <entryData>
+          <resourceRoots>
+            <path value="file://$PROJECT_DIR$/../speciality/Resources/Public" />
+          </resourceRoots>
+        </entryData>
+      </entry>
     </contentEntries>
   </component>
 </project>

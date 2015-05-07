@@ -130,7 +130,6 @@ class Tx_CunddComposer_Command_ComposerCommandController extends CommandControll
      */
     public function installAssetsCommand()
     {
-
         if (!ConfigurationUtility::getConfiguration('allowInstallAssets')) {
             throw new \UnexpectedValueException('Asset installation is disabled', 1431008369);
         }
