@@ -26,6 +26,7 @@
 
 use Tx_CunddComposer_Domain_Model_Package as Package;
 use Tx_CunddComposer_GeneralUtility as ComposerGeneralUtility;
+use Tx_CunddComposer_Utility_ConfigurationUtility as ConfigurationUtility;
 use TYPO3\CMS\Extbase\Mvc\Controller\ActionController;
 
 /**
@@ -37,14 +38,6 @@ use TYPO3\CMS\Extbase\Mvc\Controller\ActionController;
  */
 class Tx_CunddComposer_Controller_PackageController extends ActionController
 {
-
-    ///**
-    // * The path to the PHP executable
-    // *
-    // * @var string
-    // */
-    //protected $phpExecutable = '';
-
     /**
      * Package repository
      *
@@ -83,7 +76,6 @@ class Tx_CunddComposer_Controller_PackageController extends ActionController
      */
     public function initializeAction()
     {
-        $this->composerInstaller->setPHPExecutable($this->detectPHPExecutable());
         if (isset($this->settings['minimum-stability'])) {
             $this->definitionWriter->setMinimumStability($this->settings['minimum-stability']);
         }
@@ -125,7 +117,7 @@ class Tx_CunddComposer_Controller_PackageController extends ActionController
         $this->definitionWriter->writeMergedComposerJson();
         $this->assignViewVariables();
 
-        if (!$this->composerInstaller->getPHPExecutable()) {
+        if (!ConfigurationUtility::getPHPExecutable()) {
             $this->view->assign('error', 'PHP executable could not be found');
         }
     }
@@ -244,10 +236,10 @@ class Tx_CunddComposer_Controller_PackageController extends ActionController
      */
     public function installAssetsAction()
     {
-        if (!$this->getConfiguration('allowInstallAssets')) {
+        if (!ConfigurationUtility::getConfiguration('allowInstallAssets')) {
             $this->view->assign('error', 'Asset installation disabled in Extension Manager');
         }
-        $this->assetInstaller->setAssetPaths($this->getConfiguration('assetPaths'));
+        $this->assetInstaller->setAssetPaths(ConfigurationUtility::getConfiguration('assetPaths'));
         $installedAssets = $this->assetInstaller->installAssets();
         $this->view->assign('installedAssets', $installedAssets);
     }
@@ -259,7 +251,7 @@ class Tx_CunddComposer_Controller_PackageController extends ActionController
     {
         $command = 'install';
         ComposerGeneralUtility::makeSureTempPathExists();
-        $fullCommand = $this->composerInstaller->getPHPExecutable() . ' '
+        $fullCommand = ConfigurationUtility::getPHPExecutable() . ' '
             . '-c ' . php_ini_loaded_file() . ' '
             . '"' . ComposerGeneralUtility::getComposerPath() . '" ' . $command . ' --working-dir '
             . '"' . ComposerGeneralUtility::getTempPath() . '" '
@@ -271,7 +263,7 @@ class Tx_CunddComposer_Controller_PackageController extends ActionController
             . '--optimize-autoloader';
         $this->view->assign('manualInstallTip', $fullCommand);
 
-        $this->view->assign('usedPHPBin', $this->composerInstaller->getPHPExecutable());
+        $this->view->assign('usedPHPBin', ConfigurationUtility::getPHPExecutable());
         $this->view->assign('workingDirectory', ComposerGeneralUtility::getTempPath());
         $this->view->assign('composerPath', ComposerGeneralUtility::getComposerPath());
 
@@ -289,228 +281,14 @@ class Tx_CunddComposer_Controller_PackageController extends ActionController
      */
     public function postUpdate()
     {
-        if ($this->getConfiguration('automaticallyInstallAssets')) {
-            $this->assetInstaller->setAssetPaths($this->getConfiguration('assetPaths'));
+        if (ConfigurationUtility::getConfiguration('automaticallyInstallAssets')) {
+            $this->assetInstaller->setAssetPaths(ConfigurationUtility::getConfiguration('assetPaths'));
             $installedAssets = array();
-            if ($this->getConfiguration('allowInstallAssets')) {
+            if (ConfigurationUtility::getConfiguration('allowInstallAssets')) {
                 $installedAssets = $this->assetInstaller->installAssets();
             }
             $this->view->assign('installedAssets', $installedAssets);
         }
-    }
-
-    /**
-     * Returns the extension configuration for the given key
-     *
-     * @param  string $key Configuration key
-     * @return mixed      Configuration value
-     */
-    public function getConfiguration($key)
-    {
-        static $configuration = null;
-
-        // Read the configuration from the globals
-        if ($configuration === null) {
-            if (isset($GLOBALS['TYPO3_CONF_VARS']['EXT']['extConf']['cundd_composer'])) {
-                $configuration = unserialize($GLOBALS['TYPO3_CONF_VARS']['EXT']['extConf']['cundd_composer']);
-            }
-        }
-
-        // Return the configuration value
-        if ($configuration && isset($configuration[$key])) {
-            return $configuration[$key];
-        }
-        return false;
-    }
-
-    /**
-     * Returns the path to the PHP executable
-     *
-     * @return string
-     */
-    protected function detectPHPExecutable()
-    {
-        $phpExecutable = $this->getConfiguration('phpExecutable');
-        if (!$phpExecutable) {
-            if (isset($this->settings['phpExecutable'])) {
-                $phpExecutable = $this->settings['phpExecutable'];
-            } else {
-                $phpExecutable = $this->getPHPExecutableFromPath();
-            }
-        }
-        return trim($phpExecutable);
-    }
-
-    ///**
-    // * Call composer on the command line to install the dependencies.
-    // *
-    // * @param boolean $dev Argument will be removed in future version
-    // * @return string                Returns the composer output
-    // */
-    //protected function install($dev = false)
-    //{
-    //    return $this->executeComposerCommand('install', $dev);
-    //}
-    //
-    ///**
-    // * Call composer on the command line to update the dependencies.
-    // *
-    // * @param boolean $dev Argument will be removed in future version
-    // * @return string                Returns the composer output
-    // */
-    //protected function update($dev = false)
-    //{
-    //    return $this->executeComposerCommand('update', $dev);
-    //}
-
-//    /**
-//     * Execute the given composer command
-//     *
-//     * @param string  $command The composer command to execute
-//     * @param boolean $dev     Argument will be removed in future version
-//     * @return string                Returns the composer output
-//     */
-//    protected function executeComposerCommand($command, $dev = false)
-//    {
-//        $pathToComposer = $this->getComposerPath();
-//
-//        if ($dev || func_num_args() > 1) {
-//            ComposerGeneralUtility::pd('Argument dev is deprecated and ignored');
-//        }
-//
-//        ComposerGeneralUtility::makeSureTempPathExists();
-//        $fullCommand = $this->getPHPExecutable() . ' '
-////			. '-c ' . php_ini_loaded_file() . ' '
-//            . '"' . $pathToComposer . '" ' . $command . ' '
-//            . '--working-dir ' . '"' . ComposerGeneralUtility::getTempPath() . '" '
-////			. '--no-interaction '
-////			. '--no-ansi '
-//            . '--verbose '
-////			. '--profile '
-////			. '--optimize-autoloader '
-////			. ($dev ? '--dev ' : '')
-//            . '2>&1';
-//
-//        $fullCommand = 'COMPOSER_HOME=' . ComposerGeneralUtility::getTempPath() . ' ' . $fullCommand;
-//
-//        $output = $this->executeShellCommand($fullCommand);
-//
-//        ComposerGeneralUtility::pd($fullCommand);
-//        ComposerGeneralUtility::pd($output);
-//        return $output;
-//    }
-//
-//    /**
-//     * Execute the shell command
-//     *
-//     * @param string $fullCommand Full composer command
-//     * @return string
-//     */
-//    protected function executeShellCommand($fullCommand)
-//    {
-//        $useShellExec = false;
-//        if ($useShellExec) {
-//            return shell_exec($fullCommand);
-//        }
-//
-//        $output = '';
-//        $descriptorSpec = array(
-//            0 => array('pipe', 'r'),  // stdin is a pipe that the child will read from
-//            1 => array('pipe', 'w'),  // stdout is a pipe that the child will write to
-//            2 => array('pipe', sys_get_temp_dir() . '/error-output.txt', 'a') // stderr is a file to write to
-//        );
-//
-//        $cwd = ComposerGeneralUtility::getTempPath();
-//        $env = $_ENV;
-//
-//        $process = proc_open($fullCommand, $descriptorSpec, $pipes, $cwd, $env);
-//
-//        if (is_resource($process)) {
-//            // $pipes now looks like this:
-//            // 0 => writeable handle connected to child stdin
-//            // 1 => readable handle connected to child stdout
-//            // Any error output will be appended to /tmp/error-output.txt
-//
-//            // fwrite($pipes[0], '<?php print_r($_ENV); ? >');
-//            fclose($pipes[0]);
-//
-//            $output = stream_get_contents($pipes[1]);
-//            fclose($pipes[1]);
-//
-//            // It is important that you close any pipes before calling
-//            // proc_close in order to avoid a deadlock
-//            $returnValue = proc_close($process);
-//
-//            ComposerGeneralUtility::pd('Return value:', $returnValue);
-//        }
-//        return $output;
-//    }
-//
-//    /**
-//     * Returns the path to the composer phar
-//     *
-//     * @return string
-//     */
-//    public function getComposerPath()
-//    {
-//        return ComposerGeneralUtility::getPathToResource() . '/Private/PHP/composer.phar';
-//    }
-//
-//    /**
-//     * Returns the path to the PHP executable
-//     *
-//     * @return string
-//     */
-//    public function getPHPExecutable()
-//    {
-//        if (!$this->phpExecutable) {
-//            $this->phpExecutable = $this->getConfiguration('phpExecutable');
-//            if (!$this->phpExecutable) {
-//                if (isset($this->settings['phpExecutable'])) {
-//                    $this->phpExecutable = $this->settings['phpExecutable'];
-//                } else {
-//                    $this->phpExecutable = $this->getPHPExecutableFromPath();
-//                }
-//            }
-//            $this->phpExecutable = trim($this->phpExecutable);
-//        }
-//        return $this->phpExecutable;
-//    }
-//
-//    /**
-//     * Sets the path to the PHP executable
-//     *
-//     * @param $phpExecutable
-//     * @return void
-//     */
-//    public function setPHPExecutable($phpExecutable)
-//    {
-//        $this->phpExecutable = $phpExecutable;
-//    }
-
-    /**
-     * Tries to find the PHP executable.
-     *
-     * @return string Returns the path to the PHP executable, or FALSE on error
-     */
-    protected function getPHPExecutableFromPath()
-    {
-        if (defined('PHP_BINDIR') && file_exists(PHP_BINDIR . '/php') && is_executable(PHP_BINDIR . '/php')) {
-            return PHP_BINDIR . '/php';
-        }
-        $paths = explode(PATH_SEPARATOR, getenv('PATH'));
-        foreach ($paths as $path) {
-            // we need this for XAMPP (Windows)
-            if (strstr($path, 'php.exe') && isset($_SERVER['WINDIR']) && file_exists($path) && is_file($path)) {
-                return $path;
-            } else {
-                $php_executable = $path . DIRECTORY_SEPARATOR . 'php' . (isset($_SERVER['WINDIR']) ? '.exe' : '');
-                if (file_exists($php_executable) && is_file($php_executable)) {
-                    return $php_executable;
-                }
-            }
-        }
-        return false; // not found
     }
 
     /**

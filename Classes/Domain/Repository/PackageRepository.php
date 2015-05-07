@@ -60,7 +60,7 @@ class Tx_CunddComposer_Domain_Repository_PackageRepository extends Repository {
     /**
      * Returns all objects of this repository.
      *
-     * @return array
+     * @return Package[]
      * @api
      */
     public function findAll()

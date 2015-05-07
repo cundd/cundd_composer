@@ -25,6 +25,8 @@
  ***************************************************************/
 
 use Tx_CunddComposer_GeneralUtility as ComposerGeneralUtility;
+use Tx_CunddComposer_Utility_ConfigurationUtility as ConfigurationUtility;
+
 
 /**
  *
@@ -35,13 +37,6 @@ use Tx_CunddComposer_GeneralUtility as ComposerGeneralUtility;
  */
 class Tx_CunddComposer_Installer_ComposerInstaller
 {
-    /**
-     * The path to the PHP executable
-     *
-     * @var string
-     */
-    protected $phpExecutable = '';
-
     /**
      * Call composer on the command line to install the dependencies.
      *
@@ -65,27 +60,6 @@ class Tx_CunddComposer_Installer_ComposerInstaller
     }
 
     /**
-     * Returns the path to the PHP executable
-     *
-     * @return string
-     */
-    public function getPHPExecutable()
-    {
-        return $this->phpExecutable;
-    }
-
-    /**
-     * Sets the path to the PHP executable
-     *
-     * @param $phpExecutable
-     * @return void
-     */
-    public function setPHPExecutable($phpExecutable)
-    {
-        $this->phpExecutable = $phpExecutable;
-    }
-
-    /**
      * Execute the given composer command
      *
      * @param string  $command The composer command to execute
@@ -101,7 +75,7 @@ class Tx_CunddComposer_Installer_ComposerInstaller
         }
 
         ComposerGeneralUtility::makeSureTempPathExists();
-        $fullCommand = $this->getPHPExecutable() . ' '
+        $fullCommand = ConfigurationUtility::getPHPExecutable() . ' '
 //			. '-c ' . php_ini_loaded_file() . ' '
             . '"' . $pathToComposer . '" ' . $command . ' '
             . '--working-dir ' . '"' . ComposerGeneralUtility::getTempPath() . '" '
