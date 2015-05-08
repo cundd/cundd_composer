@@ -46,5 +46,5 @@ class Autoloader {
 	}
 }
 class_alias('Cundd\\Composer\\Autoloader', 'Tx_CunddComposer_Autoloader');
-class_alias('Cundd\\CunddComposer\\Autoloader', 'Tx_CunddComposer_Autoloader');
+class_alias('Cundd\\Composer\\Autoloader', 'Cundd\\CunddComposer\\Autoloader');
 ?>
