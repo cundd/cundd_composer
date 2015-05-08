@@ -54,3 +54,9 @@ If the package `foo/bar` contains the directory `Resources/Public/` Cundd Compos
 
 ### Aim
 The aim of the Asset Installer is to provide a schema to reference asset files and to publish  those files in a public folder, which allows the `vendor` directory to be inaccessible by browsers.
+
+
+Sponsored by
+------------
+
+[![](http://www.iresults.li/fileadmin/framework/local/img/iresultsLogo.png)](http://www.iresults.li)
