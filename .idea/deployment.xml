@@ -7,6 +7,8 @@
           <mappings>
             <mapping deploy="/typo3conf/ext/cundd_composer" local="$PROJECT_DIR$" web="/" />
             <mapping deploy="/typo3conf/ext/assetic" local="$PROJECT_DIR$/../assetic" web="/" />
+            <mapping deploy="/typo3conf/ext/iresults_master" local="$PROJECT_DIR$/../Iresults.Master" web="/" />
+            <mapping deploy="/typo3conf/ext/speciality" local="$PROJECT_DIR$/../speciality" web="/" />
           </mappings>
           <excludedPaths>
             <excludedPath local="true" path="$PROJECT_DIR$/../assetic/vendor" />
