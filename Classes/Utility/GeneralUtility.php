@@ -197,6 +197,11 @@ class Tx_CunddComposer_Utility_GeneralUtility
             RecursiveIteratorIterator::CHILD_FIRST
         );
         foreach ($iterator as $path) {
+            /** @var \SplFileInfo $path */
+            $fileName = $path->getFilename();
+            if ($fileName === '.' || $fileName === '..') {
+                continue;
+            }
             if ($path->isLink()) {
                 $success *= unlink($path->getPathname());
             } else {
