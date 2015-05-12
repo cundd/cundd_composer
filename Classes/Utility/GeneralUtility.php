@@ -31,7 +31,7 @@
  * @license http://www.gnu.org/licenses/gpl.html GNU General Public License, version 3 or later
  *
  */
-class Tx_CunddComposer_GeneralUtility
+class Tx_CunddComposer_Utility_GeneralUtility
 {
     /**
      * Dumps a given variable (or the given variables) wrapped into a 'pre' tag.
@@ -97,7 +97,7 @@ class Tx_CunddComposer_GeneralUtility
      */
     public static function getExtensionPath()
     {
-        return __DIR__ . '/../';
+        return __DIR__ . '/../../';
     }
 
     /**

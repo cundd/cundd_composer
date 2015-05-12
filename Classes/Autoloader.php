@@ -25,7 +25,7 @@ namespace Cundd\Composer;
  *  This copyright notice MUST APPEAR in all copies of the script!
  */
 
-use Tx_CunddComposer_GeneralUtility as ComposerGeneralUtility;
+use Tx_CunddComposer_Utility_GeneralUtility as ComposerGeneralUtility;
 
 /**
  *

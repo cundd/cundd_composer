@@ -237,7 +237,7 @@ class Tx_CunddComposer_Domain_Repository_PackageRepository extends Repository {
     protected function convert($data, $targetClass)
     {
         if (!class_exists($targetClass) && $targetClass === 'Cundd\\CunddComposer\\Domain\\Model\\Package') {
-            $targetClass = Tx_CunddComposer_Domain_Model_Package::class;
+            $targetClass = 'Tx_CunddComposer_Domain_Model_Package';
         }
         $object = new $targetClass();
         if (method_exists($object, '_setProperty')) {

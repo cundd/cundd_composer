@@ -25,7 +25,7 @@
  ***************************************************************/
 
 use Tx_CunddComposer_Domain_Model_Package as Package;
-use Tx_CunddComposer_GeneralUtility as ComposerGeneralUtility;
+use Tx_CunddComposer_Utility_GeneralUtility as ComposerGeneralUtility;
 use Tx_CunddComposer_Utility_ConfigurationUtility as ConfigurationUtility;
 use TYPO3\CMS\Extbase\Mvc\Controller\ActionController;
 
