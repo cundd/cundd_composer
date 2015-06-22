@@ -8,8 +8,10 @@
       <sourceFolder url="file://$MODULE_DIR$/../assetic/Classes" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/../assetic/Tests/Unit" isTestSource="true" />
     </content>
+    <content url="file://$MODULE_DIR$/../client">
+      <sourceFolder url="file://$MODULE_DIR$/../client/Classes" isTestSource="false" packagePrefix="Iresults\Speciality" />
+    </content>
     <content url="file://$MODULE_DIR$" />
-    <content url="file://$MODULE_DIR$/../speciality" />
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="module-library">
