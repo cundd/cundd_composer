@@ -325,21 +325,18 @@ class PackageController extends ActionController
      * Returns the URI for the given resource
      *
      * @param string $resource
-     * @param bool   $absolute
      * @return string
      */
-    protected function getResourceUri($resource, $absolute = false)
+    protected function getResourceUri($resource)
     {
         $extensionName = $this->controllerContext->getRequest()->getControllerExtensionName();
         $uri = 'EXT:' . GeneralUtility::camelCaseToLowerCaseUnderscored($extensionName) . '/Resources/Public/' . $resource;
         $uri = GeneralUtility::getFileAbsFileName($uri);
         $uri = PathUtility::stripPathSitePrefix($uri);
-        if (TYPO3_MODE === 'BE' && $absolute === false && $uri !== false) {
+        if (TYPO3_MODE === 'BE' && $uri !== false) {
             $uri = '../' . $uri;
         }
-        if ($absolute === true) {
-            $uri = $this->request->getBaseURI() . $uri;
-        }
+
         return $uri;
     }
 
