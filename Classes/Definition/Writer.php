@@ -1,4 +1,5 @@
 <?php
+namespace Cundd\CunddComposer\Definition;
 
 /***************************************************************
  *  Copyright notice
@@ -24,8 +25,7 @@
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
-use Tx_CunddComposer_Utility_GeneralUtility as ComposerGeneralUtility;
-
+use Cundd\CunddComposer\Utility\GeneralUtility as ComposerGeneralUtility;
 
 /**
  *
@@ -34,7 +34,7 @@ use Tx_CunddComposer_Utility_GeneralUtility as ComposerGeneralUtility;
  * @license http://www.gnu.org/licenses/gpl.html GNU General Public License, version 3 or later
  *
  */
-class Tx_CunddComposer_Definition_Writer
+class Writer
 {
 
     /**
@@ -48,7 +48,7 @@ class Tx_CunddComposer_Definition_Writer
     /**
      * Package repository
      *
-     * @var Tx_CunddComposer_Domain_Repository_PackageRepository
+     * @var \Cundd\CunddComposer\Domain\Repository\PackageRepository
      * @inject
      */
     protected $packageRepository;
@@ -95,7 +95,7 @@ class Tx_CunddComposer_Definition_Writer
         if (!$this->mergedComposerJson) {
             $composerJson = file_get_contents(ComposerGeneralUtility::getPathToResource() . 'Private/Templates/composer.json');
             if (!$composerJson) {
-                throw new UnexpectedValueException('Could not load the composer.json template file', 1355952845);
+                throw new \UnexpectedValueException('Could not load the composer.json template file', 1355952845);
             }
             $composerJson = str_replace('%EXT_PATH%', ComposerGeneralUtility::getExtensionPath(), $composerJson);
             $composerJson = str_replace('%RESOURCE_PATH%', ComposerGeneralUtility::getPathToResource(), $composerJson);

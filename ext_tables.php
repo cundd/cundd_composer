@@ -9,7 +9,7 @@ if (TYPO3_MODE === 'BE') {
 	 * Registers a Backend Module
 	 */
     \TYPO3\CMS\Extbase\Utility\ExtensionUtility::registerModule(
-		$_EXTKEY,
+		'Cundd.' . $_EXTKEY,
 		'tools', // Make module a submodule of 'tools'
 		'composer', // Submodule key
 		'', // Position

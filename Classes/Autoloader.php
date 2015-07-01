@@ -1,5 +1,5 @@
 <?php
-namespace Cundd\Composer;
+namespace Cundd\CunddComposer;
 
 /*
  *  Copyright notice
@@ -25,7 +25,7 @@ namespace Cundd\Composer;
  *  This copyright notice MUST APPEAR in all copies of the script!
  */
 
-use Tx_CunddComposer_Utility_GeneralUtility as ComposerGeneralUtility;
+use Cundd\CunddComposer\Utility\GeneralUtility as ComposerGeneralUtility;
 
 /**
  *
@@ -45,6 +45,6 @@ class Autoloader {
 		}
 	}
 }
-class_alias('Cundd\\Composer\\Autoloader', 'Tx_CunddComposer_Autoloader');
-class_alias('Cundd\\Composer\\Autoloader', 'Cundd\\CunddComposer\\Autoloader');
+class_alias('Cundd\\CunddComposer\\Autoloader', 'Cundd\\Composer\\Autoloader');
 ?>
+

@@ -1,4 +1,5 @@
 <?php
+namespace Cundd\CunddComposer\Utility;
 
 /*
  *  Copyright notice
@@ -31,7 +32,7 @@
  * @license http://www.gnu.org/licenses/gpl.html GNU General Public License, version 3 or later
  *
  */
-class Tx_CunddComposer_Utility_GeneralUtility
+class GeneralUtility
 {
     /**
      * Dumps a given variable (or the given variables) wrapped into a 'pre' tag.
@@ -70,7 +71,7 @@ class Tx_CunddComposer_Utility_GeneralUtility
         $merged = $array1;
         foreach ($array2 as $key => &$value) {
             if ($strict && isset($merged[$key]) && !is_array($merged[$key]) && $merged[$key] != $value) {
-                throw new UnexpectedValueException('Key "' . $key . '" already exists with a different value',
+                throw new \UnexpectedValueException('Key "' . $key . '" already exists with a different value',
                     1360672930);
             }
             if (is_array($value) // If the current value is an array it may has to be merged
@@ -174,7 +175,7 @@ class Tx_CunddComposer_Utility_GeneralUtility
 
         // Check if the working/temporary directory exists
         if (!self::createDirectoryIfNotExists($workingDir)) {
-            throw new RuntimeException('Working directory "' . $workingDir . '" doesn\'t exists and can not be created',
+            throw new \RuntimeException('Working directory "' . $workingDir . '" doesn\'t exists and can not be created',
                 1359541465);
         }
     }
@@ -192,9 +193,9 @@ class Tx_CunddComposer_Utility_GeneralUtility
             return false;
         }
 
-        $iterator = new RecursiveIteratorIterator(
-            new RecursiveDirectoryIterator($directory),
-            RecursiveIteratorIterator::CHILD_FIRST
+        $iterator = new \RecursiveIteratorIterator(
+            new \RecursiveDirectoryIterator($directory),
+            \RecursiveIteratorIterator::CHILD_FIRST
         );
         foreach ($iterator as $path) {
             /** @var \SplFileInfo $path */

@@ -1,4 +1,5 @@
 <?php
+namespace Cundd\CunddComposer\Utility;
 
 /*
  *  Copyright notice
@@ -31,7 +32,7 @@
  * @license http://www.gnu.org/licenses/gpl.html GNU General Public License, version 3 or later
  *
  */
-class Tx_CunddComposer_Utility_ConfigurationUtility
+class ConfigurationUtility
 {
 
     /**

@@ -36,7 +36,7 @@ Lets say we want to install the Composer dependencies for an TYPO3 extension cal
 For extension developers
 ------------------------
 
-Place a valid composer.json file in the root directory of your extension. If you want to use the Composer packages in a fronted extension you can simply use the package classes. In case of a backend module you have to register the Cundd Composer autoloader through `Tx_CunddComposer_Autoloader::register()`.
+Place a valid composer.json file in the root directory of your extension. If you want to use the Composer packages in a fronted extension you can simply use the package classes. In case of a backend module you have to register the Cundd Composer autoloader through `\Cundd\CunddComposer\Autoloader::register()`.
 
 
 Assets
