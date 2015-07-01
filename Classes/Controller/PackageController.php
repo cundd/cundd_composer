@@ -1,4 +1,5 @@
 <?php
+namespace Cundd\CunddComposer\Controller;
 
 /***************************************************************
  *  Copyright notice
@@ -24,10 +25,13 @@
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
-use Tx_CunddComposer_Domain_Model_Package as Package;
-use Tx_CunddComposer_Utility_GeneralUtility as ComposerGeneralUtility;
-use Tx_CunddComposer_Utility_ConfigurationUtility as ConfigurationUtility;
+use Cundd\CunddComposer\Domain\Model\Package as Package;
+use Cundd\CunddComposer\Utility\GeneralUtility as ComposerGeneralUtility;
+use Cundd\CunddComposer\Utility\ConfigurationUtility as ConfigurationUtility;
+use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Core\Utility\PathUtility;
 use TYPO3\CMS\Extbase\Mvc\Controller\ActionController;
+use TYPO3\CMS\Extbase\Mvc\View\ViewInterface;
 
 /**
  *
@@ -36,12 +40,12 @@ use TYPO3\CMS\Extbase\Mvc\Controller\ActionController;
  * @license http://www.gnu.org/licenses/gpl.html GNU General Public License, version 3 or later
  *
  */
-class Tx_CunddComposer_Controller_PackageController extends ActionController
+class PackageController extends ActionController
 {
     /**
      * Package repository
      *
-     * @var Tx_CunddComposer_Domain_Repository_PackageRepository
+     * @var \Cundd\CunddComposer\Domain\Repository\PackageRepository
      * @inject
      */
     protected $packageRepository;
@@ -49,7 +53,7 @@ class Tx_CunddComposer_Controller_PackageController extends ActionController
     /**
      * Asset installer
      *
-     * @var \Tx_CunddComposer_Installer_AssetInstaller
+     * @var \Cundd\CunddComposer\Installer\AssetInstaller
      * @inject
      */
     protected $assetInstaller;
@@ -57,7 +61,7 @@ class Tx_CunddComposer_Controller_PackageController extends ActionController
     /**
      * Composer installer
      *
-     * @var \Tx_CunddComposer_Installer_ComposerInstaller
+     * @var \Cundd\CunddComposer\Installer\ComposerInstaller
      * @inject
      */
     protected $composerInstaller;
@@ -65,7 +69,7 @@ class Tx_CunddComposer_Controller_PackageController extends ActionController
     /**
      * Definition writer
      *
-     * @var \Tx_CunddComposer_Definition_Writer
+     * @var \Cundd\CunddComposer\Definition\Writer
      * @inject
      */
     protected $definitionWriter;
@@ -84,9 +88,9 @@ class Tx_CunddComposer_Controller_PackageController extends ActionController
     /**
      * Initialize the view
      *
-     * @param \TYPO3\CMS\Extbase\Mvc\View\ViewInterface $view
+     * @param ViewInterface $view
      */
-    protected function initializeView(\TYPO3\CMS\Extbase\Mvc\View\ViewInterface $view)
+    protected function initializeView(ViewInterface $view)
     {
         parent::initializeView($view);
         $view->assign('ui', array(
@@ -327,9 +331,9 @@ class Tx_CunddComposer_Controller_PackageController extends ActionController
     protected function getResourceUri($resource, $absolute = false)
     {
         $extensionName = $this->controllerContext->getRequest()->getControllerExtensionName();
-        $uri = 'EXT:' . \TYPO3\CMS\Core\Utility\GeneralUtility::camelCaseToLowerCaseUnderscored($extensionName) . '/Resources/Public/' . $resource;
-        $uri = \TYPO3\CMS\Core\Utility\GeneralUtility::getFileAbsFileName($uri);
-        $uri = \TYPO3\CMS\Core\Utility\PathUtility::stripPathSitePrefix($uri);
+        $uri = 'EXT:' . GeneralUtility::camelCaseToLowerCaseUnderscored($extensionName) . '/Resources/Public/' . $resource;
+        $uri = GeneralUtility::getFileAbsFileName($uri);
+        $uri = PathUtility::stripPathSitePrefix($uri);
         if (TYPO3_MODE === 'BE' && $absolute === false && $uri !== false) {
             $uri = '../' . $uri;
         }

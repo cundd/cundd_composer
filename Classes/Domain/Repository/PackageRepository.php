@@ -1,4 +1,5 @@
 <?php
+namespace Cundd\CunddComposer\Domain\Repository;
 
 /***************************************************************
  *  Copyright notice
@@ -24,7 +25,7 @@
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
-use Tx_CunddComposer_Domain_Model_Package as Package;
+use Cundd\CunddComposer\Domain\Model\Package as Package;
 use TYPO3\CMS\Extbase\Persistence\Repository;
 
 /**
@@ -34,7 +35,7 @@ use TYPO3\CMS\Extbase\Persistence\Repository;
  * @license http://www.gnu.org/licenses/gpl.html GNU General Public License, version 3 or later
  *
  */
-class Tx_CunddComposer_Domain_Repository_PackageRepository extends Repository {
+class PackageRepository extends Repository {
 
     /**
      * The composer.json contents
@@ -237,7 +238,7 @@ class Tx_CunddComposer_Domain_Repository_PackageRepository extends Repository {
     protected function convert($data, $targetClass)
     {
         if (!class_exists($targetClass) && $targetClass === 'Cundd\\CunddComposer\\Domain\\Model\\Package') {
-            $targetClass = 'Tx_CunddComposer_Domain_Model_Package';
+            $targetClass = 'Cundd\\CunddComposer\\Domain\\Model\\Package';
         }
         $object = new $targetClass();
         if (method_exists($object, '_setProperty')) {

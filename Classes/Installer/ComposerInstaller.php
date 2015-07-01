@@ -1,4 +1,5 @@
 <?php
+namespace Cundd\CunddComposer\Installer;
 
 /***************************************************************
  *  Copyright notice
@@ -24,8 +25,8 @@
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
-use Tx_CunddComposer_Utility_GeneralUtility as ComposerGeneralUtility;
-use Tx_CunddComposer_Utility_ConfigurationUtility as ConfigurationUtility;
+use Cundd\CunddComposer\Utility\GeneralUtility as ComposerGeneralUtility;
+use Cundd\CunddComposer\Utility\ConfigurationUtility as ConfigurationUtility;
 
 
 /**
@@ -35,7 +36,7 @@ use Tx_CunddComposer_Utility_ConfigurationUtility as ConfigurationUtility;
  * @license http://www.gnu.org/licenses/gpl.html GNU General Public License, version 3 or later
  *
  */
-class Tx_CunddComposer_Installer_ComposerInstaller
+class ComposerInstaller
 {
     /**
      * Call composer on the command line to install the dependencies.

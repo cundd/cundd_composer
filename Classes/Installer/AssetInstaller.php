@@ -1,4 +1,5 @@
 <?php
+namespace Cundd\CunddComposer\Installer;
 
 /***************************************************************
  *  Copyright notice
@@ -24,7 +25,7 @@
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
-use Tx_CunddComposer_Utility_GeneralUtility as ComposerGeneralUtility;
+use Cundd\CunddComposer\Utility\GeneralUtility as ComposerGeneralUtility;
 
 /**
  *
@@ -33,7 +34,7 @@ use Tx_CunddComposer_Utility_GeneralUtility as ComposerGeneralUtility;
  * @license http://www.gnu.org/licenses/gpl.html GNU General Public License, version 3 or later
  *
  */
-class Tx_CunddComposer_Installer_AssetInstaller
+class AssetInstaller
 {
     /**
      * An array of paths to look for assets inside the installed packages
@@ -45,7 +46,7 @@ class Tx_CunddComposer_Installer_AssetInstaller
     /**
      * Definition writer
      *
-     * @var \Tx_CunddComposer_Definition_Writer
+     * @var \Cundd\CunddComposer\Definition\Writer
      * @inject
      */
     protected $definitionWriter;

@@ -1,4 +1,6 @@
 <?php
+namespace Cundd\CunddComposer\Command;
+
 /*
  *  Copyright notice
  *
@@ -28,7 +30,7 @@
  * Created 11.10.13 15:16
  */
 
-use Tx_CunddComposer_Utility_ConfigurationUtility as ConfigurationUtility;
+use Cundd\CunddComposer\Utility\ConfigurationUtility as ConfigurationUtility;
 use TYPO3\CMS\Extbase\Mvc\Controller\CommandController;
 
 /**
@@ -36,13 +38,13 @@ use TYPO3\CMS\Extbase\Mvc\Controller\CommandController;
  *
  * @package Cundd\Assetic\Command
  */
-class Tx_CunddComposer_Command_ComposerCommandController extends CommandController
+class ComposerCommandController extends CommandController
 {
 
     /**
      * Package repository
      *
-     * @var Tx_CunddComposer_Domain_Repository_PackageRepository
+     * @var \Cundd\CunddComposer\Domain\Repository\PackageRepository
      * @inject
      */
     protected $packageRepository;
@@ -50,7 +52,7 @@ class Tx_CunddComposer_Command_ComposerCommandController extends CommandControll
     /**
      * Asset installer
      *
-     * @var \Tx_CunddComposer_Installer_AssetInstaller
+     * @var \Cundd\CunddComposer\Installer\AssetInstaller
      * @inject
      */
     protected $assetInstaller;
@@ -58,7 +60,7 @@ class Tx_CunddComposer_Command_ComposerCommandController extends CommandControll
     /**
      * Composer installer
      *
-     * @var \Tx_CunddComposer_Installer_ComposerInstaller
+     * @var \Cundd\CunddComposer\Installer\ComposerInstaller
      * @inject
      */
     protected $composerInstaller;
@@ -66,7 +68,7 @@ class Tx_CunddComposer_Command_ComposerCommandController extends CommandControll
     /**
      * Definition writer
      *
-     * @var \Tx_CunddComposer_Definition_Writer
+     * @var \Cundd\CunddComposer\Definition\Writer
      * @inject
      */
     protected $definitionWriter;

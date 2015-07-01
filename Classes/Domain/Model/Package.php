@@ -1,4 +1,5 @@
 <?php
+namespace Cundd\CunddComposer\Domain\Model;
 
 /***************************************************************
  *  Copyright notice
@@ -33,7 +34,7 @@ use TYPO3\CMS\Extbase\DomainObject\AbstractEntity;
  * @license http://www.gnu.org/licenses/gpl.html GNU General Public License, version 3 or later
  *
  */
-class Tx_CunddComposer_Domain_Model_Package extends AbstractEntity {
+class Package extends AbstractEntity {
 
     /**
      * Name
