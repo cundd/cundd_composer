@@ -63,7 +63,7 @@ class GeneralUtility
      * @param array   $array1
      * @param array   $array2
      * @param boolean $strict If set to TRUE an exception will be thrown if a key already is set with a different value
-     * @throws UnexpectedValueException if the strict mode is enabled and a key already exists
+     * @throws \UnexpectedValueException if the strict mode is enabled and a key already exists
      * @return  array Returns the merged array
      */
     public static function arrayMergeRecursive($array1, $array2, $strict = false)
@@ -166,7 +166,7 @@ class GeneralUtility
     /**
      * Make sure that the temporary directory exists
      *
-     * @throws RuntimeException if the temporary directory does not exist
+     * @throws \RuntimeException if the temporary directory does not exist
      * @return void
      */
     public static function makeSureTempPathExists()

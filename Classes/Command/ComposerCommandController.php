@@ -197,7 +197,7 @@ class ComposerCommandController extends CommandController
     {
         if (!ConfigurationUtility::getPHPExecutable()) {
             $this->outputLine('ERROR: PHP executable could not be found');
-            throw new UnexpectedValueException('PHP executable could not be found', 1431007408);
+            throw new \UnexpectedValueException('PHP executable could not be found', 1431007408);
         }
     }
 }

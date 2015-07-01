@@ -85,7 +85,7 @@ class Package extends AbstractEntity {
     /**
      * Time
      *
-     * @var DateTime
+     * @var \DateTime
      */
     protected $time;
 
@@ -225,7 +225,7 @@ class Package extends AbstractEntity {
     /**
      * Returns the time
      *
-     * @return DateTime $time
+     * @return \DateTime $time
      */
     public function getTime()
     {
@@ -235,7 +235,7 @@ class Package extends AbstractEntity {
     /**
      * Sets the time
      *
-     * @param DateTime $time
+     * @param \DateTime $time
      * @return void
      */
     public function setTime($time)

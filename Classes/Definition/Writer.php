@@ -87,7 +87,7 @@ class Writer
      * Returns the composer.json array merged with the template
      *
      * @param boolean $development Indicates if the dev-requirements should be merged
-     * @throws UnexpectedValueException if the composer.json template could not be loaded
+     * @throws \UnexpectedValueException if the composer.json template could not be loaded
      * @return array
      */
     public function getMergedComposerJson($development = false)
