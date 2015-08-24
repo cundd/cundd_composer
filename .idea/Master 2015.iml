@@ -1,20 +1,26 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <module type="WEB_MODULE" version="4">
   <component name="NewModuleRootManager">
+    <content url="file://$MODULE_DIR$/../Iresults.Master">
+      <sourceFolder url="file://$MODULE_DIR$/../Iresults.Master/Classes" isTestSource="false" />
+    </content>
+    <content url="file://$MODULE_DIR$/../assetic">
+      <sourceFolder url="file://$MODULE_DIR$/../assetic/Classes" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/../assetic/Tests/Unit" isTestSource="true" />
+    </content>
+    <content url="file://$MODULE_DIR$/../client">
+      <sourceFolder url="file://$MODULE_DIR$/../client/Classes" isTestSource="false" packagePrefix="Iresults\Speciality" />
+    </content>
     <content url="file://$MODULE_DIR$" />
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="module-library">
       <library name="PHP">
         <CLASSES>
-          <root url="file://$MODULE_DIR$/../../../../web_typo3_v6-2/typo3/sysext/fluid" />
-          <root url="file://$MODULE_DIR$/../../../../web_typo3_v6-2/typo3/sysext/core" />
-          <root url="file://$MODULE_DIR$/../../../../web_typo3_v6-2/typo3/sysext/extbase" />
+          <root url="file://$MODULE_DIR$/../../../Resources/typo3_src-7.2.0/typo3/sysext" />
         </CLASSES>
         <SOURCES>
-          <root url="file://$MODULE_DIR$/../../../../web_typo3_v6-2/typo3/sysext/fluid" />
-          <root url="file://$MODULE_DIR$/../../../../web_typo3_v6-2/typo3/sysext/core" />
-          <root url="file://$MODULE_DIR$/../../../../web_typo3_v6-2/typo3/sysext/extbase" />
+          <root url="file://$MODULE_DIR$/../../../Resources/typo3_src-7.2.0/typo3/sysext" />
         </SOURCES>
       </library>
     </orderEntry>
@@ -31,4 +37,3 @@
     <orderEntry type="library" scope="PROVIDED" name="sass-stdlib" level="application" />
   </component>
 </module>
-

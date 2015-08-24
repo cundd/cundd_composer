@@ -25,18 +25,62 @@ Usage
 
 ![Cundd Composer icon](https://raw.github.com/cundd/CunddComposer/master/ext_icon.gif "Cundd Composer icon") Icon of the Cundd Composer module
 
-Lets say we want to install the Composer dependencies for an TYPO3 extension called `MyExt`. In the root directory of the extension a valid composer.json file exists.
+Lets say we want to install the Composer dependencies for an TYPO3 extension called `MyExt`. In the root directory of the extension a valid `cundd_composer.json` file exists.
 
 1. Install `MyExt` through the Extension Manager
 2. Go to the `Composer` module in the Tools section
 3. Check the preview of the merged composer.json
-4. Click on `Merge and install` to tell Composer to install requirements (or `Merge and install development mode` if you want to install development requirements)
+4. Click on `Install` or `Update` to tell Composer to install requirements
+
+
+Command line
+------------
+
+TYPO3 based CLI commands are available to manage dependencies.
+
+To find information about the command's available options please run `typo3/cli_dispatch.phpsh extbase help` followed by the command.
+
+
+### composer:install
+
+Installs the project dependencies from the `composer.lock` file (in `EXT:cundd_composer/Resources/Private/Temp/`) if present, or falls back on the `cundd_composer.json`.
+
+```bash
+typo3/cli_dispatch.phpsh extbase composer:install
+```
+
+
+### composer:update
+
+Updates your dependencies to the latest version according to `cundd_composer.json`, and updates the `composer.lock` file (in `EXT:cundd_composer/Resources/Private/Temp/`).
+
+```bash
+typo3/cli_dispatch.phpsh extbase composer:update
+```
+
+
+### composer:installassets
+
+Install available assets.
+
+```bash
+typo3/cli_dispatch.phpsh extbase composer:installassets
+```
+
+
+### composer:list
+
+List information about the required packages.
+
+```bash
+typo3/cli_dispatch.phpsh extbase composer:list
+```
 
 
 For extension developers
 ------------------------
 
-Place a valid composer.json file in the root directory of your extension. If you want to use the Composer packages in a fronted extension you can simply use the package classes. In case of a backend module you have to register the Cundd Composer autoloader through `Tx_CunddComposer_Autoloader::register()`.
+Place a valid `cundd_composer.json` ([The composer.json Schema](https://getcomposer.org/doc/04-schema.md)) file in the root directory of your extension. If you want to use the Composer packages in a fronted extension you can simply use the package classes. In case of a backend module you have to register the Cundd Composer autoloader through `\Cundd\CunddComposer\Autoloader::register()`.
 
 
 Assets
@@ -54,3 +98,9 @@ If the package `foo/bar` contains the directory `Resources/Public/` Cundd Compos
 
 ### Aim
 The aim of the Asset Installer is to provide a schema to reference asset files and to publish  those files in a public folder, which allows the `vendor` directory to be inaccessible by browsers.
+
+
+Sponsored by
+------------
+
+[![](http://www.iresults.li/fileadmin/framework/local/img/iresultsLogo.png)](http://www.iresults.li)
