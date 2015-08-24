@@ -32,7 +32,7 @@ Place a valid composer.json file in the root directory of your
 extension. If you want to use the Composer packages in a fronted
 extension you can simply use the package classes. In case of a backend
 module you have to register the Cundd Composer autoloader through
-``Tx_CunddComposer_Autoloader::register()``.
+``\Cundd\CunddComposer\Autoloader::register()``.
 
 .. |Cundd Composer
 icon| image:: https://raw.github.com/cundd/CunddComposer/master/ext_icon.gif
