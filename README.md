@@ -10,6 +10,12 @@ Installation
 Upload the extension files to your TYPO3 installation's extension folder and install Cundd Composer as usual through the Extension manager.
 
 
+Breaking changes in Cundd Composer 3.0
+--------------------------------------
+
+The class name without namespaces has been removed `Tx_CunddComposer_Autoloader`.
+
+
 Upgrade to TYPO3 6.2
 --------------------
 
