@@ -174,6 +174,7 @@ class PackageRepository extends Repository {
                         switch ($autoloadType) {
                             case 'classmap':
                             case 'psr-0':
+                            case 'psr-4':
                             case 'files';
                                 foreach ($autoLoadConfig as $pathKey => $pathOrFile) {
                                     $autoLoadConfig[$pathKey] = $relativeComposerFilePath . $pathOrFile;

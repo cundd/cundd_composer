@@ -4,4 +4,3 @@ return array(
 	'Cundd\\Composer\\Autoloader' 	=> $extensionPath . 'Classes/Autoloader.php',
 	'Cundd\\CunddComposer\\Autoloader' 	=> $extensionPath . 'Classes/Autoloader.php',
 );
-?>

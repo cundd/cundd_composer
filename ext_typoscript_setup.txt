@@ -2,8 +2,8 @@ includeLibs.0000_composer = EXT:cundd_composer/vendor/autoload.php
 
 module.tx_cunddcomposer {
 	view {
-		templateRootPath = EXT:cundd_composer/Resources/Private/Backend/Templates/
-		partialRootPath = EXT:cundd_composer/Resources/Private/Backend/Partials/
-		layoutRootPath = EXT:cundd_composer/Resources/Private/Backend/Layouts/
+		templateRootPath = EXT:cundd_composer/Resources/Private/Templates/
+		partialRootPath = EXT:cundd_composer/Resources/Private/Partials/
+		layoutRootPath = EXT:cundd_composer/Resources/Private/Layouts/
 	}
 }
