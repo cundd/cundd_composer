@@ -2,6 +2,13 @@
 <project version="4">
   <component name="WebResourcesPaths">
     <contentEntries>
+      <entry url="file://$PROJECT_DIR$">
+        <entryData>
+          <resourceRoots>
+            <path value="file://$PROJECT_DIR$/Resources/Public" />
+          </resourceRoots>
+        </entryData>
+      </entry>
       <entry url="file://$PROJECT_DIR$/../Iresults.Master">
         <entryData>
           <resourceRoots>
@@ -13,20 +20,6 @@
         <entryData>
           <resourceRoots>
             <path value="file://$PROJECT_DIR$/../assetic/Resources/Public" />
-          </resourceRoots>
-        </entryData>
-      </entry>
-      <entry url="file://$PROJECT_DIR$">
-        <entryData>
-          <resourceRoots>
-            <path value="file://$PROJECT_DIR$/Resources/Public" />
-          </resourceRoots>
-        </entryData>
-      </entry>
-      <entry url="file://$PROJECT_DIR$/../speciality">
-        <entryData>
-          <resourceRoots>
-            <path value="file://$PROJECT_DIR$/../speciality/Resources/Public" />
           </resourceRoots>
         </entryData>
       </entry>
