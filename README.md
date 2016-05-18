@@ -109,4 +109,4 @@ The aim of the Asset Installer is to provide a schema to reference asset files a
 Sponsored by
 ------------
 
-[![](http://www.iresults.li/fileadmin/framework/local/img/iresultsLogo.png)](http://www.iresults.li)
+[![](https://www.iresults.li/typo3conf/ext/client/Resources/Public/Images/logo.svg)](http://www.iresults.li)
