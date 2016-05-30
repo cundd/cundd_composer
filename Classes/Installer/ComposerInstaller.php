@@ -106,7 +106,7 @@ class ComposerInstaller
     protected function executeShellCommand($fullCommand)
     {
         $useShellExec = false;
-        if ($useShellExec) {
+        if ($useShellExec && !$this->getCustomEnvironmentConfiguration()) {
             return shell_exec($fullCommand);
         }
 
@@ -118,7 +118,7 @@ class ComposerInstaller
         );
 
         $cwd = ComposerGeneralUtility::getTempPath();
-        $env = $_ENV;
+        $env = array_merge($_ENV, $this->getCustomEnvironmentConfiguration());
 
         $process = proc_open($fullCommand, $descriptorSpec, $pipes, $cwd, $env);
 
@@ -141,5 +141,18 @@ class ComposerInstaller
             ComposerGeneralUtility::pd('Return value:', $returnValue);
         }
         return $output;
+    }
+
+    /**
+     * Return custom environment configuration
+     *
+     * @return array
+     */
+    private function getCustomEnvironmentConfiguration()
+    {
+        return array();
+        //return array(
+        //    'PATH' => getenv('PATH') . ':/usr/local/bin'
+        //);
     }
 }
