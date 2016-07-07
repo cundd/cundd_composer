@@ -5,29 +5,19 @@ Cundd Composer
 
 
 Installation
-------------
+============
 
-Upload the extension files to your TYPO3 installation's extension folder and install Cundd Composer as usual through the Extension manager.
-
-
-Breaking changes in Cundd Composer 3.0
---------------------------------------
-
-The class name without namespaces has been removed `Tx_CunddComposer_Autoloader`.
-
-
-Upgrade to TYPO3 6.2
---------------------
-
-TYPO3 6.2 will parse the extensions `composer.json` files and retrieve different information from it. TYPO3's new Package Manager also allows the definition of dependencies. Unfortunately these dependencies are limited to real TYPO3 extension. If you want to install an extension, which requires a non-TYPO3 package in `composer.json`, the Package Manager tries to resolve this dependency in vain and the installation fails.
-
-To work around this issue cundd_composer will look for the file `cundd_composer.json` instead of `composer.json`. For legacy reasons cundd_composer will still use `composer.json` TYPO3 versions below 6.2. 
-
-**Please check the installed extensions before upgrading to TYPO3 6.2.**
+Install from [TER](https://typo3.org/extensions/repository/view/cundd_composer) or clone the source with `git clone https://github.com/cundd/CunddComposer.git cundd_composer` and install Cundd Composer as usual through the Extension Manager.
 
 
 Usage
------
+=====
+
+Make sure the extensions that provide a `cundd_composer.json` are already installed before running Cundd Composer. Only properly installed TYPO3 extensions are checked for a `cundd_composer.json` file.
+
+
+via backend module
+------------------
 
 ![Cundd Composer icon](https://raw.github.com/cundd/CunddComposer/master/ext_icon.gif "Cundd Composer icon") Icon of the Cundd Composer module
 
@@ -35,12 +25,12 @@ Lets say we want to install the Composer dependencies for an TYPO3 extension cal
 
 1. Install `MyExt` through the Extension Manager
 2. Go to the `Composer` module in the Tools section
-3. Check the preview of the merged composer.json
+3. Check the preview of the merged `composer.json`
 4. Click on `Install` or `Update` to tell Composer to install requirements
 
 
-Command line
-------------
+via command line
+----------------
 
 TYPO3 based CLI commands are available to manage dependencies.
 
@@ -90,23 +80,88 @@ Place a valid `cundd_composer.json` ([The composer.json Schema](https://getcompo
 
 
 Assets
-------
+======
 
 The Asset Installer loops through all the installed composer packages and checks if they contain one of the directories defined in the extension manager (configuration name: `assetPaths`, defaults: `Resources/Public/`, `build`, `lib`, `js`, `font`, `less` and `sass`). If one of the directories exist, a symlink to the directory will be created inside of Cundd Composer's `Resources/Public/Assets/` folder.
 
 Before the Asset Installer can be used, it has to be enabled in the extension manager. Therefore `allowInstallAssets` has to be checked. If `automaticallyInstallAssets` (and `allowInstallAssets`) is enabled the Assets will be installed automatically after Cundd Composer's `install` or `update` function is invoked.
 
 
-### Example
+Example
+-------
 
 If the package `foo/bar` contains the directory `Resources/Public/` Cundd Composer will create a symlink at `EXT:cundd_composer/Resources/Public/Assets/foo_bar/` which will point to `EXT:cundd_composer/vendor/foo/bar/Resources/Public/`.
 
 
-### Aim
-The aim of the Asset Installer is to provide a schema to reference asset files and to publish  those files in a public folder, which allows the `vendor` directory to be inaccessible by browsers.
+Aim
+---
+
+The aim of the Asset Installer is to provide a schema to reference asset files and to publish those files in a public folder, which allows the `vendor` directory to be inaccessible for browsers.
+
+
+Maintenance
+===========
+
+The Composer binary is located in `./typo3conf/ext/cundd_composer/Resources/Private/PHP/composer.phar`.
+The generated `composer.json`, cache and configuration files are saved in `./typo3conf/ext/cundd_composer/Resources/Private/Temp/`.
+
+
+Update the Composer binary to the latest version
+------------------------------------------------
+
+```bash
+./typo3conf/ext/cundd_composer/Resources/Private/PHP/composer.phar selfupdate
+```
+
+
+Retrieve Composer configuration
+-------------------------------
+
+```bash
+COMPOSER=./typo3conf/ext/cundd_composer/Resources/Private/Temp/composer.json \
+./typo3conf/ext/cundd_composer/Resources/Private/PHP/composer.phar config -l
+```
+
+
+Set OAuth tokens for API rate limit
+-----------------------------------
+
+```bash
+COMPOSER_HOME=./typo3conf/ext/cundd_composer/Resources/Private/Temp/ \
+./typo3conf/ext/cundd_composer/Resources/Private/PHP/composer.phar config -g \
+github-oauth.github.com theOauthToken
+```
+
+
+Clear the internal package cache
+--------------------------------
+
+```bash
+COMPOSER_HOME=./typo3conf/ext/cundd_composer/Resources/Private/Temp \
+./typo3conf/ext/cundd_composer/Resources/Private/PHP/composer.phar clearcache
+```
+
+
+Breaking changes
+================
+
+Breaking changes in Cundd Composer 3.0
+--------------------------------------
+
+The class name without namespaces has been removed `Tx_CunddComposer_Autoloader`.
+
+
+Upgrade to TYPO3 6.2
+--------------------
+
+TYPO3 6.2 will parse the extensions `composer.json` files and retrieve different information from it. TYPO3's new Package Manager also allows the definition of dependencies. Unfortunately these dependencies are limited to real TYPO3 extension. If you want to install an extension, which requires a non-TYPO3 package in `composer.json`, the Package Manager tries to resolve this dependency in vain and the installation fails.
+
+To work around this issue cundd_composer will look for the file `cundd_composer.json` instead of `composer.json`. For legacy reasons cundd_composer will still use `composer.json` TYPO3 versions below 6.2.
+
+**Please check the installed extensions before upgrading to TYPO3 6.2.**
 
 
 Sponsored by
-------------
+============
 
 [![](https://www.iresults.li/typo3conf/ext/client/Resources/Public/Images/logo.svg)](http://www.iresults.li)
