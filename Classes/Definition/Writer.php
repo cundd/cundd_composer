@@ -36,7 +36,6 @@ use Cundd\CunddComposer\Utility\GeneralUtility as ComposerGeneralUtility;
  */
 class Writer
 {
-
     /**
      * The minimum stability
      * http://getcomposer.org/doc/04-schema.md#minimum-stability
@@ -78,8 +77,10 @@ class Writer
         $composerJson = json_encode($composerJson);
         if ($composerJson) {
             ComposerGeneralUtility::makeSureTempPathExists();
-            return file_put_contents(ComposerGeneralUtility::getTempPath() . 'composer.json', $composerJson);
+
+            return file_put_contents(ComposerGeneralUtility::getTempPath().'composer.json', $composerJson);
         }
+
         return false;
     }
 
@@ -93,7 +94,9 @@ class Writer
     public function getMergedComposerJson($development = false)
     {
         if (!$this->mergedComposerJson) {
-            $composerJson = file_get_contents(ComposerGeneralUtility::getPathToResource() . 'Private/Templates/composer.json');
+            $composerJson = file_get_contents(
+                ComposerGeneralUtility::getPathToResource().'Private/Templates/composer.json'
+            );
             if (!$composerJson) {
                 throw new \UnexpectedValueException('Could not load the composer.json template file', 1355952845);
             }
@@ -216,6 +219,7 @@ class Writer
                 }
             }
         }
+
         return $jsonData;
     }
 }
