@@ -88,12 +88,12 @@ class ComposerInstaller
 //			. ($dev ? '--dev ' : '')
             . '2>&1';
 
-        $fullCommand = 'COMPOSER_HOME=' . ComposerGeneralUtility::getTempPath() . ' ' . $fullCommand;
 
-        $output = $this->executeShellCommand($fullCommand);
+        $output = $this->executeShellCommand($fullCommand, $this->getEnvironmentVariables());
 
         ComposerGeneralUtility::pd($fullCommand);
         ComposerGeneralUtility::pd($output);
+
         return $output;
     }
 
@@ -101,15 +101,11 @@ class ComposerInstaller
      * Execute the shell command
      *
      * @param string $fullCommand Full composer command
+     * @param array  $environmentVariables
      * @return string
      */
-    protected function executeShellCommand($fullCommand)
+    protected function executeShellCommand($fullCommand, array $environmentVariables)
     {
-        $useShellExec = false;
-        if ($useShellExec && !$this->getCustomEnvironmentConfiguration()) {
-            return shell_exec($fullCommand);
-        }
-
         $output = '';
         $descriptorSpec = array(
             0 => array('pipe', 'r'),  // stdin is a pipe that the child will read from
@@ -118,9 +114,8 @@ class ComposerInstaller
         );
 
         $cwd = ComposerGeneralUtility::getTempPath();
-        $env = array_merge($_ENV, $this->getCustomEnvironmentConfiguration());
 
-        $process = proc_open($fullCommand, $descriptorSpec, $pipes, $cwd, $env);
+        $process = proc_open($fullCommand, $descriptorSpec, $pipes, $cwd, $environmentVariables);
 
         if (is_resource($process)) {
             // $pipes now looks like this:
@@ -140,19 +135,51 @@ class ComposerInstaller
 
             ComposerGeneralUtility::pd('Return value:', $returnValue);
         }
+
         return $output;
     }
 
     /**
-     * Return custom environment configuration
-     *
      * @return array
      */
-    private function getCustomEnvironmentConfiguration()
+    protected function getEnvironmentVariables()
     {
-        return array();
-        //return array(
-        //    'PATH' => getenv('PATH') . ':/usr/local/bin'
-        //);
+        // Some environment variable names that are forwarded to composer
+        $environmentVariablesToInherit = [
+            'COMPOSER',
+            'COMPOSER_ROOT_VERSION',
+            'COMPOSER_VENDOR_DIR',
+            'COMPOSER_BIN_DIR',
+            'http_proxy',
+            'HTTP_PROXY',
+            'no_proxy',
+            'HTTP_PROXY_REQUEST_FULLURI',
+            'COMPOSER_CACHE_DIR',
+            'COMPOSER_PROCESS_TIMEOUT',
+            'COMPOSER_CAFILE',
+            'COMPOSER_AUTH',
+            'COMPOSER_DISCARD_CHANGES',
+            'COMPOSER_NO_INTERACTION',
+            'COMPOSER_ALLOW_SUPERUSER',
+            'COMPOSER_MIRROR_PATH_REPOS',
+
+            'PATH',
+        ];
+
+        $environment = array_merge(
+            $_ENV,
+            [
+                'COMPOSER_HOME' => ComposerGeneralUtility::getTempPath(),
+            ]
+        );
+
+        foreach ($environmentVariablesToInherit as $variable) {
+            $value = getenv($variable);
+            if (false !== $value) {
+                $environment[$variable] = $value;
+            }
+        }
+
+        return $environment;
     }
 }
