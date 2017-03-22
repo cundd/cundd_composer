@@ -283,7 +283,6 @@ class PackageController extends ActionController
             . '--no-ansi '
             . '--verbose '
             . '--profile '
-            . '--dev '
             . '--optimize-autoloader';
         $this->view->assign('manualInstallTip', $fullCommand);
 
