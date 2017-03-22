@@ -107,6 +107,8 @@ class PackageController extends ActionController
      */
     public function listAction()
     {
+        $this->checkAccess();
+
         $packages = null;
 
         try {
@@ -133,6 +135,8 @@ class PackageController extends ActionController
      */
     public function manualInstallationAction()
     {
+        $this->checkAccess();
+
         $this->definitionWriter->writeMergedComposerJson();
         $this->assignViewVariables();
     }
@@ -145,6 +149,8 @@ class PackageController extends ActionController
      */
     public function showAction(Package $package)
     {
+        $this->checkAccess();
+
         $this->view->assign('package', $package);
     }
 
@@ -157,6 +163,8 @@ class PackageController extends ActionController
      */
     public function newAction(Package $newPackage = null)
     {
+        $this->checkAccess();
+
         $this->view->assign('newPackage', $newPackage);
     }
 
@@ -168,6 +176,8 @@ class PackageController extends ActionController
      */
     public function createAction(Package $newPackage)
     {
+        $this->checkAccess();
+
         $this->packageRepository->add($newPackage);
         $this->addFlashMessage('Your new Package was created.');
         $this->redirect('list');
@@ -181,6 +191,8 @@ class PackageController extends ActionController
      */
     public function editAction(Package $package)
     {
+        $this->checkAccess();
+
         $this->view->assign('package', $package);
     }
 
@@ -192,6 +204,8 @@ class PackageController extends ActionController
      */
     public function deleteAction(Package $package)
     {
+        $this->checkAccess();
+
         $this->packageRepository->remove($package);
         $this->addFlashMessage('Your Package was removed.');
         $this->redirect('list');
@@ -205,6 +219,8 @@ class PackageController extends ActionController
      */
     public function installAction($development = false)
     {
+        $this->checkAccess();
+
         $this->definitionWriter->setIncludeDevelopmentDependencies($development);
 
         $this->definitionWriter->writeMergedComposerJson();
@@ -223,6 +239,8 @@ class PackageController extends ActionController
      */
     public function updateAction($development = true)
     {
+        $this->checkAccess();
+
         $this->definitionWriter->setIncludeDevelopmentDependencies($development);
 
         $this->definitionWriter->writeMergedComposerJson();
@@ -240,6 +258,8 @@ class PackageController extends ActionController
      */
     public function installAssetsAction()
     {
+        $this->checkAccess();
+
         if (!ConfigurationUtility::getConfiguration('allowInstallAssets')) {
             $this->view->assign('error', 'Asset installation disabled in Extension Manager');
         }
@@ -340,4 +360,15 @@ class PackageController extends ActionController
         return $uri;
     }
 
+    /**
+     * @return bool
+     */
+    private function checkAccess()
+    {
+        if (isset($GLOBALS['BE_USER']) && $GLOBALS['BE_USER']) {
+            return;
+        }
+
+        throw new \RuntimeException('Access violation');
+    }
 }
