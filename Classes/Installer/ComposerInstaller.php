@@ -41,7 +41,7 @@ class ComposerInstaller
     /**
      * Call composer on the command line to install the dependencies.
      *
-     * @param boolean $dev Argument will be removed in future version
+     * @param boolean $dev Argument will be removed in v4.0
      * @return string                Returns the composer output
      */
     public function install($dev = false)
@@ -52,7 +52,7 @@ class ComposerInstaller
     /**
      * Call composer on the command line to update the dependencies.
      *
-     * @param boolean $dev Argument will be removed in future version
+     * @param boolean $dev Argument will be removed in v4.0
      * @return string                Returns the composer output
      */
     public function update($dev = false)
@@ -64,7 +64,7 @@ class ComposerInstaller
      * Execute the given composer command
      *
      * @param string  $command The composer command to execute
-     * @param boolean $dev     Argument will be removed in future version
+     * @param boolean $dev     Argument will be removed in v4.0
      * @return string                Returns the composer output
      */
     protected function executeComposerCommand($command, $dev = false)
@@ -77,15 +77,13 @@ class ComposerInstaller
 
         ComposerGeneralUtility::makeSureTempPathExists();
         $fullCommand = ConfigurationUtility::getPHPExecutable() . ' '
-//			. '-c ' . php_ini_loaded_file() . ' '
             . '"' . $pathToComposer . '" ' . $command . ' '
             . '--working-dir ' . '"' . ComposerGeneralUtility::getTempPath() . '" '
 //			. '--no-interaction '
 //			. '--no-ansi '
             . '--verbose '
 //			. '--profile '
-//			. '--optimize-autoloader '
-//			. ($dev ? '--dev ' : '')
+			. '--optimize-autoloader '
             . '2>&1';
 
 
