@@ -105,11 +105,6 @@ class ComposerInstaller
      */
     protected function executeShellCommand($fullCommand)
     {
-        $useShellExec = false;
-        if ($useShellExec && !$this->getCustomEnvironmentConfiguration()) {
-            return shell_exec($fullCommand);
-        }
-
         $output = '';
         $descriptorSpec = array(
             0 => array('pipe', 'r'),  // stdin is a pipe that the child will read from
