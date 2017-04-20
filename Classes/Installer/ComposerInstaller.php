@@ -35,39 +35,43 @@ class ComposerInstaller
     /**
      * Call composer on the command line to install the dependencies.
      *
-     * @param boolean $dev Argument will be removed in future version
-     * @return string                Returns the composer output
+     * @param callable|null $receivedContent A callback that will be invoked when script output is received
+     * @return string Returns the composer output
      */
-    public function install($dev = false)
+    public function install(callable $receivedContent = null)
     {
-        return $this->executeComposerCommand('install', $dev);
+        return $this->executeComposerCommand(
+            'install',
+            $receivedContent ?: function () {
+            }
+        );
     }
 
     /**
      * Call composer on the command line to update the dependencies.
      *
-     * @param boolean $dev Argument will be removed in future version
-     * @return string                Returns the composer output
+     * @param callable|null $receivedContent A callback that will be invoked when script output is received
+     * @return string Returns the composer output
      */
-    public function update($dev = false)
+    public function update(callable $receivedContent = null)
     {
-        return $this->executeComposerCommand('update', $dev);
+        return $this->executeComposerCommand(
+            'update',
+            $receivedContent ?: function () {
+            }
+        );
     }
 
     /**
      * Execute the given composer command
      *
-     * @param string  $command The composer command to execute
-     * @param boolean $dev     Argument will be removed in future version
-     * @return string                Returns the composer output
+     * @param string   $command         The composer command to execute
+     * @param callable $receivedContent A callback that will be invoked when script output is received
+     * @return string Returns the composer output
      */
-    protected function executeComposerCommand($command, $dev = false)
+    protected function executeComposerCommand($command, callable $receivedContent)
     {
         $pathToComposer = ComposerGeneralUtility::getComposerPath();
-
-        if ($dev || func_num_args() > 1) {
-            ComposerGeneralUtility::pd('Argument dev is deprecated and ignored');
-        }
 
         ComposerGeneralUtility::makeSureTempPathExists();
         $fullCommand = ConfigurationUtility::getPHPExecutable() . ' '
@@ -84,10 +88,7 @@ class ComposerInstaller
 
         $fullCommand = 'COMPOSER_HOME=' . ComposerGeneralUtility::getTempPath() . ' ' . $fullCommand;
 
-        $output = $this->executeShellCommand($fullCommand);
-
-        ComposerGeneralUtility::pd($fullCommand);
-        ComposerGeneralUtility::pd($output);
+        $output = $this->executeShellCommand($fullCommand, $receivedContent);
 
         return $output;
     }
@@ -95,17 +96,18 @@ class ComposerInstaller
     /**
      * Execute the shell command
      *
-     * @param string $fullCommand Full composer command
+     * @param string   $fullCommand     Full composer command
+     * @param callable $receivedContent A callback that will be invoked when script output is received
      * @return string
      */
-    protected function executeShellCommand($fullCommand)
+    protected function executeShellCommand($fullCommand, callable $receivedContent)
     {
         $output = '';
-        $descriptorSpec = array(
-            0 => array('pipe', 'r'),  // stdin is a pipe that the child will read from
-            1 => array('pipe', 'w'),  // stdout is a pipe that the child will write to
-            2 => array('pipe', sys_get_temp_dir() . '/error-output.txt', 'a') // stderr is a file to write to
-        );
+        $descriptorSpec = [
+            0 => ['pipe', 'r'],  // stdin is a pipe that the child will read from
+            1 => ['pipe', 'w'],  // stdout is a pipe that the child will write to
+            2 => ['pipe', sys_get_temp_dir() . '/error-output.txt', 'a'] // stderr is a file to write to
+        ];
 
         $cwd = ComposerGeneralUtility::getTempPath();
         $env = array_merge($_ENV, $this->getCustomEnvironmentConfiguration());
@@ -121,14 +123,16 @@ class ComposerInstaller
             // fwrite($pipes[0], '<?php print_r($_ENV); ? >');
             fclose($pipes[0]);
 
-            $output = stream_get_contents($pipes[1]);
+            while ($received = fgets($pipes[1])) {
+                $output .= $received;
+                $receivedContent($received, $output);
+            }
             fclose($pipes[1]);
+            fclose($pipes[2]);
 
             // It is important that you close any pipes before calling
             // proc_close in order to avoid a deadlock
-            $returnValue = proc_close($process);
-
-            ComposerGeneralUtility::pd('Return value:', $returnValue);
+            proc_close($process);
         }
 
         return $output;
@@ -141,9 +145,6 @@ class ComposerInstaller
      */
     private function getCustomEnvironmentConfiguration()
     {
-        return array();
-        //return array(
-        //    'PATH' => getenv('PATH') . ':/usr/local/bin'
-        //);
+        return [];
     }
 }

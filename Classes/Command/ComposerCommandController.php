@@ -96,9 +96,13 @@ class ComposerCommandController extends CommandController
 
         fwrite(STDOUT, 'INSTALLING COMPOSER DEPENDENCIES' . PHP_EOL);
         fwrite(STDOUT, 'This may take a while...' . PHP_EOL);
-        $composerOutput = rtrim($this->composerInstaller->install());
+        $this->composerInstaller->install(
+            function ($received) {
+                echo $received;
+                flush();
+            }
+        );
 
-        $this->output($composerOutput . PHP_EOL);
         $this->installAssets();
 
         $this->sendAndExit();
@@ -118,9 +122,13 @@ class ComposerCommandController extends CommandController
 
         fwrite(STDOUT, 'UPDATING COMPOSER DEPENDENCIES' . PHP_EOL);
         fwrite(STDOUT, 'This may take a while...' . PHP_EOL);
-        $composerOutput = rtrim($this->composerInstaller->update());
+        $this->composerInstaller->update(
+            function ($received) {
+                echo $received;
+                flush();
+            }
+        );
 
-        $this->output($composerOutput . PHP_EOL . PHP_EOL);
         $this->installAssets();
 
         $this->sendAndExit();
@@ -153,12 +161,12 @@ class ComposerCommandController extends CommandController
         foreach ($packages as $package) {
             $required = array_filter(array_map('trim', explode("\n", $package->getRequire())));
             $requiredDev = array_filter(array_map('trim', explode("\n", $package->getRequireDev())));
-            $output = array(
+            $output = [
                 sprintf('%s [%s]: %s', $package->getName(), $package->getVersion(), $package->getDescription()),
                 sprintf('  require:%s%s', PHP_EOL, '    ' . implode(PHP_EOL . '    ', $required)),
                 sprintf('  require dev:%s%s', PHP_EOL, '    ' . implode(PHP_EOL . '    ', $requiredDev)),
                 '',
-            );
+            ];
             $this->output(implode(PHP_EOL, $output) . PHP_EOL . PHP_EOL);
         }
         $this->sendAndExit();
@@ -171,9 +179,9 @@ class ComposerCommandController extends CommandController
      */
     public function installAssets()
     {
-        if (ConfigurationUtility::getConfiguration(
-                'automaticallyInstallAssets'
-            ) && ConfigurationUtility::getConfiguration('allowInstallAssets')
+        if (
+            ConfigurationUtility::getConfiguration('automaticallyInstallAssets')
+            && ConfigurationUtility::getConfiguration('allowInstallAssets')
         ) {
             $this->assetInstaller->setAssetPaths(ConfigurationUtility::getConfiguration('assetPaths'));
             $installedAssets = $this->assetInstaller->installAssets();
