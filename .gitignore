@@ -64,7 +64,7 @@ local.properties
 .loadpath
 
 ### PhpStorm
-.idea/workspace.xml
+.idea
 
 # External tool builders
 .externalToolBuilders/

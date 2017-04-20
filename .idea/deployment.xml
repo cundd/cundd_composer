@@ -1,20 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
-  <component name="PublishConfigData" serverName="master2015.iresults.me">
+  <component name="PublishConfigData" autoUpload="Always" serverName="gamprin.li (Dev)">
     <serverData>
-      <paths name="master2015.iresults.me">
+      <paths name="gamprin.li (Dev)">
         <serverdata>
           <mappings>
             <mapping deploy="/typo3conf/ext/cundd_composer" local="$PROJECT_DIR$" web="/" />
-            <mapping deploy="/typo3conf/ext/assetic" local="$PROJECT_DIR$/../assetic" web="/" />
-            <mapping deploy="/typo3conf/ext/iresults_master" local="$PROJECT_DIR$/../Iresults.Master" web="/" />
-            <mapping deploy="/typo3conf/ext/client" local="$PROJECT_DIR$/../client" web="/" />
           </mappings>
-          <excludedPaths>
-            <excludedPath local="true" path="$PROJECT_DIR$/../assetic/vendor" />
-          </excludedPaths>
         </serverdata>
       </paths>
     </serverData>
+    <option name="myAutoUpload" value="ALWAYS" />
   </component>
 </project>
