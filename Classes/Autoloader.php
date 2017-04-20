@@ -1,4 +1,5 @@
 <?php
+
 namespace Cundd\CunddComposer;
 
 /*
@@ -27,25 +28,23 @@ namespace Cundd\CunddComposer;
 
 use Cundd\CunddComposer\Utility\GeneralUtility as ComposerGeneralUtility;
 
-/**
- *
- *
- * @package cundd_composer
- * @license http://www.gnu.org/licenses/gpl.html GNU General Public License, version 3 or later
- *
- */
-class Autoloader {
-	/**
-	 * Require the composer autoloader
-	 * @return void
-	 */
-	static public function register() {
-	    if (!class_exists(ComposerGeneralUtility::class)) {
+
+class Autoloader
+{
+    /**
+     * Require the composer autoloader
+     *
+     * @return void
+     */
+    static public function register()
+    {
+        if (!class_exists(ComposerGeneralUtility::class)) {
             require_once __DIR__ . '/Utility/GeneralUtility.php';
         }
-		if (file_exists(ComposerGeneralUtility::getPathToVendorDirectory() .  'autoload.php')) {
-			include_once(ComposerGeneralUtility::getPathToVendorDirectory() . 'autoload.php');
-		}
-	}
+        if (file_exists(ComposerGeneralUtility::getPathToVendorDirectory() . 'autoload.php')) {
+            include_once(ComposerGeneralUtility::getPathToVendorDirectory() . 'autoload.php');
+        }
+    }
 }
+
 class_alias('Cundd\\CunddComposer\\Autoloader', 'Cundd\\Composer\\Autoloader');

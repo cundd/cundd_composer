@@ -1,4 +1,5 @@
 <?php
+
 namespace Cundd\CunddComposer\Controller;
 
 /***************************************************************
@@ -33,13 +34,7 @@ use TYPO3\CMS\Core\Utility\PathUtility;
 use TYPO3\CMS\Extbase\Mvc\Controller\ActionController;
 use TYPO3\CMS\Extbase\Mvc\View\ViewInterface;
 
-/**
- *
- *
- * @package cundd_composer
- * @license http://www.gnu.org/licenses/gpl.html GNU General Public License, version 3 or later
- *
- */
+
 class PackageController extends ActionController
 {
     /**
@@ -93,11 +88,14 @@ class PackageController extends ActionController
     protected function initializeView(ViewInterface $view)
     {
         parent::initializeView($view);
-        $view->assign('ui', array(
-            'css' => array(
-                $this->getResourceUri('Stylesheets/Library/Bootstrap/css/bootstrap.min.css')
+        $view->assign(
+            'ui',
+            array(
+                'css' => array(
+                    $this->getResourceUri('Stylesheets/Library/Bootstrap/css/bootstrap.min.css'),
+                ),
             )
-        ));
+        );
     }
 
     /**
@@ -337,6 +335,7 @@ class PackageController extends ActionController
             $jsonString = str_replace('}}', '}' . PHP_EOL . '}', $jsonString);
         }
         $jsonString = rtrim($jsonString);
+
         return $jsonString;
     }
 
@@ -349,7 +348,9 @@ class PackageController extends ActionController
     protected function getResourceUri($resource)
     {
         $extensionName = $this->controllerContext->getRequest()->getControllerExtensionName();
-        $uri = 'EXT:' . GeneralUtility::camelCaseToLowerCaseUnderscored($extensionName) . '/Resources/Public/' . $resource;
+        $uri = 'EXT:' . GeneralUtility::camelCaseToLowerCaseUnderscored(
+                $extensionName
+            ) . '/Resources/Public/' . $resource;
         $uri = GeneralUtility::getFileAbsFileName($uri);
         $uri = PathUtility::stripPathSitePrefix($uri);
         if (TYPO3_MODE === 'BE' && $uri !== false) {

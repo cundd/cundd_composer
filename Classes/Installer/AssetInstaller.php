@@ -1,4 +1,5 @@
 <?php
+
 namespace Cundd\CunddComposer\Installer;
 
 /***************************************************************
@@ -27,13 +28,7 @@ namespace Cundd\CunddComposer\Installer;
 
 use Cundd\CunddComposer\Utility\GeneralUtility as ComposerGeneralUtility;
 
-/**
- *
- *
- * @package cundd_composer
- * @license http://www.gnu.org/licenses/gpl.html GNU General Public License, version 3 or later
- *
- */
+
 class AssetInstaller
 {
     /**
@@ -91,6 +86,7 @@ class AssetInstaller
             $requiredPackages = array_merge($requiredPackages, $mergedComposerJson['require-dev']);
         }
         $installedAssets = array_merge($installedAssets, $this->installAssetsOfPackages($requiredPackages));
+
         return $installedAssets;
     }
 
@@ -126,7 +122,11 @@ class AssetInstaller
             foreach ($allAssetPaths as $currentAssetPath) {
                 $packagePublicResourcePath = $packagePath . $currentAssetPath;
 
-                ComposerGeneralUtility::pd('Checking if "' . $packagePublicResourcePath . '" exists: ' . (file_exists($packagePublicResourcePath) ? 'Yes' : 'No'));
+                ComposerGeneralUtility::pd(
+                    'Checking if "' . $packagePublicResourcePath . '" exists: ' . (file_exists(
+                        $packagePublicResourcePath
+                    ) ? 'Yes' : 'No')
+                );
 
                 // Check if the public resource folders exist
                 if (file_exists($packagePublicResourcePath)) {
@@ -142,7 +142,7 @@ class AssetInstaller
                         'source'         => $this->getRelativePathOfUri($packagePublicResourcePath),
                         'sourceDownload' => $this->getDownloadUriOfUri($packagePublicResourcePath),
                         'target'         => $this->getRelativePathOfUri($symlinkName),
-                        'targetDownload' => $this->getDownloadUriOfUri($symlinkName)
+                        'targetDownload' => $this->getDownloadUriOfUri($symlinkName),
                     );
                     // Create the symlink if it doesn't exist
                     if (!file_exists($symlinkName)) {
@@ -155,14 +155,19 @@ class AssetInstaller
                         $symlinkSource = './../../../../' . $this->getRelativePathOfUri($packagePublicResourcePath);
                         $symlinkCreated = symlink($symlinkSource, $symlinkName);
                         if ($symlinkCreated) {
-                            ComposerGeneralUtility::pd('Created symlink of "' . $packagePublicResourcePath . '" to "' . $symlinkName . '"');
+                            ComposerGeneralUtility::pd(
+                                'Created symlink of "' . $packagePublicResourcePath . '" to "' . $symlinkName . '"'
+                            );
                         } else {
-                            ComposerGeneralUtility::pd('Could not create symlink of "' . $packagePublicResourcePath . '" to "' . $symlinkName . '"');
+                            ComposerGeneralUtility::pd(
+                                'Could not create symlink of "' . $packagePublicResourcePath . '" to "' . $symlinkName . '"'
+                            );
                         }
                     }
                 }
             }
         }
+
         return $installedAssets;
     }
 
@@ -197,6 +202,7 @@ class AssetInstaller
             }
             $baseUrl .= 'typo3conf/ext/cundd_composer/';
         }
+
         return $baseUrl . $this->getRelativePathOfUri($uri);
     }
 
@@ -228,16 +234,21 @@ class AssetInstaller
      *
      * @param array|string $assetPaths
      */
-    public function setAssetPaths($assetPaths){
+    public function setAssetPaths($assetPaths)
+    {
         $this->assetPaths = array();
-            if ($assetPaths) {
-                $assetPaths = explode(',', $assetPaths);
-                $this->assetPaths = array_map(function ($path) {
+        if ($assetPaths) {
+            $assetPaths = explode(',', $assetPaths);
+            $this->assetPaths = array_map(
+                function ($path) {
                     $path = trim($path);
+
                     return $path;
-                }, $assetPaths);
-                ComposerGeneralUtility::pd($this->assetPaths);
-            }
+                },
+                $assetPaths
+            );
+            ComposerGeneralUtility::pd($this->assetPaths);
+        }
 
     }
 
