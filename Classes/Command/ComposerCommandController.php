@@ -1,4 +1,5 @@
 <?php
+
 namespace Cundd\CunddComposer\Command;
 
 /*
@@ -170,19 +171,24 @@ class ComposerCommandController extends CommandController
      */
     public function installAssets()
     {
-        if (ConfigurationUtility::getConfiguration('automaticallyInstallAssets') && ConfigurationUtility::getConfiguration('allowInstallAssets')) {
+        if (ConfigurationUtility::getConfiguration(
+                'automaticallyInstallAssets'
+            ) && ConfigurationUtility::getConfiguration('allowInstallAssets')
+        ) {
             $this->assetInstaller->setAssetPaths(ConfigurationUtility::getConfiguration('assetPaths'));
             $installedAssets = $this->assetInstaller->installAssets();
 
             if (count($installedAssets) > 0) {
                 $this->outputLine('INSTALLED ASSETS:');
                 foreach ($installedAssets as $asset) {
-                    $this->outputLine(sprintf(
-                        '%s [%s]: %s',
-                        $asset['name'],
-                        $asset['version'],
-                        $asset['assetKey']
-                    ));
+                    $this->outputLine(
+                        sprintf(
+                            '%s [%s]: %s',
+                            $asset['name'],
+                            $asset['version'],
+                            $asset['assetKey']
+                        )
+                    );
                 }
             } else {
                 $this->outputLine('No assets found to install');

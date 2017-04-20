@@ -1,4 +1,5 @@
 <?php
+
 namespace Cundd\CunddComposer\Installer;
 
 /***************************************************************
@@ -29,13 +30,6 @@ use Cundd\CunddComposer\Utility\GeneralUtility as ComposerGeneralUtility;
 use Cundd\CunddComposer\Utility\ConfigurationUtility as ConfigurationUtility;
 
 
-/**
- *
- *
- * @package cundd_composer
- * @license http://www.gnu.org/licenses/gpl.html GNU General Public License, version 3 or later
- *
- */
 class ComposerInstaller
 {
     /**
@@ -94,6 +88,7 @@ class ComposerInstaller
 
         ComposerGeneralUtility::pd($fullCommand);
         ComposerGeneralUtility::pd($output);
+
         return $output;
     }
 
@@ -135,6 +130,7 @@ class ComposerInstaller
 
             ComposerGeneralUtility::pd('Return value:', $returnValue);
         }
+
         return $output;
     }
 

@@ -1,4 +1,5 @@
 <?php
+
 namespace Cundd\CunddComposer\Utility;
 
 /*
@@ -25,13 +26,7 @@ namespace Cundd\CunddComposer\Utility;
  *  This copyright notice MUST APPEAR in all copies of the script!
  */
 
-/**
- *
- *
- * @package cundd_composer
- * @license http://www.gnu.org/licenses/gpl.html GNU General Public License, version 3 or later
- *
- */
+
 class ConfigurationUtility
 {
 
@@ -48,7 +43,8 @@ class ConfigurationUtility
      * @param  string $key Configuration key
      * @return mixed      Configuration value
      */
-    public static function getConfiguration($key){
+    public static function getConfiguration($key)
+    {
         // Read the configuration from the globals
         if (self::$configuration === null) {
             if (isset($GLOBALS['TYPO3_CONF_VARS']['EXT']['extConf']['cundd_composer'])) {
@@ -60,6 +56,7 @@ class ConfigurationUtility
         if (self::$configuration && isset(self::$configuration[$key])) {
             return self::$configuration[$key];
         }
+
         return false;
     }
 
@@ -74,6 +71,7 @@ class ConfigurationUtility
         if (!$phpExecutable) {
             $phpExecutable = static::getPHPExecutableFromPath();
         }
+
         return trim($phpExecutable);
     }
 
@@ -100,6 +98,7 @@ class ConfigurationUtility
                 }
             }
         }
+
         return false; // not found
     }
 }

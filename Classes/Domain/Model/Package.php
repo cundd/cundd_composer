@@ -1,4 +1,5 @@
 <?php
+
 namespace Cundd\CunddComposer\Domain\Model;
 
 /***************************************************************
@@ -27,14 +28,9 @@ namespace Cundd\CunddComposer\Domain\Model;
 
 use TYPO3\CMS\Extbase\DomainObject\AbstractEntity;
 
-/**
- *
- *
- * @package cundd_composer
- * @license http://www.gnu.org/licenses/gpl.html GNU General Public License, version 3 or later
- *
- */
-class Package extends AbstractEntity {
+
+class Package extends AbstractEntity
+{
 
     /**
      * Name

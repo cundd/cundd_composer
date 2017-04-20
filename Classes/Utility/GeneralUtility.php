@@ -1,4 +1,5 @@
 <?php
+
 namespace Cundd\CunddComposer\Utility;
 
 /*
@@ -25,13 +26,7 @@ namespace Cundd\CunddComposer\Utility;
  *  This copyright notice MUST APPEAR in all copies of the script!
  */
 
-/**
- *
- *
- * @package cundd_composer
- * @license http://www.gnu.org/licenses/gpl.html GNU General Public License, version 3 or later
- *
- */
+
 class GeneralUtility
 {
     /**
@@ -71,8 +66,10 @@ class GeneralUtility
         $merged = $array1;
         foreach ($array2 as $key => &$value) {
             if ($strict && isset($merged[$key]) && !is_array($merged[$key]) && $merged[$key] != $value) {
-                throw new \UnexpectedValueException('Key "' . $key . '" already exists with a different value',
-                    1360672930);
+                throw new \UnexpectedValueException(
+                    'Key "' . $key . '" already exists with a different value',
+                    1360672930
+                );
             }
             if (is_array($value) // If the current value is an array it may has to be merged
                 && !is_integer($key) // Check if we are not inside of an array (only merge objects)
@@ -88,6 +85,7 @@ class GeneralUtility
                 $merged[$key] = $value;
             }
         }
+
         return $merged;
     }
 
@@ -158,8 +156,10 @@ class GeneralUtility
             ) {
                 $permission = octdec($GLOBALS['TYPO3_CONF_VARS']['BE']['folderCreateMask']);
             }
+
             return @mkdir($directory, $permission, true);
         }
+
         return true;
     }
 
@@ -175,8 +175,10 @@ class GeneralUtility
 
         // Check if the working/temporary directory exists
         if (!self::createDirectoryIfNotExists($workingDir)) {
-            throw new \RuntimeException('Working directory "' . $workingDir . '" doesn\'t exists and can not be created',
-                1359541465);
+            throw new \RuntimeException(
+                'Working directory "' . $workingDir . '" doesn\'t exists and can not be created',
+                1359541465
+            );
         }
     }
 
@@ -216,6 +218,7 @@ class GeneralUtility
         if (is_dir($directory)) {
             rmdir($directory);
         }
+
         return $success;
     }
 }

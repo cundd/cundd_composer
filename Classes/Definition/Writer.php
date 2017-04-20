@@ -1,4 +1,5 @@
 <?php
+
 namespace Cundd\CunddComposer\Definition;
 
 /***************************************************************
@@ -27,13 +28,7 @@ namespace Cundd\CunddComposer\Definition;
 
 use Cundd\CunddComposer\Utility\GeneralUtility as ComposerGeneralUtility;
 
-/**
- *
- *
- * @package cundd_composer
- * @license http://www.gnu.org/licenses/gpl.html GNU General Public License, version 3 or later
- *
- */
+
 class Writer
 {
     /**
@@ -78,7 +73,7 @@ class Writer
         if ($composerJson) {
             ComposerGeneralUtility::makeSureTempPathExists();
 
-            return file_put_contents(ComposerGeneralUtility::getTempPath().'composer.json', $composerJson);
+            return file_put_contents(ComposerGeneralUtility::getTempPath() . 'composer.json', $composerJson);
         }
 
         return false;
@@ -95,7 +90,7 @@ class Writer
     {
         if (!$this->mergedComposerJson) {
             $composerJson = file_get_contents(
-                ComposerGeneralUtility::getPathToResource().'Private/Templates/composer.json'
+                ComposerGeneralUtility::getPathToResource() . 'Private/Templates/composer.json'
             );
             if (!$composerJson) {
                 throw new \UnexpectedValueException('Could not load the composer.json template file', 1355952845);

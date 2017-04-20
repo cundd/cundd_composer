@@ -1,4 +1,5 @@
 <?php
+
 namespace Cundd\CunddComposer\Domain\Repository;
 
 /***************************************************************
@@ -28,14 +29,9 @@ namespace Cundd\CunddComposer\Domain\Repository;
 use Cundd\CunddComposer\Domain\Model\Package as Package;
 use TYPO3\CMS\Extbase\Persistence\Repository;
 
-/**
- *
- *
- * @package cundd_composer
- * @license http://www.gnu.org/licenses/gpl.html GNU General Public License, version 3 or later
- *
- */
-class PackageRepository extends Repository {
+
+class PackageRepository extends Repository
+{
 
     /**
      * The composer.json contents
@@ -90,6 +86,7 @@ class PackageRepository extends Repository {
                 }
             }
         }
+
         return $this->packages;
     }
 
@@ -109,9 +106,12 @@ class PackageRepository extends Repository {
             }
             $originalData = $source[$key];
 
-            array_walk($originalData, function (&$value, $key) {
-                $value = $key . ' ' . $value;
-            });
+            array_walk(
+                $originalData,
+                function (&$value, $key) {
+                    $value = $key . ' ' . $value;
+                }
+            );
             $source[$newKey] = implode(PHP_EOL, $originalData);
         }
     }
@@ -164,8 +164,11 @@ class PackageRepository extends Repository {
                     $currentJsonData = json_decode($jsonString, true);
                 }
                 if (!$currentJsonData && !$graceful) {
-                    throw new \DomainException('Exception while parsing composer file ' . $composerFilePath . ': ' . $this->getJsonErrorDescription(),
-                        1356356009);
+                    throw new \DomainException(
+                        'Exception while parsing composer file ' . $composerFilePath . ': ' . $this->getJsonErrorDescription(
+                        ),
+                        1356356009
+                    );
                 }
 
                 // Merge the autoload definition
@@ -183,7 +186,9 @@ class PackageRepository extends Repository {
                                 break;
                             default:
                                 if (!$graceful) {
-                                    throw new \DomainException('Exception while adjusting autoload paths in' . $composerFilePath . ': unknown type "' . $autoloadType . '"');
+                                    throw new \DomainException(
+                                        'Exception while adjusting autoload paths in' . $composerFilePath . ': unknown type "' . $autoloadType . '"'
+                                    );
                                 }
 
                         }
@@ -193,6 +198,7 @@ class PackageRepository extends Repository {
             }
             $this->composerJson = $jsonData;
         }
+
         return $this->composerJson;
     }
 
@@ -226,6 +232,7 @@ class PackageRepository extends Repository {
                 $error = 'Unknown error';
                 break;
         }
+
         return $error;
     }
 
@@ -247,6 +254,7 @@ class PackageRepository extends Repository {
                 $object->_setProperty($key, $property);
             }
         }
+
         return $object;
     }
 }
