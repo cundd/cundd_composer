@@ -9,20 +9,6 @@
           </resourceRoots>
         </entryData>
       </entry>
-      <entry url="file://$PROJECT_DIR$/../Iresults.Master">
-        <entryData>
-          <resourceRoots>
-            <path value="file://$PROJECT_DIR$/../Iresults.Master/Resources/Public" />
-          </resourceRoots>
-        </entryData>
-      </entry>
-      <entry url="file://$PROJECT_DIR$/../assetic">
-        <entryData>
-          <resourceRoots>
-            <path value="file://$PROJECT_DIR$/../assetic/Resources/Public" />
-          </resourceRoots>
-        </entryData>
-      </entry>
     </contentEntries>
   </component>
 </project>
