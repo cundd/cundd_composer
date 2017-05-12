@@ -41,6 +41,20 @@ use TYPO3\CMS\Extbase\Mvc\Controller\CommandController;
  */
 class ComposerCommandController extends CommandController
 {
+    /**
+     * The escape character
+     */
+    const ANSI_ESCAPE = "\033";
+
+    /**
+     * Normal
+     */
+    const ANSI_COLOR_NORMAL = "[0m";
+
+    /**
+     * Color red
+     */
+    const ANSI_COLOR_RED = "[0;31m";
 
     /**
      * Package repository
@@ -96,12 +110,7 @@ class ComposerCommandController extends CommandController
 
         fwrite(STDOUT, 'INSTALLING COMPOSER DEPENDENCIES' . PHP_EOL);
         fwrite(STDOUT, 'This may take a while...' . PHP_EOL);
-        $this->composerInstaller->install(
-            function ($received) {
-                echo $received;
-                flush();
-            }
-        );
+        $this->composerInstaller->install([$this, 'printStreamingOutput']);
 
         $this->installAssets();
 
@@ -122,12 +131,7 @@ class ComposerCommandController extends CommandController
 
         fwrite(STDOUT, 'UPDATING COMPOSER DEPENDENCIES' . PHP_EOL);
         fwrite(STDOUT, 'This may take a while...' . PHP_EOL);
-        $this->composerInstaller->update(
-            function ($received) {
-                echo $received;
-                flush();
-            }
-        );
+        $this->composerInstaller->update([$this, 'printStreamingOutput']);
 
         $this->installAssets();
 
@@ -170,6 +174,23 @@ class ComposerCommandController extends CommandController
             $this->output(implode(PHP_EOL, $output) . PHP_EOL . PHP_EOL);
         }
         $this->sendAndExit();
+    }
+
+    /**
+     * @param $received
+     * @param $_
+     * @param $isError
+     */
+    public function printStreamingOutput($received, $_, $isError)
+    {
+        if ($isError) {
+            echo self::ANSI_ESCAPE . self::ANSI_COLOR_RED;
+        }
+        echo $received;
+        if ($isError) {
+            echo self::ANSI_ESCAPE . self::ANSI_COLOR_NORMAL;
+        }
+        flush();
     }
 
     /**

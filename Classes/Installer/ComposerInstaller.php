@@ -81,8 +81,7 @@ class ComposerInstaller
 //			. '--no-ansi '
             . '--verbose '
 //			. '--profile '
-			. '--optimize-autoloader '
-            . '2>&1';
+            . '--optimize-autoloader ';
 
 
         $output = $this->executeShellCommand($fullCommand, $receivedContent, $this->getEnvironmentVariables());
@@ -95,16 +94,16 @@ class ComposerInstaller
      *
      * @param string   $fullCommand     Full composer command
      * @param callable $receivedContent A callback that will be invoked when script output is received
-     * @param array  $environmentVariables
+     * @param array    $environmentVariables
      * @return string
      */
     protected function executeShellCommand($fullCommand, callable $receivedContent, array $environmentVariables)
     {
         $output = '';
         $descriptorSpec = [
-            0 => ['pipe', 'r'],  // stdin is a pipe that the child will read from
-            1 => ['pipe', 'w'],  // stdout is a pipe that the child will write to
-            2 => ['pipe', sys_get_temp_dir() . '/error-output.txt', 'a'] // stderr is a file to write to
+            0 => ['pipe', 'r'], // stdin is a pipe that the child will read from
+            1 => ['pipe', 'w'], // stdout is a pipe that the child will write to
+            2 => ['pipe', 'w'], //  stderr is a pipe that the child will write to
         ];
 
         $cwd = ComposerGeneralUtility::getTempPath();
@@ -112,19 +111,21 @@ class ComposerInstaller
         $process = proc_open($fullCommand, $descriptorSpec, $pipes, $cwd, $environmentVariables);
 
         if (is_resource($process)) {
-            // $pipes now looks like this:
-            // 0 => writeable handle connected to child stdin
-            // 1 => readable handle connected to child stdout
-            // Any error output will be appended to /tmp/error-output.txt
-
-            // fwrite($pipes[0], '<?php print_r($_ENV); ? >');
             fclose($pipes[0]);
 
+            // Fetch all STDOUT content
             while ($received = fgets($pipes[1])) {
                 $output .= $received;
-                $receivedContent($received, $output);
+                $receivedContent($received, $output, false);
             }
             fclose($pipes[1]);
+
+
+            // Fetch all STDERR content
+            while ($received = fgets($pipes[2])) {
+                $output .= $received;
+                $receivedContent($received, $output, true);
+            }
             fclose($pipes[2]);
 
             // It is important that you close any pipes before calling
