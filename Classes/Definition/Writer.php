@@ -73,7 +73,7 @@ class Writer
         if ($composerJson) {
             ComposerGeneralUtility::makeSureTempPathExists();
 
-            return file_put_contents(ComposerGeneralUtility::getTempPath() . 'composer.json', $composerJson);
+            return file_put_contents($this->getDestinationFilePath(), $composerJson);
         }
 
         return false;
@@ -192,6 +192,15 @@ class Writer
         $this->minimumStability = $minimumStability;
     }
 
+    /**
+     * Returns the path to the merged composer.json
+     *
+     * @return string
+     */
+    public function getDestinationFilePath(): string
+    {
+        return ComposerGeneralUtility::getTempPath() . 'composer.json';
+    }
 
     /**
      * Returns the merged composer.json data for the given key

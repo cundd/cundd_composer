@@ -177,6 +177,33 @@ class ComposerCommandController extends CommandController
     }
 
     /**
+     * Writes the merged composer.json
+     *
+     * @param boolean $noDev Disables installation of require-dev packages
+     * @return void
+     */
+    public function writeComposerJsonCommand($noDev = false)
+    {
+        $this->assertPHPExecutable();
+        $this->definitionWriter->setIncludeDevelopmentDependencies(!$noDev);
+        if ($this->definitionWriter->writeMergedComposerJson()) {
+            $this->outputLine(
+                'Wrote merged composer definitions to "%s"',
+                [$this->definitionWriter->getDestinationFilePath()]
+            );
+        } else {
+            echo self::ANSI_ESCAPE . self::ANSI_COLOR_RED;
+            printf(
+                'Could not write merged composer definitions to "%s"' . PHP_EOL,
+                $this->definitionWriter->getDestinationFilePath()
+            );
+            echo self::ANSI_ESCAPE . self::ANSI_COLOR_NORMAL;
+        }
+
+        $this->sendAndExit();
+    }
+
+    /**
      * @param $received
      * @param $_
      * @param $isError
