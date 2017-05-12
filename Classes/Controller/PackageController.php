@@ -277,10 +277,7 @@ class PackageController extends ActionController
             . '-c ' . php_ini_loaded_file() . ' '
             . '"' . ComposerGeneralUtility::getComposerPath() . '" ' . $command . ' --working-dir '
             . '"' . ComposerGeneralUtility::getTempPath() . '" '
-            . '--no-interaction '
-            . '--no-ansi '
             . '--verbose '
-            . '--profile '
             . '--optimize-autoloader';
         $this->view->assign('manualInstallTip', $fullCommand);
 
