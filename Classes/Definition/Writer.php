@@ -197,7 +197,7 @@ class Writer
      *
      * @return string
      */
-    public function getDestinationFilePath(): string
+    public function getDestinationFilePath()
     {
         return ComposerGeneralUtility::getTempPath() . 'composer.json';
     }
