@@ -2,32 +2,7 @@
 
 namespace Cundd\CunddComposer\Installer;
 
-/***************************************************************
- *  Copyright notice
- *
- *  (c) 2012 Daniel Corn <info@cundd.net>, cundd
- *
- *  All rights reserved
- *
- *  This script is part of the TYPO3 project. The TYPO3 project is
- *  free software; you can redistribute it and/or modify
- *  it under the terms of the GNU General Public License as published by
- *  the Free Software Foundation; either version 3 of the License, or
- *  (at your option) any later version.
- *
- *  The GNU General Public License can be found at
- *  http://www.gnu.org/copyleft/gpl.html.
- *
- *  This script is distributed in the hope that it will be useful,
- *  but WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *  GNU General Public License for more details.
- *
- *  This copyright notice MUST APPEAR in all copies of the script!
- ***************************************************************/
-
 use Cundd\CunddComposer\Utility\GeneralUtility as ComposerGeneralUtility;
-
 
 class AssetInstaller
 {
@@ -36,7 +11,7 @@ class AssetInstaller
      *
      * @var array
      */
-    protected $assetPaths = array();
+    protected $assetPaths = [];
 
     /**
      * Definition writer
@@ -63,7 +38,7 @@ class AssetInstaller
      */
     public function installAssets()
     {
-        $installedAssets = array();
+        $installedAssets = [];
         $mergedComposerJson = $this->definitionWriter->getMergedComposerJson(true);
 
         // Remove the old links
@@ -80,7 +55,7 @@ class AssetInstaller
         // Merge the require and require-dev packages
         $requiredPackages = $mergedComposerJson['require'];
         if (!is_array($requiredPackages)) {
-            $requiredPackages = array();
+            $requiredPackages = [];
         }
         if (is_array($mergedComposerJson['require-dev'])) {
             $requiredPackages = array_merge($requiredPackages, $mergedComposerJson['require-dev']);
@@ -101,7 +76,7 @@ class AssetInstaller
     {
         ComposerGeneralUtility::pd($requiredPackages);
 
-        $installedAssets = array();
+        $installedAssets = [];
         $vendorDirectory = ComposerGeneralUtility::getPathToVendorDirectory();
         $assetsDirectoryPath = $this->getAssetsDirectoryPath();
 
@@ -135,7 +110,7 @@ class AssetInstaller
                     $symlinkName = $symlinkDirectory . DIRECTORY_SEPARATOR . $currentAssetPath;
 
                     // Add the asset information to the array
-                    $installedAssets[$package . $currentAssetPath] = array(
+                    $installedAssets[$package . $currentAssetPath] = [
                         'name'           => $package,
                         'version'        => $version,
                         'assetKey'       => $currentAssetPath,
@@ -143,7 +118,7 @@ class AssetInstaller
                         'sourceDownload' => $this->getDownloadUriOfUri($packagePublicResourcePath),
                         'target'         => $this->getRelativePathOfUri($symlinkName),
                         'targetDownload' => $this->getDownloadUriOfUri($symlinkName),
-                    );
+                    ];
                     // Create the symlink if it doesn't exist
                     if (!file_exists($symlinkName)) {
                         /**
@@ -236,7 +211,7 @@ class AssetInstaller
      */
     public function setAssetPaths($assetPaths)
     {
-        $this->assetPaths = array();
+        $this->assetPaths = [];
         if ($assetPaths) {
             $assetPaths = explode(',', $assetPaths);
             $this->assetPaths = array_map(

@@ -2,38 +2,13 @@
 
 namespace Cundd\CunddComposer\Controller;
 
-/***************************************************************
- *  Copyright notice
- *
- *  (c) 2012 Daniel Corn <info@cundd.net>, cundd
- *
- *  All rights reserved
- *
- *  This script is part of the TYPO3 project. The TYPO3 project is
- *  free software; you can redistribute it and/or modify
- *  it under the terms of the GNU General Public License as published by
- *  the Free Software Foundation; either version 3 of the License, or
- *  (at your option) any later version.
- *
- *  The GNU General Public License can be found at
- *  http://www.gnu.org/copyleft/gpl.html.
- *
- *  This script is distributed in the hope that it will be useful,
- *  but WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *  GNU General Public License for more details.
- *
- *  This copyright notice MUST APPEAR in all copies of the script!
- ***************************************************************/
-
 use Cundd\CunddComposer\Domain\Model\Package as Package;
-use Cundd\CunddComposer\Utility\GeneralUtility as ComposerGeneralUtility;
 use Cundd\CunddComposer\Utility\ConfigurationUtility as ConfigurationUtility;
+use Cundd\CunddComposer\Utility\GeneralUtility as ComposerGeneralUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Core\Utility\PathUtility;
 use TYPO3\CMS\Extbase\Mvc\Controller\ActionController;
 use TYPO3\CMS\Extbase\Mvc\View\ViewInterface;
-
 
 class PackageController extends ActionController
 {
@@ -90,11 +65,11 @@ class PackageController extends ActionController
         parent::initializeView($view);
         $view->assign(
             'ui',
-            array(
-                'css' => array(
+            [
+                'css' => [
                     $this->getResourceUri('Stylesheets/Library/Bootstrap/css/bootstrap.min.css'),
-                ),
-            )
+                ],
+            ]
         );
     }
 
@@ -301,7 +276,7 @@ class PackageController extends ActionController
     {
         if (ConfigurationUtility::getConfiguration('automaticallyInstallAssets')) {
             $this->assetInstaller->setAssetPaths(ConfigurationUtility::getConfiguration('assetPaths'));
-            $installedAssets = array();
+            $installedAssets = [];
             if (ConfigurationUtility::getConfiguration('allowInstallAssets')) {
                 $installedAssets = $this->assetInstaller->installAssets();
             }
