@@ -176,18 +176,10 @@ class ComposerCommandController extends CommandController
 
     /**
      * @param $received
-     * @param $_
-     * @param $isError
      */
-    public function printStreamingOutput($received, $_, $isError)
+    public function printStreamingOutput($received)
     {
-        if ($isError) {
-            echo self::ANSI_ESCAPE . self::ANSI_COLOR_RED;
-        }
         echo $received;
-        if ($isError) {
-            echo self::ANSI_ESCAPE . self::ANSI_COLOR_NORMAL;
-        }
         flush();
     }
 
