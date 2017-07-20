@@ -26,8 +26,8 @@ namespace Cundd\CunddComposer\Installer;
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
-use Cundd\CunddComposer\Utility\GeneralUtility as ComposerGeneralUtility;
 use Cundd\CunddComposer\Utility\ConfigurationUtility as ConfigurationUtility;
+use Cundd\CunddComposer\Utility\GeneralUtility as ComposerGeneralUtility;
 
 
 class ComposerInstaller
@@ -74,17 +74,25 @@ class ComposerInstaller
         $pathToComposer = ComposerGeneralUtility::getComposerPath();
 
         ComposerGeneralUtility::makeSureTempPathExists();
-        $fullCommand = ConfigurationUtility::getPHPExecutable() . ' '
-            . '"' . $pathToComposer . '" ' . $command . ' '
-            . '--working-dir ' . '"' . ComposerGeneralUtility::getTempPath() . '" '
-//			. '--no-interaction '
-//			. '--no-ansi '
-            . '--verbose '
-//			. '--profile '
-            . '--optimize-autoloader ';
+        $fullCommand = [
+            ConfigurationUtility::getPHPExecutable(),
+            $pathToComposer,
+            $command,
+            '--working-dir',
+            ComposerGeneralUtility::getTempPath(),
+//			 '--no-interaction',
+//			 '--no-ansi',
+            '--verbose',
+//			 '--profile',
+//            '--prefer-dist',
+            '--optimize-autoloader',
+        ];
 
-
-        $output = $this->executeShellCommand($fullCommand, $receivedContent, $this->getEnvironmentVariables());
+        $output = $this->executeShellCommand(
+            implode(' ', array_map('escapeshellarg', $fullCommand)),
+            $receivedContent,
+            $this->getEnvironmentVariables()
+        );
 
         return $output;
     }
@@ -108,7 +116,13 @@ class ComposerInstaller
 
         $cwd = ComposerGeneralUtility::getTempPath();
 
-        $process = proc_open($fullCommand, $descriptorSpec, $pipes, $cwd, $environmentVariables);
+        $process = proc_open(
+            $fullCommand,
+            $descriptorSpec,
+            $pipes,
+            $cwd,
+            $environmentVariables
+        );
 
         if (is_resource($process)) {
             fclose($pipes[0]);
@@ -148,6 +162,8 @@ class ComposerInstaller
             'COMPOSER_VENDOR_DIR',
             'COMPOSER_BIN_DIR',
             'http_proxy',
+            'https_proxy',
+            'ftp_proxy',
             'HTTP_PROXY',
             'no_proxy',
             'HTTP_PROXY_REQUEST_FULLURI',
