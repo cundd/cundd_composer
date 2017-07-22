@@ -17,23 +17,5 @@
       </library>
     </orderEntry>
     <orderEntry type="library" scope="PROVIDED" name="sass-stdlib" level="application" />
-    <orderEntry type="module-library">
-      <library name="PHP" type="php">
-        <CLASSES>
-          <root url="file://$APPLICATION_HOME_DIR$/bin" />
-          <root url="file://$MODULE_DIR$/../../Resources/typo3/typo3_src-7.6.12/typo3/sysext/core" />
-          <root url="file://$MODULE_DIR$/../../Resources/typo3/typo3_src-7.6.12/typo3/sysext/extbase" />
-          <root url="file://$MODULE_DIR$/../../Resources/typo3/typo3_src-7.6.12/typo3/sysext/fluid" />
-          <root url="file://$MODULE_DIR$/../../Resources/typo3/typo3_src-7.6.12/typo3/sysext/fluid_styled_content" />
-        </CLASSES>
-        <SOURCES>
-          <root url="file://$APPLICATION_HOME_DIR$/bin" />
-          <root url="file://$MODULE_DIR$/../../Resources/typo3/typo3_src-7.6.12/typo3/sysext/core" />
-          <root url="file://$MODULE_DIR$/../../Resources/typo3/typo3_src-7.6.12/typo3/sysext/extbase" />
-          <root url="file://$MODULE_DIR$/../../Resources/typo3/typo3_src-7.6.12/typo3/sysext/fluid" />
-          <root url="file://$MODULE_DIR$/../../Resources/typo3/typo3_src-7.6.12/typo3/sysext/fluid_styled_content" />
-        </SOURCES>
-      </library>
-    </orderEntry>
   </component>
 </module>
