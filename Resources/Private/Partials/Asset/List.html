@@ -1,19 +1,31 @@
-<h1>Listing for installed assets</h1>
+<html xmlns:f="http://typo3.org/ns/fluid/ViewHelpers">
+<f:section name="main">
+    <h1>Listing for installed assets</h1>
 
-<table class="tx_cunddcomposer table table-striped">
-	<tr>
-		<th><f:translate key="tx_cunddcomposer_domain_model_asset.name" /></th>
-		<th><f:translate key="tx_cunddcomposer_domain_model_asset.version" /></th>
-		<th><f:translate key="tx_cunddcomposer_domain_model_asset.source" /></th>
-		<th><f:translate key="tx_cunddcomposer_domain_model_asset.target" /></th>
-	</tr>
+    <table class="tx_cunddcomposer table table-striped">
+        <tr>
+            <th>
+                <f:translate key="tx_cunddcomposer_domain_model_asset.name"/>
+            </th>
+            <th>
+                <f:translate key="tx_cunddcomposer_domain_model_asset.version"/>
+            </th>
+            <th>
+                <f:translate key="tx_cunddcomposer_domain_model_asset.source"/>
+            </th>
+            <th>
+                <f:translate key="tx_cunddcomposer_domain_model_asset.target"/>
+            </th>
+        </tr>
 
-	<f:for each="{installedAssets}" as="installedAsset">
-		<tr>
-			<td>{installedAsset.name}:{installedAsset.assetKey}</td>
-			<td>{installedAsset.version}</td>
-			<td><a href="{installedAsset.sourceDownload}" target="_blank">{installedAsset.source}</a></td>
-			<td><a href="{installedAsset.targetDownload}" target="_blank">{installedAsset.target}</a></td>
-		</tr>
-	</f:for>
-</table>
+        <f:for each="{installedAssets}" as="installedAsset">
+            <tr>
+                <td>{installedAsset.name}:{installedAsset.assetKey}</td>
+                <td>{installedAsset.version}</td>
+                <td><a href="{installedAsset.sourceDownload}" target="_blank">{installedAsset.source}</a></td>
+                <td><a href="{installedAsset.targetDownload}" target="_blank">{installedAsset.target}</a></td>
+            </tr>
+        </f:for>
+    </table>
+</f:section>
+</html>

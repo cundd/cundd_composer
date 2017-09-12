@@ -1,23 +1,25 @@
 <f:be.container includeCssFiles="{ui.css}">
-	<style type="text/css">
-		div#typo3-docbody {
-			top: 0;
-		}
-		.docheader-funcmenu select {
-			height: 20px;
-			/*font-size: 12px;*/
-			line-height: 20px;
-		}
-		table.tx_cunddcomposer td {
-			padding: 2px;
-		}
-	</style>
-	<div class="typo3-fullDoc">
-		<div id="typo3-docbody">
-			<div id="typo3-inner-docbody">
-				<f:flashMessages renderMode="div" />
-				<f:render section="content" />
-			</div>
-		</div>
-	</div>
+    <style type="text/css">
+        div#typo3-docbody {
+            top: 0;
+        }
+
+        .docheader-funcmenu select {
+            height: 20px;
+            /*font-size: 12px;*/
+            line-height: 20px;
+        }
+
+        table.tx_cunddcomposer td {
+            padding: 2px;
+        }
+    </style>
+    <div class="typo3-fullDoc">
+        <div id="typo3-docbody">
+            <div id="typo3-inner-docbody">
+                <f:flashMessages/>
+                <f:render section="content"/>
+            </div>
+        </div>
+    </div>
 </f:be.container>

@@ -1,31 +1,22 @@
-<f:layout name="Default" />
-
-This Template is responsible for creating a table of domain objects.
-
-If you modify this template, do not forget to change the overwrite settings
-in /Configuration/ExtensionBuilder/settings.yaml:
-  Resources:
-    Private:
-      Templates:
-        List.html: keep
-
-Otherwise your changes will be overwritten the next time you save the extension in the extension builder
+<html xmlns:f="http://typo3.org/ns/fluid/ViewHelpers">
+<f:layout name="Default"/>
 
 <f:section name="content">
-	<h1>Manual installation</h1>
+    <h1>Manual installation</h1>
 
-	<h2>Install</h2>
-	<pre>cd "{workingDirectory}";
+    <h2>Install</h2>
+    <pre>cd "{workingDirectory}";
 {composerPath} install --optimize-autoloader</pre>
 
 
-	<h2>Update</h2>
-	<pre>cd "{workingDirectory}";
+    <h2>Update</h2>
+    <pre>cd "{workingDirectory}";
 {composerPath} update --optimize-autoloader</pre>
 
 
-	<h2>Full command</h2>
-	<pre>{manualInstallTip}</pre>
+    <h2>Full command</h2>
+    <pre>{manualInstallTip}</pre>
 
-	<f:link.action action="list" class="btn">Back to list</f:link.action>
+    <f:link.action action="list" class="btn">Back to list</f:link.action>
 </f:section>
+</html>
