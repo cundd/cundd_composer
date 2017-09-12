@@ -55,7 +55,7 @@ class PackageRepository extends Repository
                 // Filter the properties
                 $currentJsonData = array_intersect_key($currentJsonData, array_flip($properties));
 
-                $package = $this->convert($currentJsonData, 'Cundd\\CunddComposer\\Domain\\Model\\Package');
+                $package = $this->convert($currentJsonData);
                 if ($package) {
                     $this->packages->attach($package);
                 }
@@ -212,18 +212,14 @@ class PackageRepository extends Repository
     }
 
     /**
-     * Converts the given data to an instance of the given class
+     * Converts the given data to a Package instance
      *
      * @param  array  $data
-     * @param  string $targetClass
-     * @return object Returns an object of type $targetClass
+     * @return Package Returns an object of type $targetClass
      */
-    protected function convert($data, $targetClass)
+    protected function convert($data)
     {
-        if (!class_exists($targetClass) && $targetClass === 'Cundd\\CunddComposer\\Domain\\Model\\Package') {
-            $targetClass = 'Cundd\\CunddComposer\\Domain\\Model\\Package';
-        }
-        $object = new $targetClass();
+        $object = new Package();
         if (method_exists($object, '_setProperty')) {
             foreach ($data as $key => $property) {
                 $object->_setProperty($key, $property);
