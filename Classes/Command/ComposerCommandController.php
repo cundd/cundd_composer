@@ -81,7 +81,9 @@ class ComposerCommandController extends CommandController
 
         fwrite(STDOUT, 'INSTALLING COMPOSER DEPENDENCIES' . PHP_EOL);
         fwrite(STDOUT, 'This may take a while...' . PHP_EOL);
+        fwrite(STDOUT, PHP_EOL);
         $this->composerInstaller->install([$this, 'printStreamingOutput']);
+        fwrite(STDOUT, PHP_EOL);
 
         $this->installAssets();
 
@@ -102,7 +104,9 @@ class ComposerCommandController extends CommandController
 
         fwrite(STDOUT, 'UPDATING COMPOSER DEPENDENCIES' . PHP_EOL);
         fwrite(STDOUT, 'This may take a while...' . PHP_EOL);
+        fwrite(STDOUT, PHP_EOL);
         $this->composerInstaller->update([$this, 'printStreamingOutput']);
+        fwrite(STDOUT, PHP_EOL);
 
         $this->installAssets();
 
@@ -179,8 +183,7 @@ class ComposerCommandController extends CommandController
      */
     public function printStreamingOutput($received)
     {
-        echo $received;
-        flush();
+        fwrite(STDOUT, (string)$received);
     }
 
     /**

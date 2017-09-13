@@ -55,7 +55,7 @@ class ComposerInstaller
             $command,
             '--working-dir',
             ComposerGeneralUtility::getTempPath(),
-//			 '--no-interaction',
+            '--no-interaction',
 //			 '--no-ansi',
             '--verbose',
 //			 '--profile',
@@ -102,20 +102,8 @@ class ComposerInstaller
         if (is_resource($process)) {
             fclose($pipes[0]);
 
-            // Fetch all STDOUT content
-            while ($received = fgets($pipes[1])) {
-                $output .= $received;
-                $receivedContent($received, $output, false);
-            }
-            fclose($pipes[1]);
-
-
-            // Fetch all STDERR content
-            while ($received = fgets($pipes[2])) {
-                $output .= $received;
-                $receivedContent($received, $output, true);
-            }
-            fclose($pipes[2]);
+            $output .= $this->fetchProcessStdout($process, $receivedContent, $pipes);
+            $output .= $this->fetchProcessStderr($process, $receivedContent, $pipes);
 
             // It is important that you close any pipes before calling
             // proc_close in order to avoid a deadlock
@@ -169,5 +157,89 @@ class ComposerInstaller
         }
 
         return $environment;
+    }
+
+    /**
+     * @param resource $process
+     * @param resource $fileHandle
+     * @param float    $maxWaitTime
+     * @param callable $callback
+     */
+    private function readFromPipeWithTimeout($process, $fileHandle, $maxWaitTime, callable $callback)
+    {
+        if (!is_resource($process)) {
+            throw new \InvalidArgumentException('Argument "process" must be a resource');
+        }
+        if (!is_resource($fileHandle)) {
+            throw new \InvalidArgumentException('Argument "fileHandle" must be a resource');
+        }
+
+        $sleepTime = 10;
+        $remainingMaxWaitTimeMicroseconds = (int)floor($maxWaitTime * 1000 * 1000);
+
+        stream_set_blocking($fileHandle, false);
+        while (false !== ($received = fgets($fileHandle)) || $remainingMaxWaitTimeMicroseconds > 0) {
+            if (false !== $received) {
+                $callback($received);
+            }
+
+            $remainingMaxWaitTimeMicroseconds -= $sleepTime;
+            usleep($sleepTime);
+
+            $state = proc_get_status($process);
+            if ($state && !$state['running']) {
+                return;
+            }
+        }
+    }
+
+    /**
+     * Fetch all STDOUT content
+     *
+     * @param resource   $process
+     * @param callable   $receivedContent
+     * @param resource[] $pipes
+     * @return string
+     */
+    private function fetchProcessStdout($process, callable $receivedContent, array $pipes)
+    {
+        $output = '';
+        $this->readFromPipeWithTimeout(
+            $process,
+            $pipes[1],
+            .1,
+            function ($received) use (&$output, $receivedContent) {
+                $output .= $received;
+                $receivedContent($received, $output, false);
+            }
+        );
+        fclose($pipes[1]);
+
+        return $output;
+    }
+
+    /**
+     * Fetch all STDERR content
+     *
+     * @param resource   $process
+     * @param callable   $receivedContent
+     * @param resource[] $pipes
+     * @return string
+     */
+    private function fetchProcessStderr($process, callable $receivedContent, $pipes)
+    {
+        $output = '';
+        $this->readFromPipeWithTimeout(
+            $process,
+            $pipes[2],
+            3,
+            function ($received) use (&$output, $receivedContent) {
+                $output .= $received;
+                $receivedContent($received, $output, true);
+            }
+        );
+        fclose($pipes[2]);
+
+        return $output;
     }
 }
