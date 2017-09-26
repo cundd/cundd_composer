@@ -100,10 +100,7 @@ class ComposerInstaller
         );
 
         if (is_resource($process)) {
-            $output .= $this->fetchProcessStdout($process, $receivedContent, $pipes);
-            $output .= $this->fetchProcessStderr($process, $receivedContent, $pipes);
-            $output .= $this->fetchProcessStdout($process, $receivedContent, $pipes);
-            $output .= $this->fetchProcessStderr($process, $receivedContent, $pipes);
+            $this->read($process, $pipes, $receivedContent);
 
             fclose($pipes[0]);
             fclose($pipes[1]);
@@ -165,83 +162,48 @@ class ComposerInstaller
     }
 
     /**
-     * @param resource $process
-     * @param resource $fileHandle
-     * @param float    $maxWaitTime
-     * @param callable $callback
+     * @param resource   $process
+     * @param resource[] $pipes
+     * @param callable   $receivedContent
+     * @return string
      */
-    private function readFromPipeWithTimeout($process, $fileHandle, $maxWaitTime, callable $callback)
+    private function read($process, array $pipes, callable $receivedContent)
     {
-        if (!is_resource($process)) {
-            throw new \InvalidArgumentException('Argument "process" must be a resource');
-        }
-        if (!is_resource($fileHandle)) {
-            throw new \InvalidArgumentException('Argument "fileHandle" must be a resource');
-        }
+        $outputPipe = $pipes[1];
+        $errorPipe = $pipes[2];
+        stream_set_blocking($outputPipe, false);
+        stream_set_blocking($errorPipe, false);
 
-        $sleepTime = 100;
-        $remainingMaxWaitTimeMicroseconds = (int)floor($maxWaitTime * 1000 * 1000);
+        $readStreams = [
+            $outputPipe,
+            $errorPipe,
+        ];
 
-        stream_set_blocking($fileHandle, false);
-        while (false !== ($received = fgets($fileHandle)) || $remainingMaxWaitTimeMicroseconds > 0) {
-            if (false !== $received) {
-                $remainingMaxWaitTimeMicroseconds = (int)floor($maxWaitTime * 1000 * 1000);
-                $callback($received);
+        $output = '';
+        do {
+            $tmp = null;
+            $ready = stream_select($readStreams, $writeStreams, $exceptStreams, 200000, 50000);
+
+            if ($ready === false) {
+                // something went wrong!!
+                break;
+            } elseif ($ready > 0) {
+                foreach ($readStreams as $stream) {
+                    $received = stream_get_contents($stream);
+                    $output .= $received;
+
+                    $receivedContent($received, $output);
+
+                    if (feof($stream)) {
+                        break;
+                    }
+                }
             }
-
-            $remainingMaxWaitTimeMicroseconds -= $sleepTime;
-            usleep($sleepTime);
 
             if (!$this->processIsRunning($process)) {
                 break;
             }
-        }
-    }
-
-    /**
-     * Fetch all STDOUT content
-     *
-     * @param resource   $process
-     * @param callable   $receivedContent
-     * @param resource[] $pipes
-     * @return string
-     */
-    private function fetchProcessStdout($process, callable $receivedContent, array $pipes)
-    {
-        $output = '';
-        $this->readFromPipeWithTimeout(
-            $process,
-            $pipes[1],
-            .1,
-            function ($received) use (&$output, $receivedContent) {
-                $output .= $received;
-                $receivedContent($received, $output, false);
-            }
-        );
-
-        return $output;
-    }
-
-    /**
-     * Fetch all STDERR content
-     *
-     * @param resource   $process
-     * @param callable   $receivedContent
-     * @param resource[] $pipes
-     * @return string
-     */
-    private function fetchProcessStderr($process, callable $receivedContent, $pipes)
-    {
-        $output = '';
-        $this->readFromPipeWithTimeout(
-            $process,
-            $pipes[2],
-            10,
-            function ($received) use (&$output, $receivedContent) {
-                $output .= $received;
-                $receivedContent($received, $output, true);
-            }
-        );
+        } while (true);
 
         return $output;
     }
