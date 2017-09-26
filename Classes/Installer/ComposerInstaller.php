@@ -101,15 +101,9 @@ class ComposerInstaller
 
         if (is_resource($process)) {
             $this->read($process, $pipes, $receivedContent);
-
-            fclose($pipes[0]);
-            fclose($pipes[1]);
-            fclose($pipes[2]);
-
-            if ($this->processIsRunning($process)) {
-                proc_terminate($process);
-            }
-            proc_close($process);
+            $this->cleanup($process, $pipes);
+        } else {
+            $this->printError('Could not open process');
         }
 
         return $output;
@@ -166,15 +160,22 @@ class ComposerInstaller
      * @param resource[] $pipes
      * @param callable   $receivedContent
      * @param float      $maxWaitTime
+     * @param bool       $blocking
      * @return string
      */
-    private function read($process, array $pipes, callable $receivedContent, float $maxWaitTime = 20)
-    {
+    private function read(
+        $process,
+        array $pipes,
+        callable $receivedContent,
+        float $maxWaitTime = 40,
+        bool $blocking = false
+    ) {
         if (!is_resource($process)) {
             throw new \InvalidArgumentException('Argument "process" must be a resource');
         }
 
-        $sleepTime = 200000;
+        $sleepSec = 1;
+        $sleepUSec = 200000;
         $remainingMaxWaitTimeMicroseconds = (int)floor($maxWaitTime * 1000 * 1000);
 
         $outputPipe = $pipes[1];
@@ -184,15 +185,32 @@ class ComposerInstaller
             $outputPipe,
             $errorPipe,
         ];
+        $writeStreams = [];
+        $exceptStreams = [];
+
+        stream_set_blocking($outputPipe, $blocking);
+        stream_set_blocking($errorPipe, $blocking);
 
         $output = '';
         do {
-            $ready = stream_select($readStreams, $writeStreams, $exceptStreams, 1, $sleepTime);
+            if (!$this->processIsRunning($process)) {
+                break;
+            }
+
+            $ready = stream_select($readStreams, $writeStreams, $exceptStreams, $sleepSec, $sleepUSec);
 
             if ($ready === false) {
-                // something went wrong!!
+                if ($blocking === false) {
+                    $this->printError('stream_select failed will retry with blocking');
+
+                    return $this->read($process, $pipes, $receivedContent, $maxWaitTime, true);
+                }
+
+                $this->printError('stream_select failed');
                 break;
-            } elseif ($ready > 0) {
+            }
+
+            if ($ready > 0) {
                 foreach ($readStreams as $stream) {
                     $received = stream_get_contents($stream);
                     $output .= $received;
@@ -201,11 +219,10 @@ class ComposerInstaller
                 }
             }
 
-            if (!$this->processIsRunning($process)) {
-                break;
+            $remainingMaxWaitTimeMicroseconds -= ($sleepSec * 1000 * 1000) + $sleepUSec;
+            if ($remainingMaxWaitTimeMicroseconds <= 0) {
+                $this->printError('Waiting for composer script response timed out');
             }
-
-            $remainingMaxWaitTimeMicroseconds -= $sleepTime;
         } while ($remainingMaxWaitTimeMicroseconds > 0);
 
         return $output;
@@ -220,5 +237,37 @@ class ComposerInstaller
         $state = proc_get_status($process);
 
         return $state && $state['running'];
+    }
+
+    private function printError(string $message)
+    {
+        fwrite(STDERR, '[ERROR] ' . $message . PHP_EOL);
+    }
+
+    /**
+     * @param resource   $process
+     * @param resource[] $pipes
+     */
+    protected function cleanup($process, array $pipes)
+    {
+        if (!is_resource($process)) {
+            throw new \InvalidArgumentException('Argument "process" must be a resource');
+        }
+
+        fclose($pipes[0]);
+        fclose($pipes[1]);
+        fclose($pipes[2]);
+
+        if ($this->processIsRunning($process)) {
+            proc_terminate($process);
+
+            sleep(1);
+
+            if ($this->processIsRunning($process)) {
+                proc_terminate($process, 9);
+            }
+        }
+
+        proc_close($process);
     }
 }
