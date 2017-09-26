@@ -165,14 +165,20 @@ class ComposerInstaller
      * @param resource   $process
      * @param resource[] $pipes
      * @param callable   $receivedContent
+     * @param float      $maxWaitTime
      * @return string
      */
-    private function read($process, array $pipes, callable $receivedContent)
+    private function read($process, array $pipes, callable $receivedContent, float $maxWaitTime = 20)
     {
+        if (!is_resource($process)) {
+            throw new \InvalidArgumentException('Argument "process" must be a resource');
+        }
+
+        $sleepTime = 200000;
+        $remainingMaxWaitTimeMicroseconds = (int)floor($maxWaitTime * 1000 * 1000);
+
         $outputPipe = $pipes[1];
         $errorPipe = $pipes[2];
-        stream_set_blocking($outputPipe, false);
-        stream_set_blocking($errorPipe, false);
 
         $readStreams = [
             $outputPipe,
@@ -181,8 +187,7 @@ class ComposerInstaller
 
         $output = '';
         do {
-            $tmp = null;
-            $ready = stream_select($readStreams, $writeStreams, $exceptStreams, 200000, 50000);
+            $ready = stream_select($readStreams, $writeStreams, $exceptStreams, 1, $sleepTime);
 
             if ($ready === false) {
                 // something went wrong!!
@@ -193,17 +198,15 @@ class ComposerInstaller
                     $output .= $received;
 
                     $receivedContent($received, $output);
-
-                    if (feof($stream)) {
-                        break;
-                    }
                 }
             }
 
             if (!$this->processIsRunning($process)) {
                 break;
             }
-        } while (true);
+
+            $remainingMaxWaitTimeMicroseconds -= $sleepTime;
+        } while ($remainingMaxWaitTimeMicroseconds > 0);
 
         return $output;
     }
