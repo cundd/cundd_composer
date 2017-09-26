@@ -100,13 +100,18 @@ class ComposerInstaller
         );
 
         if (is_resource($process)) {
-            fclose($pipes[0]);
-
+            $output .= $this->fetchProcessStdout($process, $receivedContent, $pipes);
+            $output .= $this->fetchProcessStderr($process, $receivedContent, $pipes);
             $output .= $this->fetchProcessStdout($process, $receivedContent, $pipes);
             $output .= $this->fetchProcessStderr($process, $receivedContent, $pipes);
 
-            // It is important that you close any pipes before calling
-            // proc_close in order to avoid a deadlock
+            fclose($pipes[0]);
+            fclose($pipes[1]);
+            fclose($pipes[2]);
+
+            if ($this->processIsRunning($process)) {
+                proc_terminate($process);
+            }
             proc_close($process);
         }
 
@@ -174,21 +179,21 @@ class ComposerInstaller
             throw new \InvalidArgumentException('Argument "fileHandle" must be a resource');
         }
 
-        $sleepTime = 10;
+        $sleepTime = 100;
         $remainingMaxWaitTimeMicroseconds = (int)floor($maxWaitTime * 1000 * 1000);
 
         stream_set_blocking($fileHandle, false);
         while (false !== ($received = fgets($fileHandle)) || $remainingMaxWaitTimeMicroseconds > 0) {
             if (false !== $received) {
+                $remainingMaxWaitTimeMicroseconds = (int)floor($maxWaitTime * 1000 * 1000);
                 $callback($received);
             }
 
             $remainingMaxWaitTimeMicroseconds -= $sleepTime;
             usleep($sleepTime);
 
-            $state = proc_get_status($process);
-            if ($state && !$state['running']) {
-                return;
+            if (!$this->processIsRunning($process)) {
+                break;
             }
         }
     }
@@ -213,7 +218,6 @@ class ComposerInstaller
                 $receivedContent($received, $output, false);
             }
         );
-        fclose($pipes[1]);
 
         return $output;
     }
@@ -232,14 +236,24 @@ class ComposerInstaller
         $this->readFromPipeWithTimeout(
             $process,
             $pipes[2],
-            3,
+            10,
             function ($received) use (&$output, $receivedContent) {
                 $output .= $received;
                 $receivedContent($received, $output, true);
             }
         );
-        fclose($pipes[2]);
 
         return $output;
+    }
+
+    /**
+     * @param $process
+     * @return bool
+     */
+    private function processIsRunning($process): bool
+    {
+        $state = proc_get_status($process);
+
+        return $state && $state['running'];
     }
 }
