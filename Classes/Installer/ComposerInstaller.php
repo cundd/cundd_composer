@@ -12,14 +12,16 @@ class ComposerInstaller
      * Call composer on the command line to install the dependencies.
      *
      * @param callable|null $receivedContent A callback that will be invoked when script output is received
+     * @param string        $verbosity       Increase the verbosity: 'v' for normal output, 'vv' for more verbose output and 'vvv' for debug
      * @return string Returns the composer output
      */
-    public function install(callable $receivedContent = null)
+    public function install(callable $receivedContent = null, $verbosity = '')
     {
         return $this->executeComposerCommand(
             'install',
             $receivedContent ?: function () {
-            }
+            },
+            $verbosity
         );
     }
 
@@ -27,14 +29,16 @@ class ComposerInstaller
      * Call composer on the command line to update the dependencies.
      *
      * @param callable|null $receivedContent A callback that will be invoked when script output is received
+     * @param string        $verbosity       Increase the verbosity: 'v' for normal output, 'vv' for more verbose output and 'vvv' for debug
      * @return string Returns the composer output
      */
-    public function update(callable $receivedContent = null)
+    public function update(callable $receivedContent = null, $verbosity = '')
     {
         return $this->executeComposerCommand(
             'update',
             $receivedContent ?: function () {
-            }
+            },
+            $verbosity
         );
     }
 
@@ -43,9 +47,10 @@ class ComposerInstaller
      *
      * @param string   $command         The composer command to execute
      * @param callable $receivedContent A callback that will be invoked when script output is received
+     * @param string   $verbosity       Increase the verbosity: 'v' for normal output, 'vv' for more verbose output and 'vvv' for debug
      * @return string Returns the composer output
      */
-    protected function executeComposerCommand($command, callable $receivedContent)
+    protected function executeComposerCommand($command, callable $receivedContent, $verbosity)
     {
         $pathToComposer = ComposerGeneralUtility::getComposerPath();
 
@@ -57,12 +62,14 @@ class ComposerInstaller
             ComposerGeneralUtility::getTempPath(),
             '--no-interaction',
 //			 '--no-ansi',
-            '-vv',
 //			 '--profile',
 //            '--prefer-dist',
             '--optimize-autoloader',
         ];
 
+        if ($verbosity) {
+            $arguments[] = (string)$verbosity;
+        }
         $process = new Process(ConfigurationUtility::getPHPExecutable(), $arguments, $this->getEnvironmentVariables());
 
         return $process->execute($receivedContent);

@@ -70,20 +70,23 @@ class ComposerCommandController extends CommandController
     /**
      * Installs the project dependencies from the composer.lock file if present, or falls back on the composer.json
      *
-     * @param boolean $noDev Disables installation of require-dev packages
+     * @param bool $noDev Disables installation of require-dev packages
+     * @param bool $v     Increase the verbosity: 1 for normal output
+     * @param bool $vv    Increase the verbosity: 2 for more verbose output
+     * @param bool $vvv   Increase the verbosity: 3 for debug
      * @return void
      */
-    public function installCommand($noDev = false)
+    public function installCommand($noDev = false, $v = false, $vv = false, $vvv = false)
     {
         $this->assertPHPExecutable();
         $this->definitionWriter->setIncludeDevelopmentDependencies(!$noDev);
         $this->definitionWriter->writeMergedComposerJson();
 
-        fwrite(STDOUT, 'INSTALLING COMPOSER DEPENDENCIES' . PHP_EOL);
-        fwrite(STDOUT, 'This may take a while...' . PHP_EOL);
-        fwrite(STDOUT, PHP_EOL);
-        $this->composerInstaller->install([$this, 'printStreamingOutput']);
-        fwrite(STDOUT, PHP_EOL);
+        $this->printLine('INSTALLING COMPOSER DEPENDENCIES');
+        $this->printLine('This may take a while...');
+        $this->printLine();
+        $this->composerInstaller->install([$this, 'printStreamingOutput'], $this->combineVerbosity($v, $vv, $vvv));
+        $this->printLine();
 
         $this->installAssets();
 
@@ -93,24 +96,28 @@ class ComposerCommandController extends CommandController
     /**
      * Updates your dependencies to the latest version according to composer.json, and updates the composer.lock file
      *
-     * @param boolean $noDev Disables installation of require-dev packages
+     * @param bool $noDev Disables installation of require-dev packages
+     * @param bool $v     Increase the verbosity: 1 for normal output
+     * @param bool $vv    Increase the verbosity: 2 for more verbose output
+     * @param bool $vvv   Increase the verbosity: 3 for debug
      * @return void
      */
-    public function updateCommand($noDev = false)
+    public function updateCommand($noDev = false, $v = false, $vv = false, $vvv = false)
     {
         $this->assertPHPExecutable();
         $this->definitionWriter->setIncludeDevelopmentDependencies(!$noDev);
         $this->definitionWriter->writeMergedComposerJson();
 
-        fwrite(STDOUT, 'UPDATING COMPOSER DEPENDENCIES' . PHP_EOL);
-        fwrite(STDOUT, 'This may take a while...' . PHP_EOL);
-        fwrite(STDOUT, PHP_EOL);
-        $this->composerInstaller->update([$this, 'printStreamingOutput']);
-        fwrite(STDOUT, PHP_EOL);
+        $this->printLine('UPDATING COMPOSER DEPENDENCIES');
+        $this->printLine('This may take a while...');
+        $this->printLine();
+        $this->composerInstaller->update([$this, 'printStreamingOutput'], $this->combineVerbosity($v, $vv, $vvv));
+        $this->printLine();
 
         $this->installAssets();
 
         $this->sendAndExit();
+
     }
 
     /**
@@ -187,6 +194,15 @@ class ComposerCommandController extends CommandController
     }
 
     /**
+     * @param string   $message
+     * @param string[] ...$arguments
+     */
+    private function printLine($message = '', ...$arguments)
+    {
+        fwrite(STDOUT, vsprintf((string)$message, $arguments) . PHP_EOL);
+    }
+
+    /**
      * Invoked after the install/update action
      *
      * @return void
@@ -227,5 +243,20 @@ class ComposerCommandController extends CommandController
             $this->outputLine('ERROR: PHP executable could not be found');
             throw new \UnexpectedValueException('PHP executable could not be found', 1431007408);
         }
+    }
+
+    private function combineVerbosity($v, $vv, $vvv)
+    {
+        if ($vvv) {
+            return '-vvv';
+        }
+        if ($vv) {
+            return '-vv';
+        }
+        if ($v) {
+            return '-v';
+        }
+
+        return '';
     }
 }
