@@ -2,6 +2,7 @@
 
 namespace Cundd\CunddComposer\Installer;
 
+use Cundd\CunddComposer\Process;
 use Cundd\CunddComposer\Utility\ConfigurationUtility as ConfigurationUtility;
 use Cundd\CunddComposer\Utility\GeneralUtility as ComposerGeneralUtility;
 
@@ -49,8 +50,7 @@ class ComposerInstaller
         $pathToComposer = ComposerGeneralUtility::getComposerPath();
 
         ComposerGeneralUtility::makeSureTempPathExists();
-        $fullCommand = [
-            ConfigurationUtility::getPHPExecutable(),
+        $arguments = [
             $pathToComposer,
             $command,
             '--working-dir',
@@ -63,13 +63,9 @@ class ComposerInstaller
             '--optimize-autoloader',
         ];
 
-        $output = $this->executeShellCommand(
-            implode(' ', array_map('escapeshellarg', $fullCommand)),
-            $receivedContent,
-            $this->getEnvironmentVariables()
-        );
+        $process = new Process(ConfigurationUtility::getPHPExecutable(), $arguments, $this->getEnvironmentVariables());
 
-        return $output;
+        return $process->execute($receivedContent);
     }
 
     /**
