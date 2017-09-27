@@ -57,7 +57,7 @@ class ComposerInstaller
             ComposerGeneralUtility::getTempPath(),
             '--no-interaction',
 //			 '--no-ansi',
-            '--verbose',
+            '-vv',
 //			 '--profile',
 //            '--prefer-dist',
             '--optimize-autoloader',
