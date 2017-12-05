@@ -3,8 +3,6 @@
 namespace Cundd\CunddComposer\Installer;
 
 use Cundd\CunddComposer\Process;
-use Cundd\CunddComposer\Utility\ConfigurationUtility as ConfigurationUtility;
-use Cundd\CunddComposer\Utility\GeneralUtility as ComposerGeneralUtility;
 
 class ComposerInstaller
 {
@@ -52,72 +50,21 @@ class ComposerInstaller
      */
     protected function executeComposerCommand($command, callable $receivedContent, $verbosity)
     {
-        $pathToComposer = ComposerGeneralUtility::getComposerPath();
-
-        ComposerGeneralUtility::makeSureTempPathExists();
-        $arguments = [
-            $pathToComposer,
-            $command,
-            '--working-dir',
-            ComposerGeneralUtility::getTempPath(),
-            '--no-interaction',
-//			 '--no-ansi',
-//			 '--profile',
-//            '--prefer-dist',
-            '--optimize-autoloader',
-        ];
-
+        $arguments = [];
         if ($verbosity) {
             $arguments[] = (string)$verbosity;
         }
-        $process = new Process(ConfigurationUtility::getPHPExecutable(), $arguments, $this->getEnvironmentVariables());
 
-        return $process->execute($receivedContent);
-    }
+        $process = new Process\ComposerProcess($receivedContent);
 
-    /**
-     * @return array
-     */
-    protected function getEnvironmentVariables()
-    {
-        // Some environment variable names that are forwarded to composer
-        $environmentVariablesToInherit = [
-            'COMPOSER',
-            'COMPOSER_ROOT_VERSION',
-            'COMPOSER_VENDOR_DIR',
-            'COMPOSER_BIN_DIR',
-            'http_proxy',
-            'https_proxy',
-            'ftp_proxy',
-            'HTTP_PROXY',
-            'no_proxy',
-            'HTTP_PROXY_REQUEST_FULLURI',
-            'COMPOSER_CACHE_DIR',
-            'COMPOSER_PROCESS_TIMEOUT',
-            'COMPOSER_CAFILE',
-            'COMPOSER_AUTH',
-            'COMPOSER_DISCARD_CHANGES',
-            'COMPOSER_NO_INTERACTION',
-            'COMPOSER_ALLOW_SUPERUSER',
-            'COMPOSER_MIRROR_PATH_REPOS',
-
-            'PATH',
-        ];
-
-        $environment = array_merge(
-            $_ENV,
+        return $process->execute(
+            $command,
             [
-                'COMPOSER_HOME' => ComposerGeneralUtility::getTempPath(),
+                // '--no-ansi',
+                // '--profile',
+                // '--prefer-dist',
+                '--optimize-autoloader',
             ]
         );
-
-        foreach ($environmentVariablesToInherit as $variable) {
-            $value = getenv($variable);
-            if (false !== $value) {
-                $environment[$variable] = $value;
-            }
-        }
-
-        return $environment;
     }
 }
