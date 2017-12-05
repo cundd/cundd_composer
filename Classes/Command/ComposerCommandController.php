@@ -2,6 +2,7 @@
 
 namespace Cundd\CunddComposer\Command;
 
+use Cundd\CunddComposer\Process\ComposerProcess;
 use Cundd\CunddComposer\Utility\ConfigurationUtility as ConfigurationUtility;
 use TYPO3\CMS\Extbase\Mvc\Controller\CommandController;
 
@@ -183,6 +184,19 @@ class ComposerCommandController extends CommandController
         }
 
         $this->sendAndExit();
+    }
+
+    /**
+     * Execute a composer command
+     *
+     * @param string $command Composer command to execute
+     */
+    public function execCommand($command)
+    {
+        $this->assertPHPExecutable();
+
+        $composerProcess = new ComposerProcess([$this, 'printStreamingOutput']);
+        $composerProcess->execute($command, $this->request->getExceedingArguments());
     }
 
     /**
