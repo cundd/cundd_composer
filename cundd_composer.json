@@ -6,7 +6,7 @@
     ],
     "type": "typo3-cms-extension",
     "license": "MIT",
-    "homepage": "https://github.com/cundd/CunddComposer",
+    "homepage": "https://github.com/cundd/cundd_composer",
     "authors": [
         {
             "name": "Daniel Corn",
@@ -31,7 +31,7 @@
         "cundd_composer": "*",
         "cundd.composer": "*"
     },
-    "require-dev": {
-        "phpunit/phpunit": "^6.3"
+    "suggest": {
+        "phpunit/phpunit": "To run the included Unit tests (PHPUnit 6 & PHP 7 required)"
     }
 }
