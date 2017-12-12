@@ -7,7 +7,7 @@ Cundd Composer
 Installation
 ============
 
-Install from [TER](https://typo3.org/extensions/repository/view/cundd_composer) or clone the source with `git clone https://github.com/cundd/CunddComposer.git cundd_composer` and install Cundd Composer as usual through the Extension Manager.
+Install from [TER](https://typo3.org/extensions/repository/view/cundd_composer) or clone the source with `git clone https://github.com/cundd/cundd_composer.git cundd_composer` and install Cundd Composer as usual through the Extension Manager.
 
 
 Usage
