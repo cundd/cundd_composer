@@ -8,8 +8,6 @@ use TYPO3\CMS\Extbase\Mvc\Controller\CommandController;
 
 /**
  * Command to compile, watch and start LiveReload
- *
- * @package Cundd\Assetic\Command
  */
 class ComposerCommandController extends CommandController
 {
