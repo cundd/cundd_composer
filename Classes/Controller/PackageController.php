@@ -2,7 +2,6 @@
 
 namespace Cundd\CunddComposer\Controller;
 
-use Cundd\CunddComposer\Domain\Model\Package as Package;
 use Cundd\CunddComposer\Utility\ConfigurationUtility as ConfigurationUtility;
 use Cundd\CunddComposer\Utility\GeneralUtility as ComposerGeneralUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
@@ -112,76 +111,6 @@ class PackageController extends ActionController
 
         $this->definitionWriter->writeMergedComposerJson();
         $this->assignViewVariables();
-    }
-
-    /**
-     * action show
-     *
-     * @param Package $package
-     * @return void
-     */
-    public function showAction(Package $package)
-    {
-        $this->checkAccess();
-
-        $this->view->assign('package', $package);
-    }
-
-    /**
-     * action new
-     *
-     * @param Package $newPackage
-     * @dontvalidate $newPackage
-     * @return void
-     */
-    public function newAction(Package $newPackage = null)
-    {
-        $this->checkAccess();
-
-        $this->view->assign('newPackage', $newPackage);
-    }
-
-    /**
-     * action create
-     *
-     * @param Package $newPackage
-     * @return void
-     */
-    public function createAction(Package $newPackage)
-    {
-        $this->checkAccess();
-
-        $this->packageRepository->add($newPackage);
-        $this->addFlashMessage('Your new Package was created.');
-        $this->redirect('list');
-    }
-
-    /**
-     * action edit
-     *
-     * @param Package $package
-     * @return void
-     */
-    public function editAction(Package $package)
-    {
-        $this->checkAccess();
-
-        $this->view->assign('package', $package);
-    }
-
-    /**
-     * action delete
-     *
-     * @param Package $package
-     * @return void
-     */
-    public function deleteAction(Package $package)
-    {
-        $this->checkAccess();
-
-        $this->packageRepository->remove($package);
-        $this->addFlashMessage('Your Package was removed.');
-        $this->redirect('list');
     }
 
     /**
@@ -332,9 +261,6 @@ class PackageController extends ActionController
         return $uri;
     }
 
-    /**
-     * @return bool
-     */
     private function checkAccess()
     {
         if (isset($GLOBALS['BE_USER']) && $GLOBALS['BE_USER']) {

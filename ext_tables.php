@@ -13,7 +13,7 @@ if (TYPO3_MODE === 'BE') {
         'composer', // Submodule key
         '', // Position
         [
-            'Package' => 'list, show, new, create, edit, update, delete, install, installAssets, manualInstallation',
+            'Package' => 'list, update, install, installAssets, manualInstallation',
         ],
         [
             'access' => 'user,group',
