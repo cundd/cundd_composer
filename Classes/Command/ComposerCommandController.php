@@ -194,7 +194,7 @@ class ComposerCommandController extends CommandController
         $this->assertPHPExecutable();
 
         $composerProcess = new ComposerProcess([$this, 'printStreamingOutput']);
-        $composerProcess->execute($command, $this->request->getExceedingArguments());
+        $composerProcess->execute($command, $this->collectAdditionalOptions($command));
     }
 
     /**
@@ -270,5 +270,16 @@ class ComposerCommandController extends CommandController
         }
 
         return '';
+    }
+
+    private function collectAdditionalOptions($command)
+    {
+        global $argv;
+        while (!empty($argv) && substr($argv[0], -5) !== $command) {
+            array_shift($argv);
+        }
+        array_shift($argv);
+
+        return $argv;
     }
 }
