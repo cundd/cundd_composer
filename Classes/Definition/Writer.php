@@ -12,7 +12,7 @@ class Writer
      *
      * @var string
      */
-    protected $minimumStability = 'dev';
+    protected $minimumStability = 'stable';
 
     /**
      * Package repository
