@@ -65,7 +65,6 @@ class ComposerCommandController extends CommandController
      */
     protected $settings;
 
-
     /**
      * Installs the project dependencies from the composer.lock file if present, or falls back on the composer.json
      *
@@ -116,7 +115,6 @@ class ComposerCommandController extends CommandController
         $this->installAssets();
 
         $this->sendAndExit();
-
     }
 
     /**
@@ -275,11 +273,12 @@ class ComposerCommandController extends CommandController
     private function collectAdditionalOptions($command)
     {
         global $argv;
-        while (!empty($argv) && substr($argv[0], -5) !== $command) {
-            array_shift($argv);
+        $additionalOptions = $argv;
+        while (!empty($additionalOptions) && $additionalOptions[0] !== $command) {
+            array_shift($additionalOptions);
         }
-        array_shift($argv);
+        array_shift($additionalOptions);
 
-        return $argv;
+        return $additionalOptions;
     }
 }
