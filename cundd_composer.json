@@ -15,7 +15,7 @@
         }
     ],
     "require": {
-        "php": ">=5.6",
+        "php": "~5.6 || ^7.0",
         "ext-json": "*"
     },
     "autoload": {
@@ -29,8 +29,9 @@
         }
     },
     "replace": {
-        "cundd_composer": "*",
-        "cundd.composer": "*"
+        "cundd.composer": "self.version",
+        "cundd_composer": "self.version",
+        "typo3-ter/cundd_composer": "self.version"
     },
     "suggest": {
         "phpunit/phpunit": "To run the included Unit tests (PHPUnit 6 & PHP 7 required)"
