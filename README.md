@@ -73,6 +73,15 @@ typo3/cli_dispatch.phpsh extbase composer:list
 ```
 
 
+### composer:exec
+
+Execute an arbitrary composer command
+
+```bash
+typo3/cli_dispatch.phpsh extbase composer:exec
+```
+
+
 For extension developers
 ------------------------
 
