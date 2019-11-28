@@ -112,7 +112,6 @@ class Process
         $this->state = self::STATE_READY;
     }
 
-
     public function execute(callable $receivedContentCallback = null)
     {
         $this->start($receivedContentCallback);
@@ -164,7 +163,6 @@ class Process
             2 => ['pipe', 'w'], // stderr is a pipe that the child will write to
         ];
     }
-
 
     private function waitUntilEnd($blocking)
     {
@@ -240,7 +238,12 @@ class Process
         return $state ? $state['exitcode'] : -1;
     }
 
-    public function stop($signal = SIGTERM)
+    /**
+     * Terminate the process by sending the given signal
+     *
+     * @param int $signal Defaults to SIGTERM (15)
+     */
+    public function stop($signal = 15)
     {
         if ($this->isRunning()) {
             proc_terminate($this->process, $signal);
@@ -300,7 +303,6 @@ class Process
             $this->callback = $receivedContentCallback;
         } else {
             $this->callback = function () {
-
             };
         }
     }
