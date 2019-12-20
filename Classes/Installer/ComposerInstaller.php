@@ -3,53 +3,63 @@
 namespace Cundd\CunddComposer\Installer;
 
 use Cundd\CunddComposer\Process;
+use function array_merge;
 
 class ComposerInstaller
 {
     /**
      * Call composer on the command line to install the dependencies.
      *
-     * @param callable|null $receivedContent A callback that will be invoked when script output is received
-     * @param string        $verbosity       Increase the verbosity: 'v' for normal output, 'vv' for more verbose output and 'vvv' for debug
+     * @param callable|null $receivedContent     A callback that will be invoked when script output is received
+     * @param string        $verbosity           Increase the verbosity: 'v' for normal output, 'vv' for more verbose output and 'vvv' for debug
+     * @param array         $additionalArguments Additional arguments to pass to Composer
      * @return string Returns the composer output
      */
-    public function install(callable $receivedContent = null, $verbosity = '')
+    public function install(callable $receivedContent = null, $verbosity = '', array $additionalArguments = [])
     {
         return $this->executeComposerCommand(
             'install',
             $receivedContent ?: function () {
             },
-            $verbosity
+            $verbosity,
+            $additionalArguments
         );
     }
 
     /**
      * Call composer on the command line to update the dependencies.
      *
-     * @param callable|null $receivedContent A callback that will be invoked when script output is received
-     * @param string        $verbosity       Increase the verbosity: 'v' for normal output, 'vv' for more verbose output and 'vvv' for debug
+     * @param callable|null $receivedContent     A callback that will be invoked when script output is received
+     * @param string        $verbosity           Increase the verbosity: 'v' for normal output, 'vv' for more verbose output and 'vvv' for debug
+     * @param array         $additionalArguments Additional arguments to pass to Composer
      * @return string Returns the composer output
      */
-    public function update(callable $receivedContent = null, $verbosity = '')
+    public function update(callable $receivedContent = null, $verbosity = '', array $additionalArguments = [])
     {
         return $this->executeComposerCommand(
             'update',
             $receivedContent ?: function () {
             },
-            $verbosity
+            $verbosity,
+            $additionalArguments
         );
     }
 
     /**
      * Execute the given composer command
      *
-     * @param string   $command         The composer command to execute
-     * @param callable $receivedContent A callback that will be invoked when script output is received
-     * @param string   $verbosity       Increase the verbosity: 'v' for normal output, 'vv' for more verbose output and 'vvv' for debug
+     * @param string   $command             The composer command to execute
+     * @param callable $receivedContent     A callback that will be invoked when script output is received
+     * @param string   $verbosity           Increase the verbosity: 'v' for normal output, 'vv' for more verbose output and 'vvv' for debug
+     * @param array    $additionalArguments Additional arguments to pass to Composer
      * @return string Returns the composer output
      */
-    protected function executeComposerCommand($command, callable $receivedContent, $verbosity)
-    {
+    protected function executeComposerCommand(
+        $command,
+        callable $receivedContent,
+        $verbosity,
+        array $additionalArguments
+    ) {
         $arguments = [];
         if ($verbosity) {
             $arguments[] = (string)$verbosity;
@@ -59,12 +69,15 @@ class ComposerInstaller
 
         return $process->execute(
             $command,
-            [
-                // '--no-ansi',
-                // '--profile',
-                // '--prefer-dist',
-                '--optimize-autoloader',
-            ]
+            array_merge(
+                [
+                    // '--no-ansi',
+                    // '--profile',
+                    // '--prefer-dist',
+                    '--optimize-autoloader',
+                ],
+                $additionalArguments
+            )
         );
     }
 }

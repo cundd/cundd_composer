@@ -5,6 +5,7 @@ namespace Cundd\CunddComposer\Command;
 use Cundd\CunddComposer\Process\ComposerProcess;
 use Cundd\CunddComposer\Utility\ConfigurationUtility as ConfigurationUtility;
 use TYPO3\CMS\Extbase\Mvc\Controller\CommandController;
+use UnexpectedValueException;
 
 /**
  * Command to compile, watch and start LiveReload
@@ -109,7 +110,12 @@ class ComposerCommandController extends CommandController
         $this->printLine('UPDATING COMPOSER DEPENDENCIES');
         $this->printLine('This may take a while...');
         $this->printLine();
-        $this->composerInstaller->update([$this, 'printStreamingOutput'], $this->combineVerbosity($v, $vv, $vvv));
+        $collectAdditionalOptions = $this->collectAdditionalOptions('update');
+        $this->composerInstaller->update(
+            [$this, 'printStreamingOutput'],
+            $this->combineVerbosity($v, $vv, $vvv),
+            $collectAdditionalOptions
+        );
         $this->printLine();
 
         $this->installAssets();
@@ -125,7 +131,7 @@ class ComposerCommandController extends CommandController
     public function installAssetsCommand()
     {
         if (!ConfigurationUtility::getConfiguration('allowInstallAssets')) {
-            throw new \UnexpectedValueException('Asset installation is disabled', 1431008369);
+            throw new UnexpectedValueException('Asset installation is disabled', 1431008369);
         }
         $this->installAssets();
         $this->sendAndExit();
@@ -251,7 +257,7 @@ class ComposerCommandController extends CommandController
     {
         if (!ConfigurationUtility::getPHPExecutable()) {
             $this->outputLine('ERROR: PHP executable could not be found');
-            throw new \UnexpectedValueException('PHP executable could not be found', 1431007408);
+            throw new UnexpectedValueException('PHP executable could not be found', 1431007408);
         }
     }
 
@@ -274,7 +280,7 @@ class ComposerCommandController extends CommandController
     {
         global $argv;
         $additionalOptions = $argv;
-        while (!empty($additionalOptions) && $additionalOptions[0] !== $command) {
+        while (!empty($additionalOptions) && $additionalOptions[0] !== $command && $additionalOptions[0] !== '--') {
             array_shift($additionalOptions);
         }
         array_shift($additionalOptions);
