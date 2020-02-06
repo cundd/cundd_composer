@@ -13,11 +13,14 @@ class Autoloader
      */
     static public function register()
     {
-        if (!class_exists(ComposerGeneralUtility::class)) {
-            require_once __DIR__ . '/Utility/GeneralUtility.php';
-        }
-        if (file_exists(ComposerGeneralUtility::getPathToVendorDirectory() . 'autoload.php')) {
-            include_once(ComposerGeneralUtility::getPathToVendorDirectory() . 'autoload.php');
+        static $didRegister = false;
+        if (false === $didRegister) {
+            if (!class_exists(ComposerGeneralUtility::class)) {
+                require_once __DIR__ . '/Utility/GeneralUtility.php';
+            }
+            if (file_exists(ComposerGeneralUtility::getPathToVendorDirectory() . 'autoload.php')) {
+                include_once(ComposerGeneralUtility::getPathToVendorDirectory() . 'autoload.php');
+            }
         }
     }
 }
