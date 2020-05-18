@@ -1,8 +1,10 @@
 <?php
+declare(strict_types=1);
 
 namespace Cundd\CunddComposer\Exception;
 
-class ProcessException extends \RuntimeException
-{
+use RuntimeException;
 
+class ProcessException extends RuntimeException
+{
 }

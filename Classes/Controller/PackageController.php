@@ -1,48 +1,75 @@
 <?php
+declare(strict_types=1);
 
 namespace Cundd\CunddComposer\Controller;
 
+use Cundd\CunddComposer\Definition\Writer;
+use Cundd\CunddComposer\Domain\Repository\PackageRepository;
+use Cundd\CunddComposer\Installer\AssetInstaller;
+use Cundd\CunddComposer\Installer\ComposerInstaller;
 use Cundd\CunddComposer\Utility\ConfigurationUtility as ConfigurationUtility;
 use Cundd\CunddComposer\Utility\GeneralUtility as ComposerGeneralUtility;
+use DomainException;
+use RuntimeException;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Core\Utility\PathUtility;
 use TYPO3\CMS\Extbase\Mvc\Controller\ActionController;
 use TYPO3\CMS\Extbase\Mvc\View\ViewInterface;
+use function defined;
+use function json_encode;
+use function php_ini_loaded_file;
+use function rtrim;
+use function str_replace;
 
 class PackageController extends ActionController
 {
     /**
      * Package repository
      *
-     * @var \Cundd\CunddComposer\Domain\Repository\PackageRepository
-     * @inject
+     * @var PackageRepository
      */
     protected $packageRepository;
 
     /**
      * Asset installer
      *
-     * @var \Cundd\CunddComposer\Installer\AssetInstaller
-     * @inject
+     * @var AssetInstaller
      */
     protected $assetInstaller;
 
     /**
      * Composer installer
      *
-     * @var \Cundd\CunddComposer\Installer\ComposerInstaller
-     * @inject
+     * @var ComposerInstaller
      */
     protected $composerInstaller;
 
     /**
      * Definition writer
      *
-     * @var \Cundd\CunddComposer\Definition\Writer
-     * @inject
+     * @var Writer
      */
     protected $definitionWriter;
 
+    /**
+     * PackageController constructor.
+     *
+     * @param PackageRepository $packageRepository
+     * @param AssetInstaller    $assetInstaller
+     * @param ComposerInstaller $composerInstaller
+     * @param Writer            $definitionWriter
+     */
+    public function __construct(
+        PackageRepository $packageRepository,
+        AssetInstaller $assetInstaller,
+        ComposerInstaller $composerInstaller,
+        Writer $definitionWriter
+    ) {
+        $this->packageRepository = $packageRepository;
+        $this->assetInstaller = $assetInstaller;
+        $this->composerInstaller = $composerInstaller;
+        $this->definitionWriter = $definitionWriter;
+    }
 
     /**
      * Initialize the action
@@ -85,7 +112,7 @@ class PackageController extends ActionController
 
         try {
             $packages = $this->packageRepository->findAll();
-        } catch (\DomainException $exception) {
+        } catch (DomainException $exception) {
             $this->view->assign('error', $exception->getMessage());
         }
         $this->view->assign('packages', $packages);
@@ -216,7 +243,7 @@ class PackageController extends ActionController
     /**
      * Format the given JSON data
      *
-     * @param  array $json
+     * @param array $json
      * @return string
      */
     protected function formatJSON($json)
@@ -267,6 +294,6 @@ class PackageController extends ActionController
             return;
         }
 
-        throw new \RuntimeException('Access violation');
+        throw new RuntimeException('Access violation');
     }
 }

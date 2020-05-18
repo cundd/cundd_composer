@@ -1,8 +1,28 @@
 <?php
+declare(strict_types=1);
 
 namespace Cundd\CunddComposer;
 
 use Cundd\CunddComposer\Exception\ProcessException;
+use function array_map;
+use function call_user_func;
+use function define;
+use function defined;
+use function error_get_last;
+use function fclose;
+use function fwrite;
+use function getcwd;
+use function implode;
+use function is_resource;
+use function microtime;
+use function proc_close;
+use function proc_get_status;
+use function proc_open;
+use function proc_terminate;
+use function stream_get_contents;
+use function stream_select;
+use function stream_set_blocking;
+use function stripos;
 
 /**
  * Process class to wrap invocations of external scripts
@@ -90,19 +110,13 @@ class Process
      * @param callable $receivedContentCallback
      */
     public function __construct(
-        $command,
+        string $command,
         array $arguments = [],
         array $environment = [],
-        $workingDirectory = null,
-        $timeout = 60,
+        ?string $workingDirectory = null,
+        int $timeout = 60,
         callable $receivedContentCallback = null
     ) {
-        if (!is_string($command)) {
-            throw new \InvalidArgumentException('Argument "command" must be of type "string"');
-        }
-        if (!is_null($workingDirectory) && !is_string($workingDirectory)) {
-            throw new \InvalidArgumentException('Argument "workingDirectory" must be NULL or of type "string"');
-        }
         $this->command = $command;
         $this->environment = $environment;
         $this->workingDirectory = $workingDirectory ?: getcwd();
@@ -325,6 +339,10 @@ class Process
 
         if ($this->isRunning()) {
             // Kill
+            if (!defined('SIGKILL')) {
+                define('SIGKILL', 9);
+            }
+
             try {
                 $this->stop(SIGKILL);
             } catch (ProcessException $exception) {

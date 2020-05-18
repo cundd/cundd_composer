@@ -1,8 +1,11 @@
 <?php
+declare(strict_types=1);
 
 namespace Cundd\CunddComposer\Definition;
 
+use Cundd\CunddComposer\Domain\Repository\PackageRepository;
 use Cundd\CunddComposer\Utility\GeneralUtility as ComposerGeneralUtility;
+use UnexpectedValueException;
 
 class Writer
 {
@@ -17,8 +20,7 @@ class Writer
     /**
      * Package repository
      *
-     * @var \Cundd\CunddComposer\Domain\Repository\PackageRepository
-     * @inject
+     * @var PackageRepository
      */
     protected $packageRepository;
 
@@ -35,6 +37,16 @@ class Writer
      * @var boolean
      */
     protected $developmentDependencies = false;
+
+    /**
+     * Writer constructor.
+     *
+     * @param PackageRepository $packageRepository
+     */
+    public function __construct(PackageRepository $packageRepository)
+    {
+        $this->packageRepository = $packageRepository;
+    }
 
     /**
      * Write the composer.json file
@@ -58,8 +70,8 @@ class Writer
      * Returns the composer.json array merged with the template
      *
      * @param boolean $development Indicates if the dev-requirements should be merged
-     * @throws \UnexpectedValueException if the composer.json template could not be loaded
      * @return array
+     * @throws UnexpectedValueException if the composer.json template could not be loaded
      */
     public function getMergedComposerJson($development = false)
     {
@@ -68,7 +80,7 @@ class Writer
                 ComposerGeneralUtility::getPathToResource() . 'Private/Templates/composer.json'
             );
             if (!$composerJson) {
-                throw new \UnexpectedValueException('Could not load the composer.json template file', 1355952845);
+                throw new UnexpectedValueException('Could not load the composer.json template file', 1355952845);
             }
             $composerJson = str_replace('%EXT_PATH%', ComposerGeneralUtility::getExtensionPath(), $composerJson);
             $composerJson = str_replace('%RESOURCE_PATH%', ComposerGeneralUtility::getPathToResource(), $composerJson);
@@ -180,7 +192,7 @@ class Writer
     /**
      * Returns the merged composer.json data for the given key
      *
-     * @param  string $key The key for which to merge the data
+     * @param string $key The key for which to merge the data
      * @return array
      */
     protected function getMergedComposerData($key)

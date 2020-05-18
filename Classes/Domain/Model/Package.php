@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 namespace Cundd\CunddComposer\Domain\Model;
 
@@ -6,7 +7,6 @@ use TYPO3\CMS\Extbase\DomainObject\AbstractEntity;
 
 class Package extends AbstractEntity
 {
-
     /**
      * Name
      *
