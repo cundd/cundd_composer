@@ -53,14 +53,14 @@ class Writer
      *
      * @return boolean Returns TRUE on success, otherwise FALSE
      */
-    public function writeMergedComposerJson()
+    public function writeMergedComposerJson(): bool
     {
         $composerJson = $this->getMergedComposerJson();
         $composerJson = json_encode($composerJson);
         if ($composerJson) {
             ComposerGeneralUtility::makeSureTempPathExists();
 
-            return file_put_contents($this->getDestinationFilePath(), $composerJson);
+            return (bool)file_put_contents($this->getDestinationFilePath(), $composerJson);
         }
 
         return false;
@@ -73,7 +73,7 @@ class Writer
      * @return array
      * @throws UnexpectedValueException if the composer.json template could not be loaded
      */
-    public function getMergedComposerJson($development = false)
+    public function getMergedComposerJson(bool $development = false): array
     {
         if (!$this->mergedComposerJson) {
             $composerJson = file_get_contents(
@@ -110,9 +110,9 @@ class Writer
     /**
      * Retrieve the merged composer.json requirements
      *
-     * @return array<string>
+     * @return string[]
      */
-    public function getMergedComposerRequirements()
+    public function getMergedComposerRequirements(): array
     {
         return $this->getMergedComposerData('require');
     }
@@ -120,9 +120,9 @@ class Writer
     /**
      * Retrieve the merged composer.json development requirements
      *
-     * @return array<string>
+     * @return string[]
      */
-    public function getMergedComposerDevelopmentRequirements()
+    public function getMergedComposerDevelopmentRequirements(): array
     {
         return $this->getMergedComposerData('require-dev');
     }
@@ -130,9 +130,9 @@ class Writer
     /**
      * Retrieve the merged composer.json autoload settings
      *
-     * @return array<string>
+     * @return string[]
      */
-    public function getMergedComposerAutoload()
+    public function getMergedComposerAutoload(): array
     {
         return $this->getMergedComposerData('autoload');
     }
@@ -142,7 +142,7 @@ class Writer
      *
      * @return boolean
      */
-    public function getIncludeDevelopmentDependencies()
+    public function getIncludeDevelopmentDependencies(): bool
     {
         return $this->developmentDependencies;
     }
@@ -152,7 +152,7 @@ class Writer
      *
      * @param boolean $developmentDependencies
      */
-    public function setIncludeDevelopmentDependencies($developmentDependencies)
+    public function setIncludeDevelopmentDependencies(bool $developmentDependencies)
     {
         $this->developmentDependencies = $developmentDependencies;
     }
@@ -163,7 +163,7 @@ class Writer
      *
      * @return string
      */
-    public function getMinimumStability()
+    public function getMinimumStability(): string
     {
         return $this->minimumStability;
     }
@@ -174,7 +174,7 @@ class Writer
      *
      * @param string $minimumStability
      */
-    public function setMinimumStability($minimumStability)
+    public function setMinimumStability(string $minimumStability)
     {
         $this->minimumStability = $minimumStability;
     }
@@ -184,7 +184,7 @@ class Writer
      *
      * @return string
      */
-    public function getDestinationFilePath()
+    public function getDestinationFilePath(): string
     {
         return ComposerGeneralUtility::getTempPath() . 'composer.json';
     }
@@ -195,7 +195,7 @@ class Writer
      * @param string $key The key for which to merge the data
      * @return array
      */
-    protected function getMergedComposerData($key)
+    protected function getMergedComposerData(string $key): array
     {
         $jsonData = [];
         $composerJson = $this->packageRepository->getComposerJson();
