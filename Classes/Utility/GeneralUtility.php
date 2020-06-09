@@ -30,16 +30,7 @@ class GeneralUtility
      */
     public static function pd($var1 = '__iresults_pd_noValue')
     {
-        $arguments = func_get_args();
-        if (class_exists('Tx_Iresults')) {
-            call_user_func_array(['Tx_Iresults', 'pd'], $arguments);
-
-            return;
-        }
-
-        // foreach ($arguments as $argument) {
-        //     \TYPO3\CMS\Extbase\Utility\DebuggerUtility::var_dump($argument);
-        // }
+        // noop
     }
 
     /**
