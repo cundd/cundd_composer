@@ -8,10 +8,7 @@ use RecursiveIteratorIterator;
 use RuntimeException;
 use SplFileInfo;
 use UnexpectedValueException;
-use function call_user_func_array;
-use function class_exists;
 use function file_exists;
-use function func_get_args;
 use function is_array;
 use function is_dir;
 use function is_integer;
@@ -26,9 +23,9 @@ class GeneralUtility
     /**
      * Dumps a given variable (or the given variables) wrapped into a 'pre' tag.
      *
-     * @param    mixed $var1
+     * @param mixed ...$var1
      */
-    public static function pd($var1 = '__iresults_pd_noValue')
+    public static function pd(...$var1)
     {
         // noop
     }
@@ -44,8 +41,8 @@ class GeneralUtility
      * @param array   $array1
      * @param array   $array2
      * @param boolean $strict If set to TRUE an exception will be thrown if a key already is set with a different value
-     * @throws UnexpectedValueException if the strict mode is enabled and a key already exists
      * @return  array Returns the merged array
+     * @throws UnexpectedValueException if the strict mode is enabled and a key already exists
      */
     public static function arrayMergeRecursive($array1, $array2, $strict = false)
     {
@@ -130,7 +127,7 @@ class GeneralUtility
     /**
      * Create the given directory if it does not already exist
      *
-     * @param  string $directory
+     * @param string $directory
      * @return boolean Returns TRUE if the directory exists, or could be created, otherwise FALSE
      */
     public static function createDirectoryIfNotExists($directory)
@@ -154,8 +151,8 @@ class GeneralUtility
     /**
      * Make sure that the temporary directory exists
      *
-     * @throws RuntimeException if the temporary directory does not exist
      * @return void
+     * @throws RuntimeException if the temporary directory does not exist
      */
     public static function makeSureTempPathExists()
     {
@@ -173,7 +170,7 @@ class GeneralUtility
     /**
      * Remove all files in the given directory
      *
-     * @param  string $directory
+     * @param string $directory
      * @return boolean TRUE on success, otherwise FALSE
      */
     public static function removeDirectoryRecursive($directory)
