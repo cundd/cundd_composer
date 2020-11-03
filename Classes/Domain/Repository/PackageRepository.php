@@ -1,13 +1,29 @@
 <?php
+declare(strict_types=1);
 
 namespace Cundd\CunddComposer\Domain\Repository;
 
 use Cundd\CunddComposer\Domain\Model\Package as Package;
+use DomainException;
+use SplFileInfo;
+use SplObjectStorage;
+use TYPO3\CMS\Core\Core\Environment;
 use TYPO3\CMS\Extbase\Persistence\Repository;
+use function array_flip;
+use function array_intersect_key;
+use function array_keys;
+use function array_walk;
+use function file_exists;
+use function file_get_contents;
+use function implode;
+use function is_array;
+use function json_decode;
+use function json_last_error;
+use function method_exists;
+use function str_replace;
 
 class PackageRepository extends Repository
 {
-
     /**
      * The composer.json contents
      *
@@ -25,14 +41,14 @@ class PackageRepository extends Repository
     /**
      * Array of package objects
      *
-     * @var \SplObjectStorage
+     * @var SplObjectStorage
      */
     protected $packages = null;
 
     /**
      * Returns all objects of this repository.
      *
-     * @return Package[]|\SplObjectStorage
+     * @return Package[]|SplObjectStorage
      * @api
      */
     public function findAll()
@@ -42,7 +58,7 @@ class PackageRepository extends Repository
             $properties = new Package();
             $properties = array_keys($properties->_getProperties());
 
-            $this->packages = new \SplObjectStorage();
+            $this->packages = new SplObjectStorage();
             $composerJson = $this->getComposerJson();
             foreach ($composerJson as $packageName => $currentJsonData) {
                 // Flatten the fields "require" and "authors"
@@ -121,7 +137,7 @@ class PackageRepository extends Repository
      *
      * @param boolean $graceful If set to TRUE no exception will be thrown if a JSON file couldn't be read
      * @return array
-     * @throws \DomainException if a JSON file couldn't be read
+     * @throws DomainException if a JSON file couldn't be read
      */
     public function getComposerJson($graceful = false)
     {
@@ -129,8 +145,8 @@ class PackageRepository extends Repository
             $jsonData = [];
             $composerFiles = $this->getComposerFiles();
             foreach ($composerFiles as $package => $composerFilePath) {
-                $composerFile = new \SplFileInfo($composerFilePath);
-                $relativeComposerFilePath = '../../../../../../' . str_replace(PATH_site, '', $composerFile->getPath());
+                $composerFile = new SplFileInfo($composerFilePath);
+                $relativeComposerFilePath = '../../../../../../' . str_replace(Environment::getPublicPath() . '/', '', $composerFile->getPath());
 
                 $currentJsonData = null;
                 $jsonString = file_get_contents($composerFilePath);
@@ -139,9 +155,9 @@ class PackageRepository extends Repository
                     $currentJsonData = json_decode($jsonString, true);
                 }
                 if (!$currentJsonData && !$graceful) {
-                    throw new \DomainException(
-                        'Exception while parsing composer file ' . $composerFilePath . ': ' . $this->getJsonErrorDescription(
-                        ),
+                    throw new DomainException(
+                        'Exception while parsing composer file ' . $composerFilePath . ': '
+                        . $this->getJsonErrorDescription(),
                         1356356009
                     );
                 }
@@ -161,7 +177,7 @@ class PackageRepository extends Repository
                                 break;
                             default:
                                 if (!$graceful) {
-                                    throw new \DomainException(
+                                    throw new DomainException(
                                         'Exception while adjusting autoload paths in' . $composerFilePath . ': unknown type "' . $autoloadType . '"'
                                     );
                                 }

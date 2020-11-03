@@ -1,6 +1,18 @@
 <?php
+declare(strict_types=1);
 
 namespace Cundd\CunddComposer\Utility;
+
+use TYPO3\CMS\Core\Configuration\ExtensionConfiguration;
+use TYPO3\CMS\Core\Utility\GeneralUtility as Typo3GeneralUtility;
+use function defined;
+use function explode;
+use function file_exists;
+use function getenv;
+use function is_executable;
+use function is_file;
+use function strstr;
+use function trim;
 
 class ConfigurationUtility
 {
@@ -15,16 +27,15 @@ class ConfigurationUtility
     /**
      * Returns the extension configuration for the given key
      *
-     * @param  string $key Configuration key
+     * @param string $key Configuration key
      * @return mixed      Configuration value
      */
     public static function getConfiguration($key)
     {
         // Read the configuration from the globals
         if (self::$configuration === null) {
-            if (isset($GLOBALS['TYPO3_CONF_VARS']['EXT']['extConf']['cundd_composer'])) {
-                self::$configuration = unserialize($GLOBALS['TYPO3_CONF_VARS']['EXT']['extConf']['cundd_composer']);
-            }
+            self::$configuration = Typo3GeneralUtility::makeInstance(ExtensionConfiguration::class)
+                ->get('cundd_composer');
         }
 
         // Return the configuration value
@@ -49,7 +60,6 @@ class ConfigurationUtility
 
         return trim($phpExecutable);
     }
-
 
     /**
      * Tries to find the PHP executable.

@@ -1,8 +1,22 @@
 <?php
+declare(strict_types=1);
 
 namespace Cundd\CunddComposer\Installer;
 
+use Cundd\CunddComposer\Definition\Writer;
 use Cundd\CunddComposer\Utility\GeneralUtility as ComposerGeneralUtility;
+use RuntimeException;
+use function array_map;
+use function array_merge;
+use function explode;
+use function file_exists;
+use function is_array;
+use function sprintf;
+use function str_replace;
+use function strrpos;
+use function substr;
+use function symlink;
+use function trim;
 
 class AssetInstaller
 {
@@ -16,10 +30,19 @@ class AssetInstaller
     /**
      * Definition writer
      *
-     * @var \Cundd\CunddComposer\Definition\Writer
-     * @inject
+     * @var Writer
      */
     protected $definitionWriter;
+
+    /**
+     * Asset Installer constructor
+     *
+     * @param Writer $definitionWriter
+     */
+    public function __construct(Writer $definitionWriter)
+    {
+        $this->definitionWriter = $definitionWriter;
+    }
 
     /**
      * Creates symlinks for installed assets
@@ -46,7 +69,7 @@ class AssetInstaller
         ComposerGeneralUtility::removeDirectoryRecursive($assetsDirectoryPath);
         ComposerGeneralUtility::createDirectoryIfNotExists($assetsDirectoryPath);
         if (!file_exists($assetsDirectoryPath)) {
-            throw new \RuntimeException(
+            throw new RuntimeException(
                 sprintf('Directory "%s" does not exists and can not be created', $assetsDirectoryPath),
                 1362514209
             );
@@ -69,7 +92,7 @@ class AssetInstaller
      * Loops through the packages and the available Asset paths and installs
      * found packages
      *
-     * @param  array $requiredPackages Array of packages
+     * @param array $requiredPackages Array of packages
      * @return array<array<string>> Returns an array of installed assets
      */
     public function installAssetsOfPackages($requiredPackages)
@@ -160,7 +183,7 @@ class AssetInstaller
     /**
      * Returns the URI to download or reference the given URI
      *
-     * @param  string $uri
+     * @param string $uri
      * @return string
      */
     public function getDownloadUriOfUri($uri)
@@ -224,7 +247,6 @@ class AssetInstaller
             );
             ComposerGeneralUtility::pd($this->assetPaths);
         }
-
     }
 
     /**

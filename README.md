@@ -34,15 +34,12 @@ via command line
 
 TYPO3 based CLI commands are available to manage dependencies.
 
-To find information about the command's available options please run `typo3/cli_dispatch.phpsh extbase help` followed by the command.
-
-
 ### composer:install
 
 Installs the project dependencies from the `composer.lock` file (in `EXT:cundd_composer/Resources/Private/Temp/`) if present, or falls back on the `cundd_composer.json`.
 
 ```bash
-typo3/cli_dispatch.phpsh extbase composer:install
+typo3 cundd-composer:install
 ```
 
 
@@ -51,7 +48,7 @@ typo3/cli_dispatch.phpsh extbase composer:install
 Updates your dependencies to the latest version according to `cundd_composer.json`, and updates the `composer.lock` file (in `EXT:cundd_composer/Resources/Private/Temp/`).
 
 ```bash
-typo3/cli_dispatch.phpsh extbase composer:update
+typo3 cundd-composer:update
 ```
 
 
@@ -60,7 +57,7 @@ typo3/cli_dispatch.phpsh extbase composer:update
 Install available assets.
 
 ```bash
-typo3/cli_dispatch.phpsh extbase composer:installassets
+typo3 cundd-composer:install-assets
 ```
 
 
@@ -69,16 +66,25 @@ typo3/cli_dispatch.phpsh extbase composer:installassets
 List information about the required packages.
 
 ```bash
-typo3/cli_dispatch.phpsh extbase composer:list
+typo3 cundd-composer:list
 ```
 
 
 ### composer:exec
 
-Execute an arbitrary composer command
+Execute an arbitrary composer command.
 
 ```bash
-typo3/cli_dispatch.phpsh extbase composer:exec
+typo3 cundd-composer:exec -- info
+```
+
+
+### cundd-composer:write-composer-json
+
+Write the merged composer.json.
+
+```bash
+typo3 cundd-composer:write-composer-json
 ```
 
 

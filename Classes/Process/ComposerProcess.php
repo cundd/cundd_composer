@@ -1,10 +1,13 @@
 <?php
+declare(strict_types=1);
 
 namespace Cundd\CunddComposer\Process;
 
 use Cundd\CunddComposer\Process;
 use Cundd\CunddComposer\Utility\ConfigurationUtility as ConfigurationUtility;
 use Cundd\CunddComposer\Utility\GeneralUtility as ComposerGeneralUtility;
+use function array_merge;
+use function getenv;
 
 class ComposerProcess
 {

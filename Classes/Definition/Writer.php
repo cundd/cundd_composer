@@ -1,8 +1,11 @@
 <?php
+declare(strict_types=1);
 
 namespace Cundd\CunddComposer\Definition;
 
+use Cundd\CunddComposer\Domain\Repository\PackageRepository;
 use Cundd\CunddComposer\Utility\GeneralUtility as ComposerGeneralUtility;
+use UnexpectedValueException;
 
 class Writer
 {
@@ -17,8 +20,7 @@ class Writer
     /**
      * Package repository
      *
-     * @var \Cundd\CunddComposer\Domain\Repository\PackageRepository
-     * @inject
+     * @var PackageRepository
      */
     protected $packageRepository;
 
@@ -37,18 +39,28 @@ class Writer
     protected $developmentDependencies = false;
 
     /**
+     * Writer constructor.
+     *
+     * @param PackageRepository $packageRepository
+     */
+    public function __construct(PackageRepository $packageRepository)
+    {
+        $this->packageRepository = $packageRepository;
+    }
+
+    /**
      * Write the composer.json file
      *
      * @return boolean Returns TRUE on success, otherwise FALSE
      */
-    public function writeMergedComposerJson()
+    public function writeMergedComposerJson(): bool
     {
         $composerJson = $this->getMergedComposerJson();
         $composerJson = json_encode($composerJson);
         if ($composerJson) {
             ComposerGeneralUtility::makeSureTempPathExists();
 
-            return file_put_contents($this->getDestinationFilePath(), $composerJson);
+            return (bool)file_put_contents($this->getDestinationFilePath(), $composerJson);
         }
 
         return false;
@@ -58,17 +70,17 @@ class Writer
      * Returns the composer.json array merged with the template
      *
      * @param boolean $development Indicates if the dev-requirements should be merged
-     * @throws \UnexpectedValueException if the composer.json template could not be loaded
      * @return array
+     * @throws UnexpectedValueException if the composer.json template could not be loaded
      */
-    public function getMergedComposerJson($development = false)
+    public function getMergedComposerJson(bool $development = false): array
     {
         if (!$this->mergedComposerJson) {
             $composerJson = file_get_contents(
                 ComposerGeneralUtility::getPathToResource() . 'Private/Templates/composer.json'
             );
             if (!$composerJson) {
-                throw new \UnexpectedValueException('Could not load the composer.json template file', 1355952845);
+                throw new UnexpectedValueException('Could not load the composer.json template file', 1355952845);
             }
             $composerJson = str_replace('%EXT_PATH%', ComposerGeneralUtility::getExtensionPath(), $composerJson);
             $composerJson = str_replace('%RESOURCE_PATH%', ComposerGeneralUtility::getPathToResource(), $composerJson);
@@ -98,9 +110,9 @@ class Writer
     /**
      * Retrieve the merged composer.json requirements
      *
-     * @return array<string>
+     * @return string[]
      */
-    public function getMergedComposerRequirements()
+    public function getMergedComposerRequirements(): array
     {
         return $this->getMergedComposerData('require');
     }
@@ -108,9 +120,9 @@ class Writer
     /**
      * Retrieve the merged composer.json development requirements
      *
-     * @return array<string>
+     * @return string[]
      */
-    public function getMergedComposerDevelopmentRequirements()
+    public function getMergedComposerDevelopmentRequirements(): array
     {
         return $this->getMergedComposerData('require-dev');
     }
@@ -118,9 +130,9 @@ class Writer
     /**
      * Retrieve the merged composer.json autoload settings
      *
-     * @return array<string>
+     * @return string[]
      */
-    public function getMergedComposerAutoload()
+    public function getMergedComposerAutoload(): array
     {
         return $this->getMergedComposerData('autoload');
     }
@@ -130,7 +142,7 @@ class Writer
      *
      * @return boolean
      */
-    public function getIncludeDevelopmentDependencies()
+    public function getIncludeDevelopmentDependencies(): bool
     {
         return $this->developmentDependencies;
     }
@@ -140,7 +152,7 @@ class Writer
      *
      * @param boolean $developmentDependencies
      */
-    public function setIncludeDevelopmentDependencies($developmentDependencies)
+    public function setIncludeDevelopmentDependencies(bool $developmentDependencies)
     {
         $this->developmentDependencies = $developmentDependencies;
     }
@@ -151,7 +163,7 @@ class Writer
      *
      * @return string
      */
-    public function getMinimumStability()
+    public function getMinimumStability(): string
     {
         return $this->minimumStability;
     }
@@ -162,7 +174,7 @@ class Writer
      *
      * @param string $minimumStability
      */
-    public function setMinimumStability($minimumStability)
+    public function setMinimumStability(string $minimumStability)
     {
         $this->minimumStability = $minimumStability;
     }
@@ -172,7 +184,7 @@ class Writer
      *
      * @return string
      */
-    public function getDestinationFilePath()
+    public function getDestinationFilePath(): string
     {
         return ComposerGeneralUtility::getTempPath() . 'composer.json';
     }
@@ -180,10 +192,10 @@ class Writer
     /**
      * Returns the merged composer.json data for the given key
      *
-     * @param  string $key The key for which to merge the data
+     * @param string $key The key for which to merge the data
      * @return array
      */
-    protected function getMergedComposerData($key)
+    protected function getMergedComposerData(string $key): array
     {
         $jsonData = [];
         $composerJson = $this->packageRepository->getComposerJson();

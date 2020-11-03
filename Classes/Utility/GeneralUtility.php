@@ -1,26 +1,33 @@
 <?php
+declare(strict_types=1);
 
 namespace Cundd\CunddComposer\Utility;
+
+use RecursiveDirectoryIterator;
+use RecursiveIteratorIterator;
+use RuntimeException;
+use SplFileInfo;
+use UnexpectedValueException;
+use function file_exists;
+use function is_array;
+use function is_dir;
+use function is_integer;
+use function mkdir;
+use function octdec;
+use function realpath;
+use function rmdir;
+use function unlink;
 
 class GeneralUtility
 {
     /**
      * Dumps a given variable (or the given variables) wrapped into a 'pre' tag.
      *
-     * @param    mixed $var1
+     * @param mixed ...$var1
      */
-    public static function pd($var1 = '__iresults_pd_noValue')
+    public static function pd(...$var1)
     {
-        $arguments = func_get_args();
-        if (class_exists('Tx_Iresults')) {
-            call_user_func_array(['Tx_Iresults', 'pd'], $arguments);
-
-            return;
-        }
-
-        // foreach ($arguments as $argument) {
-        //     \TYPO3\CMS\Extbase\Utility\DebuggerUtility::var_dump($argument);
-        // }
+        // noop
     }
 
     /**
@@ -34,15 +41,15 @@ class GeneralUtility
      * @param array   $array1
      * @param array   $array2
      * @param boolean $strict If set to TRUE an exception will be thrown if a key already is set with a different value
-     * @throws \UnexpectedValueException if the strict mode is enabled and a key already exists
      * @return  array Returns the merged array
+     * @throws UnexpectedValueException if the strict mode is enabled and a key already exists
      */
     public static function arrayMergeRecursive($array1, $array2, $strict = false)
     {
         $merged = $array1;
         foreach ($array2 as $key => &$value) {
             if ($strict && isset($merged[$key]) && !is_array($merged[$key]) && $merged[$key] != $value) {
-                throw new \UnexpectedValueException(
+                throw new UnexpectedValueException(
                     'Key "' . $key . '" already exists with a different value',
                     1360672930
                 );
@@ -120,7 +127,7 @@ class GeneralUtility
     /**
      * Create the given directory if it does not already exist
      *
-     * @param  string $directory
+     * @param string $directory
      * @return boolean Returns TRUE if the directory exists, or could be created, otherwise FALSE
      */
     public static function createDirectoryIfNotExists($directory)
@@ -144,8 +151,8 @@ class GeneralUtility
     /**
      * Make sure that the temporary directory exists
      *
-     * @throws \RuntimeException if the temporary directory does not exist
      * @return void
+     * @throws RuntimeException if the temporary directory does not exist
      */
     public static function makeSureTempPathExists()
     {
@@ -153,7 +160,7 @@ class GeneralUtility
 
         // Check if the working/temporary directory exists
         if (!self::createDirectoryIfNotExists($workingDir)) {
-            throw new \RuntimeException(
+            throw new RuntimeException(
                 'Working directory "' . $workingDir . '" doesn\'t exists and can not be created',
                 1359541465
             );
@@ -163,7 +170,7 @@ class GeneralUtility
     /**
      * Remove all files in the given directory
      *
-     * @param  string $directory
+     * @param string $directory
      * @return boolean TRUE on success, otherwise FALSE
      */
     public static function removeDirectoryRecursive($directory)
@@ -173,12 +180,12 @@ class GeneralUtility
             return false;
         }
 
-        $iterator = new \RecursiveIteratorIterator(
-            new \RecursiveDirectoryIterator($directory),
-            \RecursiveIteratorIterator::CHILD_FIRST
+        $iterator = new RecursiveIteratorIterator(
+            new RecursiveDirectoryIterator($directory),
+            RecursiveIteratorIterator::CHILD_FIRST
         );
         foreach ($iterator as $path) {
-            /** @var \SplFileInfo $path */
+            /** @var SplFileInfo $path */
             $fileName = $path->getFilename();
             if ($fileName === '.' || $fileName === '..') {
                 continue;
