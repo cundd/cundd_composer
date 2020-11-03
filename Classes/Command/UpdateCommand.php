@@ -38,7 +38,7 @@ class UpdateCommand extends AbstractCommand
         $this->printLine($output, 'This may take a while...');
         $this->printLine($output);
 
-        $this->getComposerInstaller()->install(
+        $this->getComposerInstaller()->update(
             [$this, 'printStreamingOutput'],
             $this->combineVerbosity($output->getVerbosity()),
             $this->collectAdditionalOptions('update')
