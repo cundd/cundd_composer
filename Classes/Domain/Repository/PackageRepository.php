@@ -146,7 +146,8 @@ class PackageRepository extends Repository
             $composerFiles = $this->getComposerFiles();
             foreach ($composerFiles as $package => $composerFilePath) {
                 $composerFile = new SplFileInfo($composerFilePath);
-                $relativeComposerFilePath = '../../../../../../' . str_replace(Environment::getPublicPath() . '/', '', $composerFile->getPath());
+                $relativeComposerFilePath = '../../../../../../'
+                    . str_replace(Environment::getPublicPath() . '/', '', $composerFile->getPath());
 
                 $currentJsonData = null;
                 $jsonString = file_get_contents($composerFilePath);
@@ -161,31 +162,12 @@ class PackageRepository extends Repository
                         1356356009
                     );
                 }
-
-                // Merge the autoload definition
-                if (isset($currentJsonData['autoload']) && is_array($currentJsonData['autoload'])) {
-                    foreach ($currentJsonData['autoload'] as $autoloadType => $autoLoadConfig) {
-                        switch ($autoloadType) {
-                            case 'classmap':
-                            case 'psr-0':
-                            case 'psr-4':
-                            case 'files';
-                                foreach ($autoLoadConfig as $pathKey => $pathOrFile) {
-                                    $autoLoadConfig[$pathKey] = $relativeComposerFilePath . $pathOrFile;
-                                }
-                                $currentJsonData['autoload'][$autoloadType] = $autoLoadConfig;
-                                break;
-                            default:
-                                if (!$graceful) {
-                                    throw new DomainException(
-                                        'Exception while adjusting autoload paths in' . $composerFilePath . ': unknown type "' . $autoloadType . '"'
-                                    );
-                                }
-
-                        }
-                    }
-                }
-                $jsonData[$package] = $currentJsonData;
+                $jsonData[$package] = $this->patchFileAutoloadPaths(
+                    $currentJsonData,
+                    $relativeComposerFilePath,
+                    $composerFilePath,
+                    $graceful
+                );
             }
             $this->composerJson = $jsonData;
         }
@@ -230,7 +212,7 @@ class PackageRepository extends Repository
     /**
      * Converts the given data to a Package instance
      *
-     * @param  array  $data
+     * @param array $data
      * @return Package Returns an object of type $targetClass
      */
     protected function convert($data)
@@ -243,5 +225,45 @@ class PackageRepository extends Repository
         }
 
         return $object;
+    }
+
+    /**
+     * Patch the autoload definition
+     *
+     * @param        $currentJsonData
+     * @param string $relativeComposerFilePath
+     * @param        $composerFilePath
+     * @param bool   $graceful
+     * @return mixed
+     */
+    private function patchFileAutoloadPaths(
+        array $currentJsonData,
+        string $relativeComposerFilePath,
+        string $composerFilePath,
+        bool $graceful
+    ) {
+        if (isset($currentJsonData['autoload']) && is_array($currentJsonData['autoload'])) {
+            foreach ($currentJsonData['autoload'] as $autoloadType => $autoLoadConfig) {
+                switch ($autoloadType) {
+                    case 'classmap':
+                    case 'psr-0':
+                    case 'psr-4':
+                    case 'files';
+                        foreach ($autoLoadConfig as $pathKey => $pathOrFile) {
+                            $autoLoadConfig[$pathKey] = $relativeComposerFilePath . $pathOrFile;
+                        }
+                        $currentJsonData['autoload'][$autoloadType] = $autoLoadConfig;
+                        break;
+                    default:
+                        if (!$graceful) {
+                            throw new DomainException(
+                                'Exception while adjusting autoload paths in' . $composerFilePath . ': unknown type "' . $autoloadType . '"'
+                            );
+                        }
+                }
+            }
+        }
+
+        return $currentJsonData;
     }
 }
