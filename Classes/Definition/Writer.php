@@ -6,6 +6,14 @@ namespace Cundd\CunddComposer\Definition;
 use Cundd\CunddComposer\Domain\Repository\PackageRepository;
 use Cundd\CunddComposer\Utility\GeneralUtility as ComposerGeneralUtility;
 use UnexpectedValueException;
+use function file_get_contents;
+use function file_put_contents;
+use function is_array;
+use function json_decode;
+use function json_encode;
+use function str_replace;
+use const JSON_PRETTY_PRINT;
+use const JSON_UNESCAPED_SLASHES;
 
 class Writer
 {
@@ -15,7 +23,7 @@ class Writer
      *
      * @var string
      */
-    protected $minimumStability = 'stable';
+    protected $minimumStability;
 
     /**
      * Package repository
@@ -56,7 +64,7 @@ class Writer
     public function writeMergedComposerJson(): bool
     {
         $composerJson = $this->getMergedComposerJson();
-        $composerJson = json_encode($composerJson);
+        $composerJson = json_encode($composerJson, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES);
         if ($composerJson) {
             ComposerGeneralUtility::makeSureTempPathExists();
 
@@ -84,24 +92,26 @@ class Writer
             }
             $composerJson = str_replace('%EXT_PATH%', ComposerGeneralUtility::getExtensionPath(), $composerJson);
             $composerJson = str_replace('%RESOURCE_PATH%', ComposerGeneralUtility::getPathToResource(), $composerJson);
-            $composerJson = str_replace('%MINIMUM_STABILITY%', $this->minimumStability, $composerJson);
 
-            $composerJson = json_decode($composerJson, true);
+            $composerData = json_decode($composerJson, true);
+            ComposerGeneralUtility::pd($composerData, $this->getMergedComposerRequirements());
 
-            ComposerGeneralUtility::pd($composerJson, $this->getMergedComposerRequirements());
-            $composerJson['require'] = $this->getMergedComposerRequirements();
-            $composerJson['autoload'] = $this->getMergedComposerAutoload();
-            $composerJson['repositories'] = $this->getMergedComposerData('repositories');
+            $composerData['require'] = $this->getMergedComposerRequirements();
+            $composerData['autoload'] = $this->getMergedComposerAutoload();
+            $composerData['repositories'] = $this->getMergedComposerData('repositories');
 
             if ($development || $this->developmentDependencies) {
-                $composerJson['require-dev'] = $this->getMergedComposerDevelopmentRequirements();
+                $composerData['require-dev'] = $this->getMergedComposerDevelopmentRequirements();
             }
-            if (!isset($composerJson['require-dev']) || !$composerJson['require-dev']) {
-                unset($composerJson['require-dev']);
+            if (!isset($composerData['require-dev']) || !$composerData['require-dev']) {
+                unset($composerData['require-dev']);
+            }
+            if (null !== $this->minimumStability) {
+                $composerData['minimum-stability'] = $this->minimumStability;
             }
 
-            ComposerGeneralUtility::pd($composerJson);
-            $this->mergedComposerJson = $composerJson;
+            ComposerGeneralUtility::pd($composerData);
+            $this->mergedComposerJson = $composerData;
         }
 
         return $this->mergedComposerJson;
