@@ -29,8 +29,6 @@
         }
     },
     "replace": {
-        "cundd.composer": "self.version",
-        "cundd_composer": "self.version",
         "typo3-ter/cundd_composer": "self.version"
     }
 }
