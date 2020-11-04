@@ -124,7 +124,7 @@ class Writer
      */
     public function getMergedComposerRequirements(): array
     {
-        return $this->getMergedComposerData('require');
+        return $this->getMergedComposerRequirementsData(false);
     }
 
     /**
@@ -134,7 +134,7 @@ class Writer
      */
     public function getMergedComposerDevelopmentRequirements(): array
     {
-        return $this->getMergedComposerData('require-dev');
+        return $this->getMergedComposerRequirementsData(true);
     }
 
     /**
@@ -222,5 +222,55 @@ class Writer
         }
 
         return $jsonData;
+    }
+
+    /**
+     * Return the merged `require` or `require-dev` data from composer.json
+     *
+     * @param bool $dev
+     * @return array
+     */
+    private function getMergedComposerRequirementsData(bool $dev): array
+    {
+        $key = $dev ? 'require-dev' : 'require';
+        $requirements = [];
+        $composerJson = $this->packageRepository->getComposerJson();
+        foreach ($composerJson as $currentJsonData) {
+            if (isset($currentJsonData[$key])) {
+                $requirementsToMerge = $currentJsonData[$key];
+                if (!is_array($requirementsToMerge)) {
+                    // There appears to be an error in the schema -> skip this entry
+                    continue;
+                }
+
+                $requirements = $this->mergeRequirementsFromExtension($requirements, $requirementsToMerge);
+            }
+        }
+
+        return $requirements;
+    }
+
+    /**
+     * Merge the requirements from an extension into the collected requirements
+     *
+     * The versions are not compared, but the last `version != *` wins
+     *
+     * @param array $collectedRequirements
+     * @param array $requirementsFromExtension
+     * @return array
+     */
+    private function mergeRequirementsFromExtension(array $collectedRequirements, array $requirementsFromExtension): array
+    {
+        foreach ($requirementsFromExtension as $package => $versionConstraints) {
+            if (!isset($collectedRequirements[$package])) {
+                // Register the new requirement
+                $collectedRequirements[$package] = $versionConstraints;
+            } elseif ($requirementsFromExtension[$package] !== '*') {
+                // Overwrite the old requirement if the current requirement isn't a wildcard
+                $collectedRequirements[$package] = $versionConstraints;
+            }
+        }
+
+        return $collectedRequirements;
     }
 }
