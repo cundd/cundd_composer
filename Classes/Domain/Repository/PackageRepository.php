@@ -5,7 +5,6 @@ namespace Cundd\CunddComposer\Domain\Repository;
 
 use Cundd\CunddComposer\Domain\Model\Package as Package;
 use DomainException;
-use SplFileInfo;
 use SplObjectStorage;
 use TYPO3\CMS\Core\Core\Environment;
 use TYPO3\CMS\Extbase\Persistence\Repository;
@@ -13,6 +12,7 @@ use function array_flip;
 use function array_intersect_key;
 use function array_keys;
 use function array_walk;
+use function dirname;
 use function file_exists;
 use function file_get_contents;
 use function implode;
@@ -145,9 +145,8 @@ class PackageRepository extends Repository
             $jsonData = [];
             $composerFiles = $this->getComposerFiles();
             foreach ($composerFiles as $package => $composerFilePath) {
-                $composerFile = new SplFileInfo($composerFilePath);
                 $relativeComposerFilePath = '../../../../../../'
-                    . str_replace(Environment::getPublicPath() . '/', '', $composerFile->getPath());
+                    . str_replace(Environment::getPublicPath() . '/', '', dirname($composerFilePath) . '/');
 
                 $currentJsonData = null;
                 $jsonString = file_get_contents($composerFilePath);
