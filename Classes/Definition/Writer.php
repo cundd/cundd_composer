@@ -8,7 +8,9 @@ use Cundd\CunddComposer\Utility\GeneralUtility as ComposerGeneralUtility;
 use UnexpectedValueException;
 use function file_get_contents;
 use function file_put_contents;
+use function fwrite;
 use function is_array;
+use function is_resource;
 use function json_decode;
 use function json_encode;
 use function str_replace;
@@ -59,16 +61,17 @@ class Writer
     /**
      * Write the composer.json file
      *
+     * @param resource|null $destination
      * @return boolean Returns TRUE on success, otherwise FALSE
      */
-    public function writeMergedComposerJson(): bool
+    public function writeMergedComposerJson($destination = null): bool
     {
         $composerJson = $this->getMergedComposerJson();
         $composerJson = json_encode($composerJson, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES);
         if ($composerJson) {
             ComposerGeneralUtility::makeSureTempPathExists();
 
-            return (bool)file_put_contents($this->getDestinationFilePath(), $composerJson);
+            return $this->writeToDestination($destination, $composerJson);
         }
 
         return false;
@@ -194,7 +197,7 @@ class Writer
      *
      * @return string
      */
-    public function getDestinationFilePath(): string
+    public function getDefaultDestinationFilePath(): string
     {
         return ComposerGeneralUtility::getTempPath() . 'composer.json';
     }
@@ -259,8 +262,10 @@ class Writer
      * @param array $requirementsFromExtension
      * @return array
      */
-    private function mergeRequirementsFromExtension(array $collectedRequirements, array $requirementsFromExtension): array
-    {
+    private function mergeRequirementsFromExtension(
+        array $collectedRequirements,
+        array $requirementsFromExtension
+    ): array {
         foreach ($requirementsFromExtension as $package => $versionConstraints) {
             if (!isset($collectedRequirements[$package])) {
                 // Register the new requirement
@@ -272,5 +277,14 @@ class Writer
         }
 
         return $collectedRequirements;
+    }
+
+    private function writeToDestination($destination, string $composerJson): bool
+    {
+        if (is_resource($destination)) {
+            return 0 < fwrite($destination, $composerJson);
+        } else {
+            return (bool)file_put_contents($this->getDefaultDestinationFilePath(), $composerJson);
+        }
     }
 }

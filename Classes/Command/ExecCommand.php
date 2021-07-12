@@ -32,8 +32,14 @@ class ExecCommand extends AbstractCommand
 
         $arguments = $input->getArgument('arguments');
         $command = array_shift($arguments);
-        $composerProcess->execute($command, $arguments);
+        if ($command) {
+            $composerProcess->execute($command, $arguments);
 
-        return 0;
+            return 0;
+        } else {
+            $output->writeln('<error>Missing argument \'command\'</error>');
+
+            return 1;
+        }
     }
 }

@@ -3,9 +3,9 @@ declare(strict_types=1);
 
 namespace Cundd\CunddComposer\Domain\Model;
 
-use TYPO3\CMS\Extbase\DomainObject\AbstractEntity;
+use function property_exists;
 
-class Package extends AbstractEntity
+class Package
 {
     /**
      * Name
@@ -88,6 +88,17 @@ class Package extends AbstractEntity
      */
     protected $requireDev;
 
+    private function __construct()
+    {
+    }
+
+    public static function fromProperties(array $properties): self
+    {
+        $instance = new static();
+
+        return $instance->assignProperties($properties);
+    }
+
     /**
      * Returns the name
      *
@@ -97,7 +108,6 @@ class Package extends AbstractEntity
     {
         return $this->name;
     }
-
 
     /**
      * Returns the description
@@ -109,7 +119,6 @@ class Package extends AbstractEntity
         return $this->description;
     }
 
-
     /**
      * Returns the version
      *
@@ -119,7 +128,6 @@ class Package extends AbstractEntity
     {
         return $this->version;
     }
-
 
     /**
      * Returns the type
@@ -131,7 +139,6 @@ class Package extends AbstractEntity
         return $this->type;
     }
 
-
     /**
      * Returns the homepage
      *
@@ -141,7 +148,6 @@ class Package extends AbstractEntity
     {
         return $this->homepage;
     }
-
 
     /**
      * Returns the time
@@ -153,7 +159,6 @@ class Package extends AbstractEntity
         return $this->time;
     }
 
-
     /**
      * Returns the require
      *
@@ -163,7 +168,6 @@ class Package extends AbstractEntity
     {
         return $this->require;
     }
-
 
     /**
      * Returns the license
@@ -175,7 +179,6 @@ class Package extends AbstractEntity
         return $this->license;
     }
 
-
     /**
      * Returns the requireDev
      *
@@ -185,7 +188,6 @@ class Package extends AbstractEntity
     {
         return $this->requireDev;
     }
-
 
     /**
      * Returns the authors
@@ -197,7 +199,6 @@ class Package extends AbstractEntity
         return $this->authors;
     }
 
-
     /**
      * Returns the package
      *
@@ -206,5 +207,16 @@ class Package extends AbstractEntity
     public function getPackage()
     {
         return $this->package;
+    }
+
+    private function assignProperties(array $properties): Package
+    {
+        foreach ($properties as $key => $value) {
+            if (property_exists($this, $key)) {
+                $this->$key = $value;
+            }
+        }
+
+        return $this;
     }
 }

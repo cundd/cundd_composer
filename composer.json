@@ -31,6 +31,9 @@
     "replace": {
         "typo3-ter/cundd_composer": "self.version"
     },
+    "suggest": {
+        "phpunit/phpunit": "To run the included Unit tests (PHPUnit 6 & PHP 7 required)"
+    },
     "extra": {
         "typo3/cms": {
             "extension-key": "cundd_composer"

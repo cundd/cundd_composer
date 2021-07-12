@@ -15,7 +15,7 @@
         }
     ],
     "require": {
-        "php": "^7.0",
+        "php": "^7.1",
         "ext-json": "*"
     },
     "autoload": {
@@ -33,5 +33,10 @@
     },
     "suggest": {
         "phpunit/phpunit": "To run the included Unit tests (PHPUnit 6 & PHP 7 required)"
+    },
+    "extra": {
+        "typo3/cms": {
+            "extension-key": "cundd_composer"
+        }
     }
 }
