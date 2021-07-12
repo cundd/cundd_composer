@@ -35,7 +35,7 @@ class ComposerProcess
      * @param array  $arguments
      * @return string Returns the composer output
      */
-    public function execute($command, array $arguments = [])
+    public function execute(string $command, array $arguments = []): string
     {
         ComposerGeneralUtility::makeSureTempPathExists();;
         $commandArguments = array_merge(
@@ -61,7 +61,7 @@ class ComposerProcess
     /**
      * @return array
      */
-    protected function getEnvironmentVariables()
+    protected function getEnvironmentVariables(): array
     {
         // Some environment variable names that are forwarded to composer
         $environmentVariablesToInherit = [

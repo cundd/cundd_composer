@@ -30,7 +30,7 @@ class ConfigurationUtility
      * @param string $key Configuration key
      * @return mixed      Configuration value
      */
-    public static function getConfiguration($key)
+    public static function getConfiguration(string $key)
     {
         // Read the configuration from the globals
         if (self::$configuration === null) {
@@ -51,7 +51,7 @@ class ConfigurationUtility
      *
      * @return string
      */
-    public static function getPHPExecutable()
+    public static function getPHPExecutable(): string
     {
         $phpExecutable = static::getConfiguration('phpExecutable');
         if (!$phpExecutable) {
@@ -62,7 +62,7 @@ class ConfigurationUtility
     }
 
     /**
-     * Tries to find the PHP executable.
+     * Try to find the PHP executable path
      *
      * @return string Returns the path to the PHP executable, or FALSE on error
      */

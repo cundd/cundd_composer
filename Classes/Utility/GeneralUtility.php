@@ -31,7 +31,7 @@ class GeneralUtility
     }
 
     /**
-     * Merge two arrays recursively.
+     * Merge two arrays recursively
      *
      * Unlike the implementation of array_merge_recursive() the second value will
      * overwrite the first, if a key is already set.
@@ -41,10 +41,10 @@ class GeneralUtility
      * @param array   $array1
      * @param array   $array2
      * @param boolean $strict If set to TRUE an exception will be thrown if a key already is set with a different value
-     * @return  array Returns the merged array
+     * @return array Returns the merged array
      * @throws UnexpectedValueException if the strict mode is enabled and a key already exists
      */
-    public static function arrayMergeRecursive($array1, $array2, $strict = false)
+    public static function arrayMergeRecursive(array $array1, array $array2, bool $strict = false): array
     {
         $merged = $array1;
         foreach ($array2 as $key => &$value) {
@@ -73,11 +73,11 @@ class GeneralUtility
     }
 
     /**
-     * Returns the path to the extensions base
+     * Return the path to the extensions base
      *
      * @return string
      */
-    public static function getExtensionPath()
+    public static function getExtensionPath(): string
     {
         $path = __DIR__ . '/../../';
 
@@ -85,41 +85,41 @@ class GeneralUtility
     }
 
     /**
-     * Returns the path to the resources folder
+     * Return the path to the resources folder
      *
      * @return string
      */
-    public static function getPathToResource()
+    public static function getPathToResource(): string
     {
         return self::getExtensionPath() . 'Resources/';
     }
 
     /**
-     * Returns the path to the resources folder
+     * Return the path to the resources folder
      *
      * @return string
      */
-    public static function getPathToVendorDirectory()
+    public static function getPathToVendorDirectory(): string
     {
         return self::getExtensionPath() . 'vendor/';
     }
 
     /**
-     * Returns the path to the temporary directory
+     * Return the path to the temporary directory
      *
      * @return string
      */
-    public static function getTempPath()
+    public static function getTempPath(): string
     {
         return self::getPathToResource() . 'Private/Temp/';
     }
 
     /**
-     * Returns the path to the composer phar
+     * Return the path to the composer phar
      *
      * @return string
      */
-    public static function getComposerPath()
+    public static function getComposerPath(): string
     {
         return self::getPathToResource() . '/Private/PHP/composer.phar';
     }
@@ -130,7 +130,7 @@ class GeneralUtility
      * @param string $directory
      * @return boolean Returns TRUE if the directory exists, or could be created, otherwise FALSE
      */
-    public static function createDirectoryIfNotExists($directory)
+    public static function createDirectoryIfNotExists(string $directory): bool
     {
         // Check if the directory exists
         if (!file_exists($directory)) {
@@ -173,7 +173,7 @@ class GeneralUtility
      * @param string $directory
      * @return boolean TRUE on success, otherwise FALSE
      */
-    public static function removeDirectoryRecursive($directory)
+    public static function removeDirectoryRecursive(string $directory):bool
     {
         $success = true;
         if (!file_exists($directory)) {

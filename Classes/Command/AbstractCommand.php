@@ -67,10 +67,9 @@ abstract class AbstractCommand extends Command
      * @param string          $message
      * @param string[]        ...$arguments
      */
-    protected function printLine(OutputInterface $output, $message = '', ...$arguments)
+    protected function printLine(OutputInterface $output, string $message = '', ...$arguments)
     {
-        $output->writeln(vsprintf((string)$message, $arguments));
-        //fwrite(STDOUT, vsprintf((string)$message, $arguments) . PHP_EOL);
+        $output->writeln(vsprintf($message, $arguments));
     }
 
     protected function postInstallOrUpdateAction(OutputInterface $output)
@@ -130,21 +129,20 @@ abstract class AbstractCommand extends Command
     protected function combineVerbosity(int $verbosity): string
     {
         switch ($verbosity) {
-            case OutputInterface::VERBOSITY_QUIET;
-            case OutputInterface::VERBOSITY_NORMAL;
-                return '';
             case OutputInterface::VERBOSITY_VERBOSE:
                 return '-v';
             case OutputInterface::VERBOSITY_VERY_VERBOSE:
                 return '-vv';
             case OutputInterface::VERBOSITY_DEBUG:
                 return '-vvv';
+            case OutputInterface::VERBOSITY_NORMAL:
+            case OutputInterface::VERBOSITY_QUIET;
             default:
                 return '';
         }
     }
 
-    protected function collectAdditionalOptions($command)
+    protected function collectAdditionalOptions($command): array
     {
         global $argv;
         $additionalOptions = $argv;

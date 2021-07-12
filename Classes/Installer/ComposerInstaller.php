@@ -16,7 +16,7 @@ class ComposerInstaller
      * @param array         $additionalArguments Additional arguments to pass to Composer
      * @return string Returns the composer output
      */
-    public function install(callable $receivedContent = null, $verbosity = '', array $additionalArguments = [])
+    public function install(callable $receivedContent = null, string $verbosity = '', array $additionalArguments = []): string
     {
         return $this->executeComposerCommand(
             'install',
@@ -35,7 +35,7 @@ class ComposerInstaller
      * @param array         $additionalArguments Additional arguments to pass to Composer
      * @return string Returns the composer output
      */
-    public function update(callable $receivedContent = null, $verbosity = '', array $additionalArguments = [])
+    public function update(callable $receivedContent = null, string $verbosity = '', array $additionalArguments = []): string
     {
         return $this->executeComposerCommand(
             'update',
@@ -56,11 +56,11 @@ class ComposerInstaller
      * @return string Returns the composer output
      */
     protected function executeComposerCommand(
-        $command,
+        string $command,
         callable $receivedContent,
-        $verbosity,
+        string $verbosity,
         array $additionalArguments
-    ) {
+    ): string {
         $arguments = [];
         if ($verbosity) {
             $arguments[] = (string)$verbosity;

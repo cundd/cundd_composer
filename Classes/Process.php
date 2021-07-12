@@ -102,12 +102,12 @@ class Process
     /**
      * Process constructor.
      *
-     * @param string   $command
-     * @param string[] $arguments
-     * @param string[] $environment
-     * @param string   $workingDirectory
-     * @param int      $timeout
-     * @param callable $receivedContentCallback
+     * @param string        $command
+     * @param string[]      $arguments
+     * @param string[]      $environment
+     * @param string|null   $workingDirectory
+     * @param int           $timeout
+     * @param callable|null $receivedContentCallback
      */
     public function __construct(
         string $command,
@@ -122,11 +122,11 @@ class Process
         $this->workingDirectory = $workingDirectory ?: getcwd();
         $this->arguments = $arguments;
         $this->buildReceivedContentCallback($receivedContentCallback);
-        $this->timeout = (int)$timeout;
+        $this->timeout = $timeout;
         $this->state = self::STATE_READY;
     }
 
-    public function execute(callable $receivedContentCallback = null)
+    public function execute(callable $receivedContentCallback = null): string
     {
         $this->start($receivedContentCallback);
 
@@ -137,7 +137,7 @@ class Process
     }
 
     /**
-     * @param callable $receivedContentCallback
+     * @param callable|null $receivedContentCallback
      */
     public function start(callable $receivedContentCallback = null)
     {
@@ -164,12 +164,12 @@ class Process
     /**
      * @param bool $debug
      */
-    public function setDebug($debug)
+    public function setDebug(bool $debug)
     {
         $this->debug = (bool)$debug;
     }
 
-    private function getDescriptors()
+    private function getDescriptors(): array
     {
         return [
             0 => ['pipe', 'r'], // stdin is a pipe that the child will read from
@@ -178,7 +178,7 @@ class Process
         ];
     }
 
-    private function waitUntilEnd($blocking)
+    private function waitUntilEnd(bool $blocking)
     {
         // Reset the output
         $this->output = '';
@@ -195,7 +195,7 @@ class Process
      * @param bool $blocking
      * @return string[]
      */
-    private function wait($blocking)
+    private function wait(bool $blocking): array
     {
         $readStreams = $this->pipes;
         unset($readStreams[0]);
@@ -232,24 +232,24 @@ class Process
     /**
      * @return bool
      */
-    public function isRunning()
+    public function isRunning(): bool
     {
         return $this->state === self::STATE_RUNNING;
     }
 
-    public function isTerminated()
+    public function isTerminated(): bool
     {
         return !$this->isRunning();
     }
 
-    public function getExitCode()
+    public function getExitCode(): int
     {
         if ($this->isRunning()) {
             return -1;
         }
         $state = $this->getProcessStatus();
 
-        return $state ? $state['exitcode'] : -1;
+        return $state ? (int)$state['exitcode'] : -1;
     }
 
     /**
@@ -257,7 +257,7 @@ class Process
      *
      * @param int $signal Defaults to SIGTERM (15)
      */
-    public function stop($signal = 15)
+    public function stop(int $signal = 15)
     {
         if ($this->isRunning()) {
             proc_terminate($this->process, $signal);
@@ -271,7 +271,7 @@ class Process
      *
      * @return string
      */
-    public function getState()
+    public function getState(): string
     {
         return $this->state;
     }
@@ -300,16 +300,13 @@ class Process
         $this->callback = null;
     }
 
-    /**
-     * @return string
-     */
-    private function buildCommand()
+    private function buildCommand(): string
     {
         return $this->command . ' ' . implode(' ', array_map('escapeshellarg', $this->arguments));
     }
 
     /**
-     * @param callable $receivedContentCallback
+     * @param callable|null $receivedContentCallback
      */
     private function buildReceivedContentCallback(callable $receivedContentCallback = null)
     {
@@ -355,7 +352,7 @@ class Process
         $this->forceStop();
     }
 
-    private function hasSystemCallBeenInterrupted()
+    private function hasSystemCallBeenInterrupted(): bool
     {
         $lastError = error_get_last();
 
@@ -395,7 +392,7 @@ class Process
      *
      * @return bool
      */
-    private function checkTimeout()
+    private function checkTimeout(): bool
     {
         $maxEndTime = $this->startTime + $this->timeout * 1000 * 1000;
 
@@ -433,20 +430,14 @@ class Process
         }
     }
 
-    /**
-     * @param string $message
-     */
-    private function printError($message)
+    private function printError(string $message)
     {
         if ($this->debug) {
             fwrite(STDERR, '[ERROR] ' . $message . PHP_EOL);
         }
     }
 
-    /**
-     * @param $message
-     */
-    private function debugPrint($message)
+    private function debugPrint(string $message)
     {
         if ($this->debug) {
             fwrite(STDOUT, $message);

@@ -47,8 +47,8 @@ class ListCommand extends AbstractCommand
      * @param string $require
      * @return array
      */
-    protected function splitTrim($require): array
+    protected function splitTrim(string $require): array
     {
-        return array_filter(array_map('trim', explode("\n", (string)$require)));
+        return array_filter(array_map('trim', explode("\n", $require)));
     }
 }

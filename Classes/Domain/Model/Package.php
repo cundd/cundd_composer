@@ -93,21 +93,11 @@ class Package extends AbstractEntity
      *
      * @return string $name
      */
-    public function getName()
+    public function getName(): string
     {
         return $this->name;
     }
 
-    /**
-     * Sets the name
-     *
-     * @param string $name
-     * @return void
-     */
-    public function setName($name)
-    {
-        $this->name = $name;
-    }
 
     /**
      * Returns the description
@@ -119,16 +109,6 @@ class Package extends AbstractEntity
         return $this->description;
     }
 
-    /**
-     * Sets the description
-     *
-     * @param string $description
-     * @return void
-     */
-    public function setDescription($description)
-    {
-        $this->description = $description;
-    }
 
     /**
      * Returns the version
@@ -140,16 +120,6 @@ class Package extends AbstractEntity
         return $this->version;
     }
 
-    /**
-     * Sets the version
-     *
-     * @param string $version
-     * @return void
-     */
-    public function setVersion($version)
-    {
-        $this->version = $version;
-    }
 
     /**
      * Returns the type
@@ -161,16 +131,6 @@ class Package extends AbstractEntity
         return $this->type;
     }
 
-    /**
-     * Sets the type
-     *
-     * @param string $type
-     * @return void
-     */
-    public function setType($type)
-    {
-        $this->type = $type;
-    }
 
     /**
      * Returns the homepage
@@ -182,16 +142,6 @@ class Package extends AbstractEntity
         return $this->homepage;
     }
 
-    /**
-     * Sets the homepage
-     *
-     * @param string $homepage
-     * @return void
-     */
-    public function setHomepage($homepage)
-    {
-        $this->homepage = $homepage;
-    }
 
     /**
      * Returns the time
@@ -203,16 +153,6 @@ class Package extends AbstractEntity
         return $this->time;
     }
 
-    /**
-     * Sets the time
-     *
-     * @param \DateTime $time
-     * @return void
-     */
-    public function setTime($time)
-    {
-        $this->time = $time;
-    }
 
     /**
      * Returns the require
@@ -224,16 +164,6 @@ class Package extends AbstractEntity
         return $this->require;
     }
 
-    /**
-     * Sets the require
-     *
-     * @param string $require
-     * @return void
-     */
-    public function setRequire($require)
-    {
-        $this->require = $require;
-    }
 
     /**
      * Returns the license
@@ -245,16 +175,6 @@ class Package extends AbstractEntity
         return $this->license;
     }
 
-    /**
-     * Sets the license
-     *
-     * @param string $license
-     * @return string license
-     */
-    public function setLicense($license)
-    {
-        $this->license = $license;
-    }
 
     /**
      * Returns the requireDev
@@ -266,16 +186,6 @@ class Package extends AbstractEntity
         return $this->requireDev;
     }
 
-    /**
-     * Sets the requireDev
-     *
-     * @param string $requireDev
-     * @return void
-     */
-    public function setRequireDev($requireDev)
-    {
-        $this->requireDev = $requireDev;
-    }
 
     /**
      * Returns the authors
@@ -287,16 +197,6 @@ class Package extends AbstractEntity
         return $this->authors;
     }
 
-    /**
-     * Sets the authors
-     *
-     * @param string $authors
-     * @return void
-     */
-    public function setAuthors($authors)
-    {
-        $this->authors = $authors;
-    }
 
     /**
      * Returns the package
@@ -306,16 +206,5 @@ class Package extends AbstractEntity
     public function getPackage()
     {
         return $this->package;
-    }
-
-    /**
-     * Sets the package
-     *
-     * @param string $package
-     * @return void
-     */
-    public function setPackage($package)
-    {
-        $this->package = $package;
     }
 }

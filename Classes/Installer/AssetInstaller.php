@@ -16,7 +16,6 @@ use function str_replace;
 use function strrpos;
 use function substr;
 use function symlink;
-use function trim;
 
 class AssetInstaller
 {
@@ -59,7 +58,7 @@ class AssetInstaller
      *
      * @return array<array<string>> Returns an array of installed assets
      */
-    public function installAssets()
+    public function installAssets(): array
     {
         $installedAssets = [];
         $mergedComposerJson = $this->definitionWriter->getMergedComposerJson(true);
@@ -83,9 +82,8 @@ class AssetInstaller
         if (is_array($mergedComposerJson['require-dev'])) {
             $requiredPackages = array_merge($requiredPackages, $mergedComposerJson['require-dev']);
         }
-        $installedAssets = array_merge($installedAssets, $this->installAssetsOfPackages($requiredPackages));
 
-        return $installedAssets;
+        return array_merge($installedAssets, $this->installAssetsOfPackages($requiredPackages));
     }
 
     /**
@@ -95,7 +93,7 @@ class AssetInstaller
      * @param array $requiredPackages Array of packages
      * @return array<array<string>> Returns an array of installed assets
      */
-    public function installAssetsOfPackages($requiredPackages)
+    public function installAssetsOfPackages($requiredPackages): array
     {
         ComposerGeneralUtility::pd($requiredPackages);
 
@@ -175,7 +173,7 @@ class AssetInstaller
      * @param string $uri
      * @return string
      */
-    public function getRelativePathOfUri($uri)
+    public function getRelativePathOfUri(string $uri): string
     {
         return str_replace(ComposerGeneralUtility::getExtensionPath(), '', $uri);
     }
@@ -186,7 +184,7 @@ class AssetInstaller
      * @param string $uri
      * @return string
      */
-    public function getDownloadUriOfUri($uri)
+    public function getDownloadUriOfUri(string $uri): string
     {
         static $baseUrl = null;
         if ($baseUrl === null) {
@@ -222,7 +220,7 @@ class AssetInstaller
      *
      * @return array<string>
      */
-    public function getAssetPaths()
+    public function getAssetPaths(): array
     {
         return $this->assetPaths;
     }
@@ -237,14 +235,7 @@ class AssetInstaller
         $this->assetPaths = [];
         if ($assetPaths) {
             $assetPaths = explode(',', $assetPaths);
-            $this->assetPaths = array_map(
-                function ($path) {
-                    $path = trim($path);
-
-                    return $path;
-                },
-                $assetPaths
-            );
+            $this->assetPaths = array_map('trim', $assetPaths);
             ComposerGeneralUtility::pd($this->assetPaths);
         }
     }
@@ -254,7 +245,7 @@ class AssetInstaller
      *
      * @return string
      */
-    public function getAssetsDirectoryPath()
+    public function getAssetsDirectoryPath(): string
     {
         return ComposerGeneralUtility::getPathToResource() . 'Public/Assets/';
     }

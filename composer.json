@@ -15,7 +15,7 @@
         }
     ],
     "require": {
-        "php": "^7.0",
+        "php": "^7.1",
         "ext-json": "*"
     },
     "autoload": {
@@ -30,5 +30,10 @@
     },
     "replace": {
         "typo3-ter/cundd_composer": "self.version"
+    },
+    "extra": {
+        "typo3/cms": {
+            "extension-key": "cundd_composer"
+        }
     }
 }

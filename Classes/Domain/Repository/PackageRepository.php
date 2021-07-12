@@ -7,6 +7,7 @@ use Cundd\CunddComposer\Domain\Model\Package as Package;
 use DomainException;
 use SplObjectStorage;
 use TYPO3\CMS\Core\Core\Environment;
+use TYPO3\CMS\Core\Package\PackageManager;
 use TYPO3\CMS\Extbase\Persistence\Repository;
 use function array_flip;
 use function array_intersect_key;
@@ -18,9 +19,10 @@ use function file_get_contents;
 use function implode;
 use function is_array;
 use function json_decode;
-use function json_last_error;
+use function json_last_error_msg;
 use function method_exists;
 use function str_replace;
+use const PHP_EOL;
 
 class PackageRepository extends Repository
 {
@@ -46,7 +48,7 @@ class PackageRepository extends Repository
     protected $packages = null;
 
     /**
-     * Returns all objects of this repository.
+     * Return all objects of this repository.
      *
      * @return Package[]|SplObjectStorage
      * @api
@@ -55,8 +57,7 @@ class PackageRepository extends Repository
     {
         if (!$this->packages) {
             // Get the package domain object properties
-            $properties = new Package();
-            $properties = array_keys($properties->_getProperties());
+            $properties = array_keys((new Package())->_getProperties());
 
             $this->packages = new SplObjectStorage();
             $composerJson = $this->getComposerJson();
@@ -82,14 +83,14 @@ class PackageRepository extends Repository
     }
 
     /**
-     * Converts an array property to a string
+     * Convert an array property to a string
      *
      * @param array  $source Reference to the input array
      * @param string $key    The key which to convert
      * @param string $newKey The new key under which to store the converted data
      * @return void
      */
-    protected function convertPropertyForKey(&$source, $key, $newKey = '')
+    private function convertPropertyForKey(array &$source, string $key, string $newKey = '')
     {
         if (isset($source[$key])) {
             if (!$newKey) {
@@ -108,19 +109,18 @@ class PackageRepository extends Repository
     }
 
     /**
-     * Returns the list of composer.json files
+     * Return the list of composer.json files
      *
-     * @return array<string>
+     * @return string[]
      */
-    public function getComposerFiles()
+    public function getComposerFiles(): array
     {
         $composerFiles = [];
 
-        /** @var \TYPO3\CMS\Core\Package\PackageManager $packageManager */
-        $packageManager = $this->objectManager->get('TYPO3\\CMS\\Core\\Package\\PackageManager');
+        /** @var PackageManager $packageManager */
+        $packageManager = $this->objectManager->get(PackageManager::class);
         $extensions = $packageManager->getActivePackages();
 
-        /** @var \TYPO3\CMS\Core\Package\Package $extension */
         foreach ($extensions as $extension) {
             $extensionKey = $extension->getPackageKey();
             $composerFilePath = $extension->getPackagePath() . '/' . $this->composerFileName;
@@ -133,13 +133,13 @@ class PackageRepository extends Repository
     }
 
     /**
-     * Returns the composer.json contents as array
+     * Return the composer.json contents as array
      *
      * @param boolean $graceful If set to TRUE no exception will be thrown if a JSON file couldn't be read
      * @return array
      * @throws DomainException if a JSON file couldn't be read
      */
-    public function getComposerJson($graceful = false)
+    public function getComposerJson(bool $graceful = false): array
     {
         if (!$this->composerJson) {
             $jsonData = [];
@@ -157,7 +157,7 @@ class PackageRepository extends Repository
                 if (!$currentJsonData && !$graceful) {
                     throw new DomainException(
                         'Exception while parsing composer file ' . $composerFilePath . ': '
-                        . $this->getJsonErrorDescription(),
+                        . json_last_error_msg(),
                         1356356009
                     );
                 }
@@ -175,46 +175,12 @@ class PackageRepository extends Repository
     }
 
     /**
-     * Returns an error description for the last JSON error
-     *
-     * @return string
-     */
-    protected function getJsonErrorDescription()
-    {
-        switch (json_last_error()) {
-            case JSON_ERROR_NONE:
-                $error = 'No errors';
-                break;
-            case JSON_ERROR_DEPTH:
-                $error = 'Maximum stack depth exceeded';
-                break;
-            case JSON_ERROR_STATE_MISMATCH:
-                $error = 'Underflow or the modes mismatch';
-                break;
-            case JSON_ERROR_CTRL_CHAR:
-                $error = 'Unexpected control character found';
-                break;
-            case JSON_ERROR_SYNTAX:
-                $error = 'Syntax error, malformed JSON';
-                break;
-            case JSON_ERROR_UTF8:
-                $error = 'Malformed UTF-8 characters, possibly incorrectly encoded';
-                break;
-            default:
-                $error = 'Unknown error';
-                break;
-        }
-
-        return $error;
-    }
-
-    /**
-     * Converts the given data to a Package instance
+     * Convert the given data to a Package instance
      *
      * @param array $data
      * @return Package Returns an object of type $targetClass
      */
-    protected function convert($data)
+    private function convert(array $data): Package
     {
         $object = new Package();
         if (method_exists($object, '_setProperty')) {
@@ -229,18 +195,18 @@ class PackageRepository extends Repository
     /**
      * Patch the autoload definition
      *
-     * @param        $currentJsonData
+     * @param array  $currentJsonData
      * @param string $relativeComposerFilePath
-     * @param        $composerFilePath
+     * @param string $composerFilePath
      * @param bool   $graceful
-     * @return mixed
+     * @return array
      */
     private function patchFileAutoloadPaths(
         array $currentJsonData,
         string $relativeComposerFilePath,
         string $composerFilePath,
         bool $graceful
-    ) {
+    ): array {
         if (isset($currentJsonData['autoload']) && is_array($currentJsonData['autoload'])) {
             foreach ($currentJsonData['autoload'] as $autoloadType => $autoLoadConfig) {
                 switch ($autoloadType) {
