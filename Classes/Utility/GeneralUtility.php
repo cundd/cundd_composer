@@ -191,12 +191,12 @@ class GeneralUtility
                 continue;
             }
             if ($path->isLink()) {
-                $success *= unlink($path->getPathname());
+                $success = $success && unlink($path->getPathname());
             } else {
                 if ($path->isDir()) {
-                    $success *= rmdir($path->getPathname());
+                    $success = $success && rmdir($path->getPathname());
                 } else {
-                    $success *= unlink($path->getPathname());
+                    $success = $success && unlink($path->getPathname());
                 }
             }
         }
