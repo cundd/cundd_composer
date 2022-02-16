@@ -84,6 +84,8 @@ class ComposerProcess
             'COMPOSER_ALLOW_SUPERUSER',
             'COMPOSER_MIRROR_PATH_REPOS',
 
+            'PHP_INI_SCAN_DIR',
+
             'PATH',
         ];
 
