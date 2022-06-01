@@ -29,8 +29,8 @@ class ListCommand extends AbstractCommand
         $packages = $this->getObjectManager()->get(PackageRepository::class)->findAll();
         /** @var Package $package */
         foreach ($packages as $package) {
-            $required = $this->splitTrim($package->getRequire());
-            $requiredDev = $this->splitTrim($package->getRequireDev());
+            $required = $this->splitTrim($package->getRequire() ?? '');
+            $requiredDev = $this->splitTrim($package->getRequireDev() ?? '');
             $info = [
                 sprintf('%s [%s]: %s', $package->getName(), $package->getVersion(), $package->getDescription()),
                 sprintf('  require:%s%s', PHP_EOL, '    ' . implode(PHP_EOL . '    ', $required)),
