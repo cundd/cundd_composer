@@ -27,7 +27,7 @@ class UpdateCommand extends AbstractCommand
             );
     }
 
-    protected function execute(InputInterface $input, OutputInterface $output)
+    protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $this->assertPHPExecutable($output);
         $writer = $this->getDefinitionWriter();

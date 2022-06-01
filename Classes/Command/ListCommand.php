@@ -22,7 +22,7 @@ class ListCommand extends AbstractCommand
             ->setHelp('List information about the required packages');
     }
 
-    protected function execute(InputInterface $input, OutputInterface $output)
+    protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $this->assertPHPExecutable($output);
 

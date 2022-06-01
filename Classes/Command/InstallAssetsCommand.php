@@ -16,7 +16,7 @@ class InstallAssetsCommand extends AbstractCommand
             ->setHelp('Install available assets');
     }
 
-    protected function execute(InputInterface $input, OutputInterface $output)
+    protected function execute(InputInterface $input, OutputInterface $output): int
     {
         if (ConfigurationUtility::getConfiguration('allowInstallAssets')) {
             $this->installAssets($output);

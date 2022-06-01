@@ -21,7 +21,7 @@ class WriteComposerJsonCommand extends AbstractCommand
             ->addOption('no-dev', null, InputOption::VALUE_NONE, 'Disable installation of require-dev packages');
     }
 
-    protected function execute(InputInterface $input, OutputInterface $output)
+    protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $this->assertPHPExecutable($output);
 
