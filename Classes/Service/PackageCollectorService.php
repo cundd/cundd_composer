@@ -9,16 +9,13 @@ use DomainException;
 use SplObjectStorage;
 use TYPO3\CMS\Core\Core\Environment;
 use TYPO3\CMS\Core\Package\PackageManager;
-use function array_walk;
 use function dirname;
 use function file_exists;
 use function file_get_contents;
-use function implode;
 use function is_array;
 use function json_decode;
 use function json_last_error_msg;
 use function strpos;
-use const PHP_EOL;
 
 class PackageCollectorService
 {
@@ -47,10 +44,6 @@ class PackageCollectorService
         $packages = new SplObjectStorage();
         $composerJson = $this->getMergedComposerJson();
         foreach ($composerJson as $packageName => $currentJsonData) {
-            // Flatten the fields "require" and "authors"
-            $this->convertPropertyForKey($currentJsonData, 'authors');
-            $this->convertPropertyForKey($currentJsonData, 'require');
-            $this->convertPropertyForKey($currentJsonData, 'require-dev', 'requireDev');
             $currentJsonData['package'] = $packageName;
 
             $packages->attach(Package::fromProperties($currentJsonData));
@@ -134,33 +127,7 @@ class PackageCollectorService
     }
 
     /**
-     * Convert an array property to a string
-     *
-     * @param array  $source Reference to the input array
-     * @param string $key    The key which to convert
-     * @param string $newKey The new key under which to store the converted data
-     * @return void
-     */
-    private function convertPropertyForKey(array &$source, string $key, string $newKey = '')
-    {
-        if (isset($source[$key])) {
-            if (!$newKey) {
-                $newKey = $key;
-            }
-            $originalData = $source[$key];
-
-            array_walk(
-                $originalData,
-                function (&$value, $key) {
-                    $value = $key . ' ' . $value;
-                }
-            );
-            $source[$newKey] = implode(PHP_EOL, $originalData);
-        }
-    }
-
-    /**
-     * Patch the autoload definition
+     * Patch the 'autoload' definition
      *
      * @param array  $currentJsonData
      * @param string $relativeComposerFilePath

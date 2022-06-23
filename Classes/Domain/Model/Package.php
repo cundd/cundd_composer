@@ -3,220 +3,180 @@ declare(strict_types=1);
 
 namespace Cundd\CunddComposer\Domain\Model;
 
-use function property_exists;
-
 class Package
 {
     /**
      * Name
      *
      * @var string
-     * @validate NotEmpty
      */
-    protected $name;
-
-    /**
-     * Description
-     *
-     * @var string
-     * @validate NotEmpty
-     */
-    protected $description;
-
-    /**
-     * Authors
-     *
-     * @var string
-     */
-    protected $authors;
-
-    /**
-     * Version
-     *
-     * @var string
-     * @validate NotEmpty
-     */
-    protected $version;
-
-    /**
-     * Type
-     *
-     * @var string
-     * @validate NotEmpty
-     */
-    protected $type;
-
-    /**
-     * Homepage
-     *
-     * @var string
-     */
-    protected $homepage;
-
-    /**
-     * Time
-     *
-     * @var \DateTime
-     */
-    protected $time;
-
-    /**
-     * License
-     *
-     * @var string
-     */
-    protected $license;
-
-    /**
-     * Requirements
-     *
-     * @var string
-     */
-    protected $require;
+    private string $name;
 
     /**
      * Name of the extension
      *
      * @var string
      */
-    protected $package;
+    private string $package;
+
+    /**
+     * Description
+     *
+     * @var string
+     */
+    private string $description;
+
+    /**
+     * Authors
+     *
+     * @var array
+     */
+    private array $authors;
+
+    /**
+     * Version
+     *
+     * @var string|null
+     */
+    private ?string $version;
+
+    /**
+     * Type
+     *
+     * @var string|null
+     */
+    private ?string $type;
+
+    /**
+     * Homepage
+     *
+     * @var string|null
+     */
+    private ?string $homepage;
+
+    /**
+     * Time
+     *
+     * @var string|null
+     */
+    private ?string $time;
+
+    /**
+     * License
+     *
+     * @var string|null
+     */
+    private ?string $license;
+
+    /**
+     * Requirements
+     *
+     * @var array
+     */
+    private array $require;
 
     /**
      * Development requirements
      *
-     * @var string
+     * @var array
      */
-    protected $requireDev;
+    private array $requireDev;
 
-    private function __construct()
-    {
+    private function __construct(
+        string $package,
+        string $name,
+        ?string $description,
+        ?string $type,
+        array $require,
+        array $requireDev,
+        array $authors,
+        ?string $version,
+        ?string $homepage,
+        ?string $time,
+        ?string $license
+    ) {
+        $this->name = $name;
+        $this->description = $description;
+        $this->authors = $authors;
+        $this->version = $version;
+        $this->type = $type;
+        $this->homepage = $homepage;
+        $this->time = $time;
+        $this->license = $license;
+        $this->require = $require;
+        $this->package = $package;
+        $this->requireDev = $requireDev;
     }
 
     public static function fromProperties(array $properties): self
     {
-        $instance = new static();
-
-        return $instance->assignProperties($properties);
+        return new static(
+            $properties['package'],
+            $properties['name'],
+            $properties['description'] ?? null,
+            $properties['type'] ?? null,
+            $properties['require'] ?? [],
+            $properties['require-dev'] ?? [],
+            $properties['authors'] ?? [],
+            $properties['version'] ?? null,
+            $properties['homepage'] ?? null,
+            $properties['time'] ?? null,
+            $properties['license'] ?? null,
+        );
     }
 
-    /**
-     * Returns the name
-     *
-     * @return string $name
-     */
     public function getName(): string
     {
         return $this->name;
     }
 
-    /**
-     * Returns the description
-     *
-     * @return string $description
-     */
-    public function getDescription()
+    public function getDescription(): string
     {
         return $this->description;
     }
 
-    /**
-     * Returns the version
-     *
-     * @return string $version
-     */
-    public function getVersion()
+    public function getVersion(): ?string
     {
         return $this->version;
     }
 
-    /**
-     * Returns the type
-     *
-     * @return string $type
-     */
-    public function getType()
+    public function getType(): ?string
     {
         return $this->type;
     }
 
-    /**
-     * Returns the homepage
-     *
-     * @return string $homepage
-     */
-    public function getHomepage()
+    public function getHomepage(): ?string
     {
         return $this->homepage;
     }
 
-    /**
-     * Returns the time
-     *
-     * @return \DateTime $time
-     */
-    public function getTime()
+    public function getTime(): ?string
     {
         return $this->time;
     }
 
-    /**
-     * Returns the require
-     *
-     * @return string $require
-     */
-    public function getRequire()
+    public function getRequire(): array
     {
         return $this->require;
     }
 
-    /**
-     * Returns the license
-     *
-     * @return string license
-     */
-    public function getLicense()
+    public function getLicense(): ?string
     {
         return $this->license;
     }
 
-    /**
-     * Returns the requireDev
-     *
-     * @return string $requireDev
-     */
-    public function getRequireDev()
+    public function getRequireDev(): array
     {
         return $this->requireDev;
     }
 
-    /**
-     * Returns the authors
-     *
-     * @return string $authors
-     */
-    public function getAuthors()
+    public function getAuthors(): array
     {
         return $this->authors;
     }
 
-    /**
-     * Returns the package
-     *
-     * @return string $package
-     */
-    public function getPackage()
+    public function getPackage(): ?string
     {
         return $this->package;
-    }
-
-    private function assignProperties(array $properties): Package
-    {
-        foreach ($properties as $key => $value) {
-            if (property_exists($this, $key)) {
-                $this->$key = $value;
-            }
-        }
-
-        return $this;
     }
 }

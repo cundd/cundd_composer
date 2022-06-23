@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<xliff version="1.0">
+    <file source-language="en" datatype="plaintext" original="messages" date="2012-12-28T17:22:57Z" product-name="cundd_composer">
+        <header/>
+        <body>
+            <trans-unit id="tx_cunddcomposer_domain_model_package">
+                <source>Package</source>
+            </trans-unit>
+            <trans-unit id="tx_cunddcomposer_domain_model_package.name">
+                <source>Name</source>
+            </trans-unit>
+            <trans-unit id="tx_cunddcomposer_domain_model_package.description">
+                <source>Description</source>
+            </trans-unit>
+            <trans-unit id="tx_cunddcomposer_domain_model_package.authors">
+                <source>Authors</source>
+            </trans-unit>
+            <trans-unit id="tx_cunddcomposer_domain_model_package.version">
+                <source>Version</source>
+            </trans-unit>
+            <trans-unit id="tx_cunddcomposer_domain_model_package.type">
+                <source>Type</source>
+            </trans-unit>
+            <trans-unit id="tx_cunddcomposer_domain_model_package.homepage">
+                <source>Homepage</source>
+            </trans-unit>
+            <trans-unit id="tx_cunddcomposer_domain_model_package.time">
+                <source>Time</source>
+            </trans-unit>
+            <trans-unit id="tx_cunddcomposer_domain_model_package.license">
+                <source>License</source>
+            </trans-unit>
+            <trans-unit id="tx_cunddcomposer_domain_model_package.tx_cunddcomposer_require">
+                <source>Requirements</source>
+            </trans-unit>
+            <trans-unit id="tx_cunddcomposer_domain_model_package.require_dev">
+                <source>Development requirements</source>
+            </trans-unit>
+            <trans-unit id="tx_cunddcomposer_domain_model_asset.name">
+                <source>Name</source>
+            </trans-unit>
+            <trans-unit id="tx_cunddcomposer_domain_model_asset.version">
+                <source>Version</source>
+            </trans-unit>
+            <trans-unit id="tx_cunddcomposer_domain_model_asset.source">
+                <source>Source</source>
+            </trans-unit>
+            <trans-unit id="tx_cunddcomposer_domain_model_asset.target">
+                <source>Target</source>
+            </trans-unit>
+            <trans-unit id="tx_cunddcomposer_domain_model_asset.assetKey">
+                <source>Asset key</source>
+            </trans-unit>
+            <trans-unit id="tx_cunddcomposer_domain_model_asset.key">
+                <source>Key</source>
+            </trans-unit>
+        </body>
+    </file>
+</xliff>

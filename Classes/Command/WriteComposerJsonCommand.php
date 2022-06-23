@@ -16,7 +16,6 @@ class WriteComposerJsonCommand extends AbstractCommand
     {
         $this
             ->setDescription('Write merged composer.json')
-            ->setHelp('Write the merged composer.json')
             ->addArgument('output-path', InputArgument::OPTIONAL, 'Output path')
             ->addOption('no-dev', null, InputOption::VALUE_NONE, 'Disable installation of require-dev packages');
     }

@@ -1,0 +1,41 @@
+services:
+  _defaults:
+    autowire: true
+    autoconfigure: true
+    public: false
+
+  Cundd\CunddComposer\:
+    resource: '../Classes/*'
+    exclude: '../Classes/{Domain/Model/*,Exception}'
+
+  Cundd\CunddComposer\Command\InstallCommand:
+    tags:
+      - name: 'console.command'
+        command: 'cundd-composer:install'
+        description: 'Install dependencies from composer.lock'
+  Cundd\CunddComposer\Command\UpdateCommand:
+    tags:
+      - name: 'console.command'
+        command: 'cundd-composer:update'
+        description: 'Update dependencies to the latest version according to composer.json, and updates the composer.lock file'
+  Cundd\CunddComposer\Command\ListCommand:
+    tags:
+      - name: 'console.command'
+        command: 'cundd-composer:list'
+        description: 'List information about the required packages'
+  Cundd\CunddComposer\Command\ExecCommand:
+    tags:
+      - name: 'console.command'
+        command: 'cundd-composer:exec'
+        description: 'Execute an arbitrary composer command'
+  Cundd\CunddComposer\Command\InstallAssetsCommand:
+    tags:
+      - name: 'console.command'
+        command: 'cundd-composer:install-assets'
+        description: 'Install available assets'
+  Cundd\CunddComposer\Command\WriteComposerJsonCommand:
+    tags:
+      - name: 'console.command'
+        command: 'cundd-composer:write-composer-json'
+        description: 'Write merged composer.json'
+

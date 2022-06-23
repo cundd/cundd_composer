@@ -54,10 +54,18 @@
                 <td>{package.time -> f:format.date()}</td>
                 <td>{package.license}</td>
                 <td>
-                    <f:format.nl2br>{package.require}</f:format.nl2br>
+                    <ul>
+                    <f:for each="{package.require}" as="version" key="package">
+                        <li><code>{package}: {version}</code></li>
+                    </f:for>
+                    </ul>
                 </td>
                 <td>
-                    <f:format.nl2br>{package.requireDev}</f:format.nl2br>
+                    <ul>
+                        <f:for each="{package.requireDev}" as="version" key="package">
+                            <li><code>{package}: {version}</code></li>
+                        </f:for>
+                    </ul>
                 </td>
             </tr>
         </f:for>

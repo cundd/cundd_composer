@@ -11,9 +11,7 @@ class InstallAssetsCommand extends AbstractCommand
 {
     protected function configure()
     {
-        $this
-            ->setDescription('Install available assets')
-            ->setHelp('Install available assets');
+        $this->setDescription('Install available assets');
     }
 
     protected function execute(InputInterface $input, OutputInterface $output): int

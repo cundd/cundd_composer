@@ -14,10 +14,7 @@ class ExecCommand extends AbstractCommand
     protected function configure()
     {
         $this
-            ->setDescription('Execute a composer command')
-            ->setHelp(
-                'Execute an arbitrary composer command'
-            )
+            ->setDescription('Execute an arbitrary composer command')
             ->addArgument(
                 'arguments',
                 InputArgument::IS_ARRAY,

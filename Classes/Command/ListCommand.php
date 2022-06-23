@@ -17,9 +17,7 @@ class ListCommand extends AbstractCommand
 {
     protected function configure()
     {
-        $this
-            ->setDescription('List information about the required packages')
-            ->setHelp('List information about the required packages');
+        $this->setDescription('List information about the required packages');
     }
 
     protected function execute(InputInterface $input, OutputInterface $output): int

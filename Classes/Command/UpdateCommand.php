@@ -16,9 +16,6 @@ class UpdateCommand extends AbstractCommand
             ->setDescription(
                 'Update dependencies to the latest version according to composer.json, and updates the composer.lock file'
             )
-            ->setHelp(
-                'Updates your dependencies to the latest version according to composer.json, and updates the composer.lock file'
-            )
             ->addOption('no-dev', null, InputOption::VALUE_NONE, 'Disable installation of require-dev packages')
             ->addArgument(
                 'additional-arguments',

@@ -40,8 +40,7 @@ class PackageRepository extends Repository
     public function __construct(ObjectManagerInterface $objectManager, PackageCollectorService $packageCollectorService)
     {
         parent::__construct($objectManager);
-        $this->packageCollectorService = $packageCollectorService
-            ?? $this->objectManager->get(PackageCollectorService::class);
+        $this->packageCollectorService = $packageCollectorService;
     }
 
     /**

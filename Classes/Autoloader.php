@@ -26,4 +26,4 @@ class Autoloader
     }
 }
 
-class_alias(Autoloader::class, 'Cundd\\Composer\\Autoloader');
+//class_alias(Autoloader::class, 'Cundd\\Composer\\Autoloader');
